@@ -142,21 +142,45 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     });
 });
 
-const revealElements = document.querySelectorAll('.reveal');
+function assignRevealItems(selector, direction, staggerMs = 70) {
+    const elements = document.querySelectorAll(selector);
+    elements.forEach((element, index) => {
+        element.classList.add('reveal-item');
+        if (direction) {
+            element.classList.add(`reveal-${direction}`);
+        }
+        element.style.setProperty('--reveal-delay', `${index * staggerMs}ms`);
+    });
+}
 
-if (!motionReduced && 'IntersectionObserver' in window) {
+assignRevealItems('.hero-copy > *:not(.hero-specialization-role)', 'up', 70);
+assignRevealItems('.hero-visual .image-frame', 'right', 80);
+assignRevealItems('.hero-metrics .metric', 'zoom', 85);
+assignRevealItems('.section-head', 'up', 40);
+assignRevealItems('#about .about-card > *', 'up', 90);
+assignRevealItems('#domains .domain-card', 'up', 90);
+assignRevealItems('#work .panel', 'left', 100);
+assignRevealItems('#experience .panel', 'right', 100);
+assignRevealItems('#contact .contact-panel > *', 'up', 90);
+assignRevealItems('#contact .contact-list li', 'up', 70);
+
+const revealElements = document.querySelectorAll('.reveal, .reveal-item');
+
+if ('IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver(
         (entries, observer) => {
             entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
+                if (!entry.isIntersecting) {
+                    return;
                 }
+
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
             });
         },
         {
-            rootMargin: '0px 0px -10% 0px',
-            threshold: 0.18
+            rootMargin: '0px 0px -8% 0px',
+            threshold: 0.14
         }
     );
 

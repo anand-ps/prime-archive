@@ -555,6 +555,31 @@ body::after {
     transform: translateY(0);
 }
 
+.reveal-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 620ms cubic-bezier(0.2, 0.65, 0.2, 1), transform 620ms cubic-bezier(0.2, 0.65, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+}
+
+.reveal-item.reveal-left {
+    transform: translateX(-20px);
+}
+
+.reveal-item.reveal-right {
+    transform: translateX(20px);
+}
+
+.reveal-item.reveal-zoom {
+    transform: translateY(12px) scale(0.98);
+}
+
+.reveal-item.visible {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1);
+}
+
 @media (max-width: 980px) {
     .hero {
         gap: 1.8rem;
@@ -653,9 +678,8 @@ body::after {
     }
 
     .reveal,
-    .reveal.visible {
-        opacity: 1;
-        transform: none;
+    .reveal-item {
+        transition-duration: 620ms !important;
     }
 
     .hero-specialization-role::after {
