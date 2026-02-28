@@ -1,0 +1,7 @@
+# File: /robots.txt
+# Purpose: Search engine indexing rules
+
+User-agent: *
+Allow: /
+
+Sitemap: https://anandps.in/sitemap.xml
