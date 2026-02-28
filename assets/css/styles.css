@@ -338,16 +338,7 @@ body::after {
 }
 
 .section-head {
-    margin-bottom: 1.1rem;
-}
-
-.section-head p {
-    color: var(--accent-strong);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    margin-bottom: 0.34rem;
-    text-transform: uppercase;
+    margin-bottom: 1.25rem;
 }
 
 .section-head h2 {
