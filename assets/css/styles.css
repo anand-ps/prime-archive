@@ -19,6 +19,7 @@ Description: Intentional, modern visual system with responsive layout and subtle
     --grain-dot: rgba(23, 32, 38, 0.06);
     --grain-opacity: 0.42;
     --shadow: 0 18px 40px rgba(23, 32, 38, 0.12);
+    --hero-image-filter: saturate(1.02) contrast(1.02) brightness(1.02);
     --radius-lg: 24px;
     --radius-md: 14px;
     --max-width: 1120px;
@@ -44,6 +45,7 @@ Description: Intentional, modern visual system with responsive layout and subtle
         --grain-dot: rgba(173, 190, 203, 0.085);
         --grain-opacity: 0.2;
         --shadow: 0 18px 38px rgba(0, 0, 0, 0.35);
+        --hero-image-filter: saturate(1.02) contrast(1.02) brightness(1.02) drop-shadow(0 22px 32px rgba(0, 0, 0, 0.36));
     }
 }
 
@@ -387,7 +389,7 @@ body::after {
 
 .image-frame img {
     display: block;
-    filter: saturate(1.02) contrast(1.02) brightness(1.02) drop-shadow(0 22px 32px rgba(0, 0, 0, 0.36));
+    filter: var(--hero-image-filter);
     height: auto;
     min-height: 0;
     object-fit: contain;
