@@ -28,7 +28,7 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
 
     <link rel="icon" href="./favicon.ico?v=20260228" sizes="any" type="image/x-icon" />
     <link rel="shortcut icon" href="./favicon.ico?v=20260228" type="image/x-icon" />
-    <link rel="icon" href="assets/images/favicon.ico?v=20260228" sizes="any" type="image/x-icon" />
+    <link rel="icon" href="assets/icons/favicon.ico?v=20260228" sizes="any" type="image/x-icon" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -197,20 +197,28 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
     <div class="section-head">
         <h2>Professional Experience</h2>
     </div>
-    <div class="work-grid">
-        <article class="panel">
-            <h3>Oracle | Engineer</h3>
-            <p>
-                Designing and developing enterprise-scale distributed systems with a focus on scalability, reliability, and production-grade standards, maintaining 99.9% uptime.
-            </p>
-        </article>
-        <article class="panel">
-            <h3>Neo-Thermal AI Innovations LLP | Electronic Design Software Intern</h3>
-            <p>
-                Executed end-to-end firmware development and PCB design for drone and power management systems, delivering fully integrated hardware solutions from concept through validation.
-            </p>
-        </article>
-    </div>
+    <ol class="experience-timeline">
+        <li class="timeline-item">
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <article class="panel timeline-card">
+                <p class="timeline-period">Current</p>
+                <h3>Oracle | Engineer</h3>
+                <p>
+                    Designing and developing enterprise-scale distributed systems with a focus on scalability, reliability, and production-grade standards, maintaining 99.9% uptime.
+                </p>
+            </article>
+        </li>
+        <li class="timeline-item">
+            <span class="timeline-dot" aria-hidden="true"></span>
+            <article class="panel timeline-card">
+                <p class="timeline-period">Previous</p>
+                <h3>Neo-Thermal AI Innovations LLP | Electronic Design Software Intern</h3>
+                <p>
+                    Executed end-to-end firmware development and PCB design for drone and power management systems, delivering fully integrated hardware solutions from concept through validation.
+                </p>
+            </article>
+        </li>
+    </ol>
 </section>
 
 <section id="contact" class="section container reveal">

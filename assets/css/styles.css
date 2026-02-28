@@ -527,6 +527,95 @@ body::after {
     color: var(--muted);
 }
 
+.experience-timeline {
+    display: grid;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+.experience-timeline::before {
+    background: linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--accent) 68%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 38%, var(--border)) 50%,
+        color-mix(in srgb, var(--accent) 68%, transparent) 100%
+    );
+    border-radius: 999px;
+    box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 40%, transparent);
+    content: "";
+    left: 0.45rem;
+    position: absolute;
+    top: 0.35rem;
+    bottom: 0.35rem;
+    width: 2px;
+}
+
+.timeline-item {
+    padding-left: 1.75rem;
+    position: relative;
+}
+
+.timeline-dot {
+    background: var(--accent);
+    border: 2px solid color-mix(in srgb, var(--surface) 86%, var(--accent));
+    border-radius: 999px;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--surface) 90%, transparent);
+    display: block;
+    height: 0.9rem;
+    left: 0.01rem;
+    position: absolute;
+    top: 1rem;
+    width: 0.9rem;
+    z-index: 1;
+}
+
+.timeline-card {
+    padding: 1.1rem 1.2rem;
+    position: relative;
+    background: color-mix(in srgb, var(--surface) 74%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 70%, var(--accent) 30%);
+    box-shadow:
+        0 14px 30px rgba(23, 32, 38, 0.14),
+        inset 0 1px 0 color-mix(in srgb, #ffffff 36%, transparent);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.timeline-card::before {
+    background: color-mix(in srgb, var(--accent) 35%, var(--border));
+    content: "";
+    height: 2px;
+    left: -0.82rem;
+    position: absolute;
+    top: 1.45rem;
+    width: 0.82rem;
+}
+
+.timeline-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    box-shadow: 0 14px 30px rgba(23, 32, 38, 0.16);
+    transform: translateY(-2px);
+}
+
+.timeline-period {
+    color: var(--accent-strong);
+    display: inline-block;
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+    padding: 0.12rem 0.5rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface-soft) 85%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+    text-transform: uppercase;
+}
+
 .contact-panel {
     display: grid;
     gap: 1rem;
@@ -750,6 +839,7 @@ body::after {
     .nav-links a {
         width: 100%;
     }
+
 }
 
 @media (max-width: 720px) {
@@ -772,6 +862,32 @@ body::after {
     .section {
         padding-bottom: 1.7rem;
         padding-top: 1.7rem;
+    }
+
+    .timeline-item {
+        padding-left: 1.45rem;
+    }
+
+    .experience-timeline::before {
+        left: 0.38rem;
+    }
+
+    .timeline-dot {
+        height: 0.85rem;
+        left: -0.03rem;
+        margin-top: 0;
+        top: 0.92rem;
+        width: 0.85rem;
+    }
+
+    .timeline-card {
+        padding: 1rem;
+    }
+
+    .timeline-card::before {
+        left: -0.72rem;
+        top: 1.35rem;
+        width: 0.72rem;
     }
 }
 
