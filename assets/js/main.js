@@ -81,8 +81,10 @@ function runTypewriterCycle() {
     }
 
     specializationRotator.textContent = activeLabel.slice(0, typedLength);
+    const isHoldingWord = !isDeletingSpecialization && typedLength === activeLabel.length;
+    specializationRotator.classList.toggle('is-holding', isHoldingWord);
 
-    if (!isDeletingSpecialization && typedLength === activeLabel.length) {
+    if (isHoldingWord) {
         isDeletingSpecialization = true;
         delay = HOLD_FULL_TEXT_MS;
     } else if (isDeletingSpecialization && typedLength === 0) {
@@ -98,6 +100,7 @@ function runTypewriterCycle() {
 
 if (specializationRotator) {
     specializationRotator.textContent = '';
+    specializationRotator.classList.remove('is-holding');
     runTypewriterCycle();
 }
 
