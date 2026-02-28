@@ -159,8 +159,8 @@ assignRevealItems('.hero-metrics .metric', 'zoom', 85);
 assignRevealItems('.section-head', 'up', 40);
 assignRevealItems('#about .about-card > *', 'up', 90);
 assignRevealItems('#domains .domain-card', 'up', 90);
-assignRevealItems('#work .panel', 'left', 100);
-assignRevealItems('#experience .panel', 'right', 100);
+assignRevealItems('#work .panel', 'up', 100);
+assignRevealItems('#experience .panel', 'up', 100);
 assignRevealItems('#contact .contact-panel > *', 'up', 90);
 assignRevealItems('#contact .contact-list li', 'up', 70);
 
