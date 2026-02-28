@@ -236,6 +236,7 @@ body::after {
     flex-wrap: nowrap;
     gap: 0.4rem;
     margin-bottom: 1rem;
+    max-width: 100%;
     white-space: nowrap;
 }
 
@@ -254,6 +255,7 @@ body::after {
     font-weight: 700;
     letter-spacing: -0.01em;
     min-width: 0;
+    max-width: 100%;
     white-space: nowrap;
 }
 
@@ -849,6 +851,21 @@ body::after {
 
     .hero {
         padding-top: 1.7rem;
+    }
+
+    .hero-specialization {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.12rem;
+        white-space: normal;
+    }
+
+    .hero-specialization-role {
+        line-height: 1.25;
+        min-height: 2.5em;
+        white-space: normal;
+        word-break: normal;
+        overflow-wrap: anywhere;
     }
 
     .hero-metrics {
