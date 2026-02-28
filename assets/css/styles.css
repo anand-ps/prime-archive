@@ -862,7 +862,7 @@ body::after {
 
     .hero-specialization-role {
         line-height: 1.25;
-        min-height: 2.5em;
+        min-height: 1.3em;
         white-space: normal;
         word-break: normal;
         overflow-wrap: anywhere;
