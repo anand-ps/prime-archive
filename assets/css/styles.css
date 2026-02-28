@@ -345,32 +345,18 @@ body::after {
 }
 
 .image-frame {
-    background: linear-gradient(145deg, color-mix(in srgb, var(--surface) 82%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 70%, transparent) 100%);
-    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow);
     max-width: 410px;
-    overflow: hidden;
-    padding: 0.8rem;
     position: relative;
     width: 100%;
 }
 
 .image-frame::before {
-    background: linear-gradient(130deg, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0) 70%);
-    content: "";
-    height: 100%;
-    left: -130%;
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    transform: skewX(-20deg);
-    transition: left 850ms ease;
-    width: 80%;
+    content: none;
 }
 
 .image-frame:hover::before {
-    left: 170%;
+    left: auto;
 }
 
 .image-frame img {
