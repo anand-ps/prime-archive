@@ -538,18 +538,71 @@ body::after {
     list-style: none;
 }
 
-.contact-list a {
-    color: var(--accent-strong);
+.contact-link {
+    align-items: center;
+    color: color-mix(in srgb, var(--text) 90%, var(--muted));
+    display: inline-flex;
     font-weight: 700;
+    gap: 0.58rem;
+    line-height: 1.35;
     text-decoration: none;
+    transition: color 160ms ease, text-decoration-color 160ms ease;
     word-break: break-word;
 }
 
-.contact-list a:hover,
-.contact-list a:focus-visible {
-    color: var(--accent);
+.contact-link:visited {
+    color: color-mix(in srgb, var(--text) 90%, var(--muted));
+}
+
+.contact-icon {
+    background-color: currentColor;
+    display: inline-flex;
+    flex: 0 0 1.05rem;
+    height: 1.05rem;
+    width: 1.05rem;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+}
+
+.icon-google {
+    color: #ea4335;
+    -webkit-mask-image: url("../icons/brand-google.svg");
+    mask-image: url("../icons/brand-google.svg");
+}
+
+.icon-linkedin {
+    color: #0a66c2;
+    -webkit-mask-image: url("../icons/brand-linkedin.svg");
+    mask-image: url("../icons/brand-linkedin.svg");
+}
+
+.icon-github {
+    color: #24292f;
+    -webkit-mask-image: url("../icons/brand-github.svg");
+    mask-image: url("../icons/brand-github.svg");
+}
+
+.contact-link:hover,
+.contact-link:focus-visible {
+    color: var(--text);
     text-decoration: underline;
+    text-decoration-color: currentColor;
     text-decoration-thickness: 2px;
+}
+
+.contact-link:hover .contact-icon,
+.contact-link:focus-visible .contact-icon {
+    filter: brightness(1.06);
+}
+
+@media (prefers-color-scheme: dark) {
+    .icon-github {
+        color: #f0f6fc;
+    }
 }
 
 .footer {
@@ -561,6 +614,42 @@ body::after {
 
 .footer p {
     font-size: 0.9rem;
+}
+
+.not-found {
+    align-items: center;
+    display: grid;
+    min-height: 100vh;
+    padding-bottom: 2.2rem;
+    padding-top: 6.2rem;
+}
+
+.not-found-card {
+    display: grid;
+    gap: 0.85rem;
+    justify-items: center;
+    margin: 0 auto;
+    max-width: 720px;
+    padding: 1.6rem;
+    text-align: center;
+}
+
+.not-found-icon {
+    display: block;
+    height: auto;
+    margin-bottom: 0.2rem;
+    max-width: min(420px, 100%);
+    width: 100%;
+}
+
+.not-found-card h1 {
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+}
+
+.not-found-card p {
+    color: var(--muted);
 }
 
 .reveal {

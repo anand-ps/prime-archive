@@ -7,14 +7,23 @@ Purpose: Custom 404 error page.
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Page Not Found | Anand P S</title>
 <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body>
-<div class="container">
-<h1>404</h1>
-<p>Page not found.</p>
-<a href="/">Return Home</a>
+<div class="site-bg" aria-hidden="true">
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
 </div>
+
+<main class="not-found container">
+    <div class="panel not-found-card">
+        <img class="not-found-icon" src="/assets/icons/failed_notify.svg" alt="Page not found illustration">
+        <h1>404</h1>
+        <p>Page not found.</p>
+        <a class="btn btn-primary" href="/">Return Home</a>
+    </div>
+</main>
 </body>
 </html>
