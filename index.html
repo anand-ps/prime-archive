@@ -1,59 +1,56 @@
 <!--
 File: /index.html
 Purpose: Main portfolio website entry point for Anand P S.
-Description: SEO-optimized, semantic, accessible, production-grade portfolio website using pure HTML, CSS, and JS.
+Description: SEO-optimized, semantic, accessible portfolio website using pure HTML, CSS, and JS.
 -->
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- =========================================
-         CORE META
-    ========================================== -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Anand P S | Systems Engineer</title>
-    <meta name="description" content="Anand P S — Electrical & Electronics Engineer building embedded systems, distributed backend systems, and scalable software architectures." />
+    <meta name="description" content="Anand P S - Electrical and Electronics Engineer building embedded systems, distributed backend systems, and scalable software architectures." />
     <meta name="author" content="Anand P S" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://anandps.in/" />
 
-    <!-- =========================================
-         OPEN GRAPH
-    ========================================== -->
     <meta property="og:title" content="Anand P S | Systems Engineer" />
     <meta property="og:description" content="Engineer bridging electronics, embedded systems, and distributed software architectures." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://anandps.in/" />
     <meta property="og:image" content="https://anandps.in/assets/images/og-image.webp" />
 
-    <!-- =========================================
-         TWITTER CARD
-    ========================================== -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Anand P S | Systems Engineer" />
     <meta name="twitter:description" content="Embedded systems, electrical engineering, distributed backend systems." />
     <meta name="twitter:image" content="https://anandps.in/assets/images/og-image.webp" />
 
-    <!-- =========================================
-         FAVICON
-    ========================================== -->
     <link rel="icon" href="./favicon.ico?v=20260228" sizes="any" type="image/x-icon" />
     <link rel="shortcut icon" href="./favicon.ico?v=20260228" type="image/x-icon" />
     <link rel="icon" href="assets/images/favicon.ico?v=20260228" sizes="any" type="image/x-icon" />
 
-    <!-- =========================================
-         CSS
-    ========================================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 
 <body>
+<div class="site-bg" aria-hidden="true">
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+</div>
 
 <header class="header">
-    <nav class="nav container">
-        <div class="logo">Anand P S</div>
-        <ul class="nav-links">
+    <nav class="nav container" aria-label="Primary">
+        <a class="logo" href="#top">Anand P S</a>
+        <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul id="primary-nav" class="nav-links">
             <li><a href="#about">About</a></li>
             <li><a href="#domains">Domains</a></li>
             <li><a href="#work">Work</a></li>
@@ -63,104 +60,150 @@ Description: SEO-optimized, semantic, accessible, production-grade portfolio web
     </nav>
 </header>
 
-<main>
-
-<section class="hero container">
-    <div class="hero-text">
-        <h1>Systems Engineer — Hardware to Cloud</h1>
-        <p>I design and build reliable systems bridging electronics, embedded platforms, and scalable backend architectures.</p>
+<main id="top">
+<section class="hero container reveal">
+    <div class="hero-copy">
+        <p class="eyebrow">Systems Engineer | Hardware to Cloud</p>
+        <h1>Building reliable systems across electronics, embedded platforms, and distributed backend architecture.</h1>
+        <p class="lead">I design production-ready systems with practical engineering rigor, from edge device interactions to scalable cloud services.</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" href="#work">View Engineering Work</a>
+            <a class="btn btn-ghost" href="#contact">Get in Touch</a>
+        </div>
+        <div class="hero-metrics" aria-label="Highlights">
+            <div class="metric">
+                <span>4</span>
+                <p>Core domains</p>
+            </div>
+            <div class="metric">
+                <span>1</span>
+                <p>Enterprise focus</p>
+            </div>
+            <div class="metric">
+                <span>End-to-End</span>
+                <p>System thinking</p>
+            </div>
+        </div>
     </div>
-    <div class="hero-image">
-        <img src="assets/images/profile.webp" alt="Anand P S" loading="lazy" />
+    <div class="hero-visual" aria-hidden="true">
+        <div class="image-frame">
+            <img src="assets/images/profile.webp" alt="Anand P S" loading="lazy" />
+        </div>
     </div>
 </section>
 
-<section id="about" class="section container">
-    <h2>About</h2>
-    <p>
-        Electrical & Electronics Engineer with strong foundations in circuit theory, system modeling, and computing systems.
-        My work spans embedded platforms, backend architectures, and distributed system design with production-grade reliability.
-        Currently working as an Engineer at Oracle contributing to enterprise-scale systems.
-    </p>
+<section id="about" class="section container reveal">
+    <div class="section-head">
+        <p>Profile</p>
+        <h2>About</h2>
+    </div>
+    <div class="about-card">
+        <p>
+            Electrical and Electronics Engineer with strong foundations in circuit theory, system modeling, and computing systems.
+            My work spans embedded platforms, backend architectures, and distributed system design with production-grade reliability.
+            I currently work as an Engineer at Oracle on enterprise-scale systems.
+        </p>
+        <ul class="highlight-list">
+            <li>Production reliability and observability mindset</li>
+            <li>Strong hardware-software integration background</li>
+            <li>Scalable architecture and systems thinking</li>
+        </ul>
+    </div>
 </section>
 
-<section id="domains" class="section container">
-    <h2>Core Domains</h2>
-    <div class="grid">
-        <div>
-            <h3>Electronics & Electrical</h3>
+<section id="domains" class="section container reveal">
+    <div class="section-head">
+        <p>Capabilities</p>
+        <h2>Core Domains</h2>
+    </div>
+    <div class="grid domain-grid">
+        <article class="domain-card">
+            <h3>Electronics and Electrical</h3>
             <ul>
-                <li>Circuit analysis & modeling</li>
+                <li>Circuit analysis and modeling</li>
                 <li>Power systems fundamentals</li>
                 <li>Signal processing basics</li>
             </ul>
-        </div>
-        <div>
+        </article>
+        <article class="domain-card">
             <h3>Embedded Systems</h3>
             <ul>
                 <li>Microcontroller-based design</li>
                 <li>Peripheral interfacing</li>
-                <li>Hardware–software integration</li>
+                <li>Hardware-software integration</li>
             </ul>
-        </div>
-        <div>
+        </article>
+        <article class="domain-card">
             <h3>Software Systems</h3>
             <ul>
                 <li>Backend architecture</li>
                 <li>Authentication models</li>
                 <li>Data modeling</li>
             </ul>
-        </div>
-        <div>
+        </article>
+        <article class="domain-card">
             <h3>System Architecture</h3>
             <ul>
                 <li>Modular design</li>
                 <li>Multi-organization systems</li>
-                <li>Reliability & observability</li>
+                <li>Reliability and observability</li>
             </ul>
-        </div>
+        </article>
     </div>
 </section>
 
-<section id="work" class="section container">
-    <h2>Selected Engineering Work</h2>
-    <article>
-        <h3>Retail Edge Billing System</h3>
+<section id="work" class="section container reveal">
+    <div class="section-head">
+        <p>Projects</p>
+        <h2>Selected Engineering Work</h2>
+    </div>
+    <div class="work-grid">
+        <article class="panel">
+            <h3>Retail Edge Billing System</h3>
+            <p>
+                Designed an RFID-enabled checkout system integrating embedded readers with distributed backend services.
+                Implemented offline validation architecture for low-latency gate control and network-failure tolerance.
+            </p>
+        </article>
+    </div>
+</section>
+
+<section id="experience" class="section container reveal">
+    <div class="section-head">
+        <p>Career</p>
+        <h2>Professional Experience</h2>
+    </div>
+    <article class="panel">
+        <h3>Oracle | Engineer</h3>
         <p>
-            Designed an RFID-enabled checkout system integrating embedded readers with distributed backend services.
-            Implemented offline validation architecture for low-latency gate control and network-failure tolerance.
+            Contributing to enterprise-scale distributed systems with emphasis on scalability, reliability, and production standards.
         </p>
     </article>
 </section>
 
-<section id="experience" class="section container">
-    <h2>Professional Experience</h2>
-    <h3>Oracle — Engineer</h3>
-    <p>
-        Contributing to enterprise-scale distributed systems with emphasis on scalability, reliability, and production standards.
-    </p>
+<section id="contact" class="section container reveal">
+    <div class="section-head">
+        <p>Connect</p>
+        <h2>Contact</h2>
+    </div>
+    <div class="panel contact-panel">
+        <p>Open to collaborations around embedded platforms, backend architecture, and system reliability.</p>
+        <ul class="contact-list">
+            <li><a href="mailto:your-email@example.com">your-email@example.com</a></li>
+            <li><a href="https://linkedin.com/in/anandps" target="_blank" rel="noreferrer">linkedin.com/in/anandps</a></li>
+            <li><a href="https://github.com/anandps" target="_blank" rel="noreferrer">github.com/anandps</a></li>
+        </ul>
+    </div>
 </section>
-
-<section id="contact" class="section container">
-    <h2>Contact</h2>
-    <p>Email: your-email@example.com</p>
-    <p>LinkedIn: linkedin.com/in/anandps</p>
-    <p>GitHub: github.com/anandps</p>
-</section>
-
 </main>
 
 <footer class="footer">
     <div class="container">
-        <p>© 2026 Anand P S</p>
+        <p>&copy; 2026 Anand P S</p>
     </div>
 </footer>
 
 <script src="assets/js/main.js" defer></script>
-
-<!-- =========================================
-     STRUCTURED DATA (SEO)
-========================================== -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -174,7 +217,7 @@ Description: SEO-optimized, semantic, accessible, production-grade portfolio web
   },
   "alumniOf": {
     "@type": "CollegeOrUniversity",
-    "name": "Bachelor of Technology in Electrical & Electronics Engineering"
+    "name": "Bachelor of Technology in Electrical and Electronics Engineering"
   }
 }
 </script>
