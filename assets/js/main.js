@@ -6,6 +6,7 @@ Description: Smooth anchor scrolling, mobile nav toggle, and reveal-on-scroll se
 
 const header = document.querySelector('.header');
 const navToggle = document.querySelector('.nav-toggle');
+const expertiseRotator = document.querySelector('#expertise-rotator');
 const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let activeAnimationFrame = null;
 
@@ -45,6 +46,50 @@ function closeMobileNav() {
 
     header.classList.remove('nav-open');
     navToggle.setAttribute('aria-expanded', 'false');
+}
+
+const expertiseItems = [
+    'System Designer',
+    'Embedded Systems',
+    'Distributed Backend Systems',
+    'Reliability Engineering'
+];
+
+let expertiseIndex = 0;
+let typedLength = 0;
+let isDeletingExpertise = false;
+
+function runTypewriterCycle() {
+    if (!expertiseRotator || expertiseItems.length < 2) {
+        return;
+    }
+
+    const activeLabel = expertiseItems[expertiseIndex];
+    let delay = isDeletingExpertise ? 55 : 92;
+
+    if (isDeletingExpertise) {
+        typedLength = Math.max(0, typedLength - 1);
+    } else {
+        typedLength = Math.min(activeLabel.length, typedLength + 1);
+    }
+
+    expertiseRotator.textContent = activeLabel.slice(0, typedLength);
+
+    if (!isDeletingExpertise && typedLength === activeLabel.length) {
+        isDeletingExpertise = true;
+        delay = 1200;
+    } else if (isDeletingExpertise && typedLength === 0) {
+        isDeletingExpertise = false;
+        expertiseIndex = (expertiseIndex + 1) % expertiseItems.length;
+        delay = 320;
+    }
+
+    window.setTimeout(runTypewriterCycle, delay);
+}
+
+if (expertiseRotator) {
+    expertiseRotator.textContent = '';
+    runTypewriterCycle();
 }
 
 if (navToggle && header) {
