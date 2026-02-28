@@ -59,13 +59,18 @@ let expertiseIndex = 0;
 let typedLength = 0;
 let isDeletingExpertise = false;
 
+const TYPE_SPEED_MS = 38;
+const BACKSPACE_SPEED_MS = 24;
+const HOLD_FULL_TEXT_MS = 1500;
+const NEXT_WORD_DELAY_MS = 120;
+
 function runTypewriterCycle() {
     if (!expertiseRotator || expertiseItems.length < 2) {
         return;
     }
 
     const activeLabel = expertiseItems[expertiseIndex];
-    let delay = isDeletingExpertise ? 55 : 92;
+    let delay;
 
     if (isDeletingExpertise) {
         typedLength = Math.max(0, typedLength - 1);
@@ -77,11 +82,13 @@ function runTypewriterCycle() {
 
     if (!isDeletingExpertise && typedLength === activeLabel.length) {
         isDeletingExpertise = true;
-        delay = 1200;
+        delay = HOLD_FULL_TEXT_MS;
     } else if (isDeletingExpertise && typedLength === 0) {
         isDeletingExpertise = false;
         expertiseIndex = (expertiseIndex + 1) % expertiseItems.length;
-        delay = 320;
+        delay = NEXT_WORD_DELAY_MS;
+    } else {
+        delay = isDeletingExpertise ? BACKSPACE_SPEED_MS : TYPE_SPEED_MS;
     }
 
     window.setTimeout(runTypewriterCycle, delay);
