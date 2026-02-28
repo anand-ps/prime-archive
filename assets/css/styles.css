@@ -212,32 +212,34 @@ body::after {
     max-width: 16ch;
 }
 
-.hero-expert {
+.hero-specialization {
     align-items: baseline;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 0.4rem;
     margin-bottom: 1rem;
+    white-space: nowrap;
 }
 
-.hero-expert-prefix {
+.hero-specialization-prefix {
     color: var(--text);
     font-family: "Sora", "Segoe UI", sans-serif;
     font-size: clamp(1.06rem, 1.9vw, 1.38rem);
     font-weight: 600;
 }
 
-.hero-expert-role {
+.hero-specialization-role {
     color: var(--accent-strong);
     display: inline-block;
     font-family: "Sora", "Segoe UI", sans-serif;
     font-size: clamp(1.06rem, 1.9vw, 1.38rem);
     font-weight: 700;
     letter-spacing: -0.01em;
-    min-width: 27ch;
+    min-width: 0;
+    white-space: nowrap;
 }
 
-.hero-expert-role::after {
+.hero-specialization-role::after {
     animation: cursor-blink 900ms steps(1, end) infinite;
     color: var(--accent-strong);
     content: "|";
@@ -626,10 +628,6 @@ body::after {
         grid-template-columns: 1fr;
     }
 
-    .hero-expert-role {
-        min-width: 0;
-    }
-
     .domain-grid {
         grid-template-columns: 1fr;
     }
@@ -656,7 +654,7 @@ body::after {
         transform: none;
     }
 
-    .hero-expert-role::after {
+    .hero-specialization-role::after {
         animation: none;
         opacity: 1;
     }

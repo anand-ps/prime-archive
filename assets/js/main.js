@@ -6,7 +6,7 @@ Description: Smooth anchor scrolling, mobile nav toggle, and reveal-on-scroll se
 
 const header = document.querySelector('.header');
 const navToggle = document.querySelector('.nav-toggle');
-const expertiseRotator = document.querySelector('#expertise-rotator');
+const specializationRotator = document.querySelector('#specialization-rotator');
 const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let activeAnimationFrame = null;
 
@@ -48,16 +48,18 @@ function closeMobileNav() {
     navToggle.setAttribute('aria-expanded', 'false');
 }
 
-const expertiseItems = [
-    'System Designer',
+const specializationItems = [
+    'System Design',
     'Embedded Systems',
     'Distributed Backend Systems',
-    'Reliability Engineering'
+    'Reliability Engineering',
+    'Cloud-Native Architecture',
+    'Edge Computing Systems'
 ];
 
-let expertiseIndex = 0;
+let specializationIndex = 0;
 let typedLength = 0;
-let isDeletingExpertise = false;
+let isDeletingSpecialization = false;
 
 const TYPE_SPEED_MS = 26;
 const BACKSPACE_SPEED_MS = 24;
@@ -65,37 +67,37 @@ const HOLD_FULL_TEXT_MS = 1500;
 const NEXT_WORD_DELAY_MS = 120;
 
 function runTypewriterCycle() {
-    if (!expertiseRotator || expertiseItems.length < 2) {
+    if (!specializationRotator || specializationItems.length < 2) {
         return;
     }
 
-    const activeLabel = expertiseItems[expertiseIndex];
+    const activeLabel = specializationItems[specializationIndex];
     let delay;
 
-    if (isDeletingExpertise) {
+    if (isDeletingSpecialization) {
         typedLength = Math.max(0, typedLength - 1);
     } else {
         typedLength = Math.min(activeLabel.length, typedLength + 1);
     }
 
-    expertiseRotator.textContent = activeLabel.slice(0, typedLength);
+    specializationRotator.textContent = activeLabel.slice(0, typedLength);
 
-    if (!isDeletingExpertise && typedLength === activeLabel.length) {
-        isDeletingExpertise = true;
+    if (!isDeletingSpecialization && typedLength === activeLabel.length) {
+        isDeletingSpecialization = true;
         delay = HOLD_FULL_TEXT_MS;
-    } else if (isDeletingExpertise && typedLength === 0) {
-        isDeletingExpertise = false;
-        expertiseIndex = (expertiseIndex + 1) % expertiseItems.length;
+    } else if (isDeletingSpecialization && typedLength === 0) {
+        isDeletingSpecialization = false;
+        specializationIndex = (specializationIndex + 1) % specializationItems.length;
         delay = NEXT_WORD_DELAY_MS;
     } else {
-        delay = isDeletingExpertise ? BACKSPACE_SPEED_MS : TYPE_SPEED_MS;
+        delay = isDeletingSpecialization ? BACKSPACE_SPEED_MS : TYPE_SPEED_MS;
     }
 
     window.setTimeout(runTypewriterCycle, delay);
 }
 
-if (expertiseRotator) {
-    expertiseRotator.textContent = '';
+if (specializationRotator) {
+    specializationRotator.textContent = '';
     runTypewriterCycle();
 }
 
