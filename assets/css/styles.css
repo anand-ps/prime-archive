@@ -7,6 +7,7 @@ Description: Intentional, modern visual system with responsive layout and subtle
 :root {
     color-scheme: light;
     --bg: #f3f1ea;
+    --page-gradient: linear-gradient(160deg, #f4f2ec 0%, #f0ece3 55%, #ece7df 100%);
     --surface: #fffdf7;
     --surface-soft: #f8f4ea;
     --text: #172026;
@@ -15,6 +16,8 @@ Description: Intentional, modern visual system with responsive layout and subtle
     --accent-strong: #145a53;
     --highlight: #f49d37;
     --border: #ddd5c8;
+    --grain-dot: rgba(23, 32, 38, 0.06);
+    --grain-opacity: 0.42;
     --shadow: 0 18px 40px rgba(23, 32, 38, 0.12);
     --radius-lg: 24px;
     --radius-md: 14px;
@@ -24,15 +27,22 @@ Description: Intentional, modern visual system with responsive layout and subtle
 @media (prefers-color-scheme: dark) {
     :root {
         color-scheme: dark;
-        --bg: #151a1e;
-        --surface: #1c2329;
-        --surface-soft: #20282f;
+        --bg: #101821;
+        --page-gradient:
+            radial-gradient(920px 640px at 76% 34%, rgba(16, 99, 122, 0.42) 0%, rgba(16, 99, 122, 0.11) 36%, rgba(16, 99, 122, 0) 72%),
+            radial-gradient(760px 560px at 90% 80%, rgba(111, 76, 36, 0.34) 0%, rgba(111, 76, 36, 0.08) 40%, rgba(111, 76, 36, 0) 72%),
+            radial-gradient(560px 420px at 12% 16%, rgba(30, 117, 108, 0.22) 0%, rgba(30, 117, 108, 0.04) 44%, rgba(30, 117, 108, 0) 76%),
+            linear-gradient(140deg, #0b121a 0%, #0e1621 48%, #101a25 100%);
+        --surface: #19232d;
+        --surface-soft: #1d2832;
         --text: #eef3f6;
         --muted: #a4b2bb;
         --accent: #40b9ac;
         --accent-strong: #2f8f85;
         --highlight: #f7b155;
         --border: #2d3640;
+        --grain-dot: rgba(173, 190, 203, 0.085);
+        --grain-opacity: 0.2;
         --shadow: 0 18px 38px rgba(0, 0, 0, 0.35);
     }
 }
@@ -64,7 +74,9 @@ body {
 }
 
 .site-bg {
+    background: var(--page-gradient);
     inset: 0;
+    overflow: hidden;
     pointer-events: none;
     position: fixed;
     z-index: -2;
@@ -72,32 +84,35 @@ body {
 
 .orb {
     border-radius: 50%;
-    filter: blur(4px);
+    filter: blur(6px);
+    opacity: 0.86;
     position: absolute;
 }
 
 .orb-one {
-    background: radial-gradient(circle at center, rgba(28, 124, 114, 0.22) 0%, rgba(28, 124, 114, 0) 72%);
-    height: 520px;
-    left: -140px;
-    top: -160px;
-    width: 520px;
-}
-
-.orb-two {
-    background: radial-gradient(circle at center, rgba(244, 157, 55, 0.22) 0%, rgba(244, 157, 55, 0) 70%);
-    bottom: -220px;
+    background: radial-gradient(circle at center, rgba(31, 129, 119, 0.26) 0%, rgba(31, 129, 119, 0) 72%);
     height: 560px;
-    right: -180px;
+    left: -180px;
+    top: -180px;
     width: 560px;
 }
 
+.orb-two {
+    background:
+        radial-gradient(circle at center, rgba(25, 136, 159, 0.28) 0%, rgba(25, 136, 159, 0) 58%),
+        radial-gradient(circle at 72% 82%, rgba(163, 110, 52, 0.3) 0%, rgba(163, 110, 52, 0) 60%);
+    height: 720px;
+    right: -250px;
+    top: 120px;
+    width: 720px;
+}
+
 body::after {
-    background-image: radial-gradient(rgba(23, 32, 38, 0.06) 0.7px, transparent 0.7px);
+    background-image: radial-gradient(var(--grain-dot) 0.7px, transparent 0.7px);
     background-size: 22px 22px;
     content: "";
     inset: 0;
-    opacity: 0.5;
+    opacity: var(--grain-opacity);
     pointer-events: none;
     position: fixed;
     z-index: -1;
@@ -340,30 +355,43 @@ body::after {
 }
 
 .hero-visual {
+    align-items: flex-end;
     display: flex;
     justify-content: center;
+    position: relative;
 }
 
 .image-frame {
-    border-radius: var(--radius-lg);
-    max-width: 410px;
+    max-width: 430px;
     position: relative;
     width: 100%;
+}
+
+.image-frame picture {
+    display: block;
 }
 
 .image-frame::before {
     content: none;
 }
 
-.image-frame:hover::before {
-    left: auto;
+.image-frame::after {
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0) 72%);
+    content: "";
+    height: 14%;
+    inset: auto 12% -2%;
+    pointer-events: none;
+    position: absolute;
+    z-index: -3;
 }
 
 .image-frame img {
-    border-radius: calc(var(--radius-lg) - 8px);
     display: block;
-    min-height: 350px;
-    object-fit: cover;
+    filter: saturate(1.02) contrast(1.02) brightness(1.02) drop-shadow(0 22px 32px rgba(0, 0, 0, 0.36));
+    height: auto;
+    min-height: 0;
+    object-fit: contain;
+    object-position: center bottom;
     width: 100%;
 }
 

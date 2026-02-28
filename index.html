@@ -91,7 +91,11 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
     </div>
     <div class="hero-visual" aria-hidden="true">
         <div class="image-frame">
-            <img src="assets/images/profile.webp" alt="Anand P S" loading="lazy" />
+            <picture>
+                <source media="(prefers-color-scheme: dark)" srcset="assets/images/anand_dark_theme.webp" />
+                <source media="(prefers-color-scheme: light)" srcset="assets/images/anand_light_theme.webp" />
+                <img src="assets/images/anand_light_theme.webp" alt="Anand P S" loading="lazy" />
+            </picture>
         </div>
     </div>
 </section>
