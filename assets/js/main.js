@@ -59,7 +59,7 @@ let expertiseIndex = 0;
 let typedLength = 0;
 let isDeletingExpertise = false;
 
-const TYPE_SPEED_MS = 38;
+const TYPE_SPEED_MS = 26;
 const BACKSPACE_SPEED_MS = 24;
 const HOLD_FULL_TEXT_MS = 1500;
 const NEXT_WORD_DELAY_MS = 120;
