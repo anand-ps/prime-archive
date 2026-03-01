@@ -1108,7 +1108,27 @@ body::after {
     }
 
     .hero-metrics {
-        grid-template-columns: 1fr;
+        gap: 0.65rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 0.75rem;
+    }
+
+    .hero-metrics .metric:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .metric {
+        padding: 0.7rem 0.55rem;
+    }
+
+    .metric span {
+        font-size: 0.98rem;
+        line-height: 1.2;
+    }
+
+    .metric p {
+        font-size: 0.8rem;
+        line-height: 1.25;
     }
 
     .hero-social {
@@ -1161,6 +1181,16 @@ body::after {
         left: -0.72rem;
         top: 1.35rem;
         width: 0.72rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .hero-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-metrics .metric:last-child {
+        grid-column: auto;
     }
 }
 
