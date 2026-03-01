@@ -366,13 +366,16 @@ body::after {
 }
 
 .image-frame {
+    border-radius: var(--radius-md);
     max-width: 430px;
     position: relative;
     width: 100%;
 }
 
 .image-frame picture {
+    border-radius: inherit;
     display: block;
+    overflow: hidden;
 }
 
 .image-frame::before {
@@ -390,6 +393,7 @@ body::after {
 }
 
 .image-frame img {
+    border-radius: inherit;
     display: block;
     filter: var(--hero-image-filter);
     height: auto;
