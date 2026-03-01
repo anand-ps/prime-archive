@@ -358,6 +358,65 @@ body::after {
     font-weight: 600;
 }
 
+.hero-social {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 1rem;
+}
+
+.hero-social-label {
+    color: var(--muted);
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.hero-social-links {
+    margin-top: 0.35rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+}
+
+.hero-social-link {
+    align-items: center;
+    background: color-mix(in srgb, var(--surface) 86%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 76%, transparent);
+    border-radius: 999px;
+    color: color-mix(in srgb, var(--text) 88%, var(--muted));
+    display: inline-flex;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    gap: 0.42rem;
+    line-height: 1;
+    padding: 0.42rem 0.74rem;
+    text-decoration: none;
+    transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.hero-social-link:visited {
+    color: color-mix(in srgb, var(--text) 88%, var(--muted));
+}
+
+.hero-social-link:hover,
+.hero-social-link:focus-visible {
+    border-color: color-mix(in srgb, var(--accent) 52%, var(--border));
+    box-shadow: 0 8px 18px rgba(23, 32, 38, 0.15);
+    transform: translateY(-1px);
+}
+
+.hero-social-icon {
+    flex-basis: 0.95rem;
+    height: 0.95rem;
+    width: 0.95rem;
+}
+
 .hero-visual {
     align-items: flex-end;
     display: flex;
@@ -1050,6 +1109,19 @@ body::after {
 
     .hero-metrics {
         grid-template-columns: 1fr;
+    }
+
+    .hero-social {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 1rem;
+}
+
+    .hero-social-links {
+        margin-top: 0.35rem;
+        width: 100%;
     }
 
     .domain-grid {
