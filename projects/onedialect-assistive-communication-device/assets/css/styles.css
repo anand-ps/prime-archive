@@ -365,13 +365,46 @@ h2 {
 
 .reveal {
     opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 420ms ease, transform 420ms ease;
+    transform: translateY(20px);
+    animation: project-reveal 700ms cubic-bezier(0.2, 0.65, 0.2, 1) forwards;
+    animation-delay: var(--reveal-delay, 120ms);
+    will-change: opacity, transform;
+}
+
+.hero-card.reveal {
+    --reveal-delay: 120ms;
+}
+
+.cover-frame.reveal {
+    --reveal-delay: 240ms;
+}
+
+.section-card.reveal {
+    --reveal-delay: 360ms;
+}
+
+.pull-quote.reveal {
+    --reveal-delay: 520ms;
+}
+
+.section-card.reveal:last-of-type {
+    --reveal-delay: 640ms;
 }
 
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+@keyframes project-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 720px) {
@@ -408,15 +441,5 @@ h2 {
     .pull-quote {
         margin-top: 1.3rem;
         padding: 0.82rem 0.85rem;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
     }
 }
