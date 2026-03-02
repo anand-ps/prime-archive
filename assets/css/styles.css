@@ -1186,11 +1186,11 @@ body::after {
 
 @media (max-width: 420px) {
     .hero-metrics {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .hero-metrics .metric:last-child {
-        grid-column: auto;
+        grid-column: 1 / -1;
     }
 }
 
