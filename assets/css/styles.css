@@ -57,7 +57,7 @@ Description: Intentional, modern visual system with responsive layout and subtle
 
 html,
 body {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     scroll-padding-top: 5.8rem;
 }
 
