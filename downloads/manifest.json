@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Resume",
+    "file": "anand_resume.pdf",
+    "type": "PDF",
+    "description": "Latest professional resume and role summary."
+  },
+  {
+    "title": "Professional Photo",
+    "file": "professional-photo.jpg",
+    "type": "JPG",
+    "description": "High-resolution professional headshot for profile and media use."
+  }
+]

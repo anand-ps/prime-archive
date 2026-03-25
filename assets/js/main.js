@@ -1,13 +1,19 @@
 /*
 File: /assets/js/main.js
 Purpose: Portfolio interactivity logic.
-Description: Smooth anchor scrolling, mobile nav toggle, and reveal-on-scroll sections.
+Description: Smooth anchor scrolling, mobile nav toggle, reveal-on-scroll sections, and downloads manifest rendering.
 */
 
 const header = document.querySelector('.header');
 const navToggle = document.querySelector('.nav-toggle');
+const downloadsSectionList = document.querySelector('[data-downloads-list]');
 const specializationRotator = document.querySelector('#specialization-rotator');
-const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const rootElement = document.documentElement;
+const downloadsRoot = rootElement.hasAttribute('data-downloads-root') ? rootElement.dataset.downloadsRoot : 'downloads/';
+const downloadsManifestPath = rootElement.hasAttribute('data-downloads-manifest')
+    ? rootElement.dataset.downloadsManifest
+    : `${downloadsRoot}manifest.json`;
+
 let activeAnimationFrame = null;
 
 function easeInOutQuad(t) {
@@ -15,7 +21,6 @@ function easeInOutQuad(t) {
 }
 
 function animateScrollTo(targetTop, durationMs = 520) {
-
     if (activeAnimationFrame) {
         cancelAnimationFrame(activeAnimationFrame);
     }
@@ -117,6 +122,12 @@ if (navToggle && header) {
     });
 }
 
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeMobileNav();
+    }
+});
+
 document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', (event) => {
         const targetId = anchor.getAttribute('href');
@@ -163,6 +174,7 @@ assignRevealItems('#work .panel', 'up', 100);
 assignRevealItems('#experience .panel', 'up', 100);
 assignRevealItems('#contact .contact-panel > *', 'up', 90);
 assignRevealItems('#contact .contact-list li', 'up', 70);
+assignRevealItems('[data-downloads-list] .panel', 'up', 90);
 
 const revealElements = document.querySelectorAll('.reveal, .reveal-item');
 
@@ -188,3 +200,159 @@ if ('IntersectionObserver' in window) {
 } else {
     revealElements.forEach((element) => element.classList.add('visible'));
 }
+
+function normalizeDownloadPath(filePath) {
+    if (!filePath) {
+        return '';
+    }
+
+    const normalizedPath = filePath.replace(/\\/g, '/').replace(/^\.?\//, '');
+    return normalizedPath.startsWith(downloadsRoot) ? normalizedPath : `${downloadsRoot}${normalizedPath}`;
+}
+
+async function checkDownloadAvailability(filePath) {
+    try {
+        let response = await fetch(filePath, { method: 'HEAD', cache: 'no-store' });
+
+        if (response.status === 405) {
+            response = await fetch(filePath, { method: 'GET', cache: 'no-store' });
+        }
+
+        return response.ok;
+    } catch (error) {
+        return false;
+    }
+}
+
+function createDownloadCard(item) {
+    const card = document.createElement('article');
+    card.className = `panel download-card${item.available ? '' : ' download-card-unavailable'}`;
+
+    const headerRow = document.createElement('div');
+    headerRow.className = 'download-card-header';
+
+    const titleGroup = document.createElement('div');
+    titleGroup.className = 'download-card-title-group';
+
+    const title = document.createElement('h3');
+    title.textContent = item.title;
+
+    const description = document.createElement('p');
+    description.className = 'download-description';
+    description.textContent = item.description || 'Published from the repository downloads folder.';
+
+    titleGroup.append(title, description);
+
+    const status = document.createElement('span');
+    status.className = `download-status ${item.available ? 'download-status-available' : 'download-status-unavailable'}`;
+    status.textContent = item.available ? 'Available' : 'Add File';
+
+    headerRow.append(titleGroup, status);
+
+    const metaList = document.createElement('ul');
+    metaList.className = 'download-meta-list';
+    [item.type, item.file].filter(Boolean).forEach((entry) => {
+        const metaItem = document.createElement('li');
+        metaItem.textContent = entry;
+        metaList.appendChild(metaItem);
+    });
+
+    const actions = document.createElement('div');
+    actions.className = 'download-actions';
+
+    if (item.available) {
+        const downloadLink = document.createElement('a');
+        downloadLink.className = 'download-link';
+        downloadLink.href = item.path;
+        downloadLink.setAttribute('download', '');
+        downloadLink.textContent = `Download ${item.title}`;
+
+        const pathLink = document.createElement('a');
+        pathLink.className = 'download-link-secondary';
+        pathLink.href = item.path;
+        pathLink.textContent = item.path;
+
+        actions.append(downloadLink, pathLink);
+    } else {
+        const hint = document.createElement('p');
+        hint.className = 'download-hint';
+        hint.textContent = `Add ${item.path} to publish this download.`;
+        actions.appendChild(hint);
+    }
+
+    card.append(headerRow, metaList, actions);
+    return card;
+}
+
+function renderDownloads(items, emptyMessageText = 'No download entries configured yet.') {
+    if (!downloadsSectionList) {
+        return;
+    }
+
+    downloadsSectionList.replaceChildren();
+
+    if (!items.length) {
+        const emptyCard = document.createElement('article');
+        emptyCard.className = 'panel download-card download-card-empty';
+
+        const message = document.createElement('p');
+        message.textContent = emptyMessageText;
+
+        emptyCard.appendChild(message);
+        downloadsSectionList.appendChild(emptyCard);
+        return;
+    }
+
+    items.forEach((item) => downloadsSectionList.appendChild(createDownloadCard(item)));
+}
+
+function renderDownloadsError() {
+    if (window.location.protocol === 'file:') {
+        renderDownloads([], 'Open this site through a local web server instead of file:// so the downloads manifest can load.');
+        return;
+    }
+
+    renderDownloads([], 'Unable to load download entries right now.');
+}
+
+async function loadDownloads() {
+    if (!downloadsSectionList) {
+        return;
+    }
+
+    try {
+        const response = await fetch(downloadsManifestPath, { cache: 'no-store' });
+
+        if (!response.ok) {
+            throw new Error(`Unable to load ${downloadsManifestPath}`);
+        }
+
+        const manifestItems = await response.json();
+
+        if (!Array.isArray(manifestItems)) {
+            throw new Error('Download manifest must be an array');
+        }
+
+        const items = await Promise.all(
+            manifestItems.map(async (item) => {
+                const path = normalizeDownloadPath(item.file || item.path || '');
+                const available = path ? await checkDownloadAvailability(path) : false;
+
+                return {
+                    title: item.title || 'Download',
+                    description: item.description || '',
+                    type: item.type || '',
+                    file: path.replace(downloadsRoot, ''),
+                    path,
+                    available
+                };
+            })
+        );
+
+        renderDownloads(items);
+    } catch (error) {
+        renderDownloadsError();
+    }
+}
+
+loadDownloads();
