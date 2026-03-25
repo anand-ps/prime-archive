@@ -7,6 +7,7 @@ Description: Smooth anchor scrolling, mobile nav toggle, reveal-on-scroll sectio
 const header = document.querySelector('.header');
 const navToggle = document.querySelector('.nav-toggle');
 const downloadsSectionList = document.querySelector('[data-downloads-list]');
+const projectThumbnailNodes = document.querySelectorAll('[data-project-thumbnail-source]');
 const specializationRotator = document.querySelector('#specialization-rotator');
 const rootElement = document.documentElement;
 const downloadsRoot = rootElement.hasAttribute('data-downloads-root') ? rootElement.dataset.downloadsRoot : 'downloads/';
@@ -315,6 +316,45 @@ function renderDownloadsError() {
     renderDownloads([], 'Unable to load download entries right now.');
 }
 
+async function loadProjectThumbnails() {
+    if (!projectThumbnailNodes.length) {
+        return;
+    }
+
+    await Promise.all(
+        Array.from(projectThumbnailNodes).map(async (thumbnailNode) => {
+            const source = thumbnailNode.dataset.projectThumbnailSource;
+            const base = thumbnailNode.dataset.projectThumbnailBase || '';
+
+            if (!source) {
+                return;
+            }
+
+            try {
+                const response = await fetch(source, { cache: 'no-store' });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const manifestItems = await response.json();
+                const firstImage = Array.isArray(manifestItems) ? manifestItems[0] : '';
+
+                if (!firstImage) {
+                    return;
+                }
+
+                const imagePath = `${base}${firstImage}`;
+                thumbnailNode.style.setProperty('--project-image', `url("${imagePath}")`);
+                thumbnailNode.style.setProperty('--project-image-opacity', '1');
+                thumbnailNode.classList.add('has-project-image');
+            } catch (error) {
+                // Keep the gradient fallback when a project has no generated image manifest yet.
+            }
+        })
+    );
+}
+
 async function loadDownloads() {
     if (!downloadsSectionList) {
         return;
@@ -355,4 +395,5 @@ async function loadDownloads() {
     }
 }
 
+loadProjectThumbnails();
 loadDownloads();
