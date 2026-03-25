@@ -642,7 +642,7 @@ body::after {
 
 .project-media {
     align-content: space-between;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     border-bottom: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
     display: grid;
     gap: 0.45rem;
@@ -664,17 +664,28 @@ body::after {
 }
 
 .project-media::after {
-    background:
+    background: var(
+        --project-media-overlay,
         repeating-linear-gradient(
             -45deg,
             rgba(255, 255, 255, 0.08) 0 9px,
             rgba(255, 255, 255, 0) 9px 18px
-        );
+        )
+    );
     content: "";
     inset: 0;
     pointer-events: none;
     position: absolute;
     z-index: 1;
+}
+
+.project-media.has-project-image {
+    background: #0e1621;
+}
+
+.project-media.has-project-image::after {
+    background:
+        linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.12) 24%, rgba(0, 0, 0, 0) 42%);
 }
 
 .project-media > * {
@@ -724,6 +735,12 @@ body::after {
     padding: 0.28rem 0.54rem;
     text-transform: uppercase;
     width: fit-content;
+}
+
+.project-media.has-project-image .project-media-badge {
+    background: rgba(8, 12, 18, 0.62);
+    border-color: rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
 }
 
 .project-media-title {

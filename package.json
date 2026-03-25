@@ -4,6 +4,8 @@
   "description": "A selective record of focused effort and evolving perspective.",
   "main": "index.js",
   "scripts": {
+    "generate:carousels": "node projects/shared/scripts/generate-project-image-manifests.js",
+    "prestart": "npm run generate:carousels",
     "start": "serve ."
   },
   "repository": {

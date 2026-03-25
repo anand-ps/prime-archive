@@ -8,7 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Manrope:wght@500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/projects/shared/assets/css/project-page.css" />
     <link rel="stylesheet" href="/projects/dc-machines-protection-system/assets/css/styles.css" />
+    <link rel="stylesheet" href="/projects/shared/assets/css/carousel.css" />
 </head>
 <body>
 <div class="page-bg" aria-hidden="true"></div>
@@ -40,11 +42,27 @@
             </ul>
 
             <figure class="cover-frame reveal" aria-label="Project cover visual">
-                <div class="cover-art" role="img" aria-label="Editorial cover for DC Machines Protection System">
-                    <span class="cover-kicker">Engineering Story</span>
-                    <span class="cover-heading">Fault Protection</span>
+                <div class="cover-carousel-shell">
+                    <div
+                        class="project-carousel"
+                        data-carousel
+                        data-carousel-interval="4200"
+                        data-carousel-source="/projects/dc-machines-protection-system/assets/images/carousel-manifest.json"
+                        data-carousel-image-base="/projects/dc-machines-protection-system/assets/images/"
+                        data-carousel-alt-prefix="DC machines protection system"
+                        aria-label="DC Machines Protection System project gallery"
+                    >
+                        <div class="project-carousel-viewport">
+                            <div class="project-carousel-track"></div>
+                            <div class="project-carousel-overlay">
+                                <button class="project-carousel-button project-carousel-button-prev" type="button" data-carousel-prev aria-label="Show previous project image"></button>
+                                <div class="project-carousel-dots" data-carousel-dots aria-label="Choose project image"></div>
+                                <button class="project-carousel-button project-carousel-button-next" type="button" data-carousel-next aria-label="Show next project image"></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <figcaption>Fast detection and response for resilient machine operation.</figcaption>
+                <figcaption>Protection device views covering the system from multiple angles.</figcaption>
             </figure>
         </header>
 
@@ -76,5 +94,6 @@
 </footer>
 
 <script src="/projects/dc-machines-protection-system/assets/js/main.js" defer></script>
+<script src="/projects/shared/assets/js/carousel.js" defer></script>
 </body>
 </html>
