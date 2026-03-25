@@ -1,0 +1,17 @@
+npm init -y
+npm install serve --save-dev
+
+Edit package.json as follows
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "serve ."
+  },
+  "devDependencies": {
+    "serve": "^14.2.6"
+  }
+}
+
+In console type
+npm start
