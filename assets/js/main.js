@@ -17,22 +17,25 @@ const downloadsManifestPath = rootElement.hasAttribute('data-downloads-manifest'
 
 let activeAnimationFrame = null;
 
-function easeInOutQuad(t) {
-    return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+function easeInOutCubic(t) {
+    return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-function animateScrollTo(targetTop, durationMs = 520) {
+function animateScrollTo(targetTop) {
     if (activeAnimationFrame) {
         cancelAnimationFrame(activeAnimationFrame);
     }
 
     const startTop = window.scrollY;
     const distance = targetTop - startTop;
+    const durationMs = Math.min(620, Math.max(320, Math.abs(distance) * 0.38));
     const startTime = performance.now();
 
     const step = (now) => {
         const progress = Math.min((now - startTime) / durationMs, 1);
-        const easedProgress = easeInOutQuad(progress);
+        const easedProgress = easeInOutCubic(progress);
         window.scrollTo(0, startTop + distance * easedProgress);
 
         if (progress < 1) {
