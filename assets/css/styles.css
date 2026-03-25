@@ -642,7 +642,7 @@ body::after {
 
 .project-media {
     align-content: space-between;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     border-bottom: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
     display: grid;
     gap: 0.45rem;
@@ -685,7 +685,6 @@ body::after {
 
 .project-media.has-project-image::after {
     background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.44) 0%, rgba(0, 0, 0, 0.18) 22%, rgba(0, 0, 0, 0) 42%),
         linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.12) 24%, rgba(0, 0, 0, 0) 42%);
 }
 

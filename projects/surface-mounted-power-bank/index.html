@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Manrope:wght@500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/projects/shared/assets/css/project-page.css" />
     <link rel="stylesheet" href="/projects/surface-mounted-power-bank/assets/css/styles.css" />
+    <link rel="stylesheet" href="/projects/shared/assets/css/carousel.css" />
 </head>
 <body>
 <div class="page-bg" aria-hidden="true"></div>
@@ -41,11 +42,27 @@
             </ul>
 
             <figure class="cover-frame reveal" aria-label="Project cover visual">
-                <div class="cover-art" role="img" aria-label="Editorial cover for Surface Mounted Power Bank">
-                    <span class="cover-kicker">Engineering Story</span>
-                    <span class="cover-heading">Power Reliability</span>
+                <div class="cover-carousel-shell">
+                    <div
+                        class="project-carousel"
+                        data-carousel
+                        data-carousel-interval="4200"
+                        data-carousel-source="/projects/surface-mounted-power-bank/assets/images/carousel-manifest.json"
+                        data-carousel-image-base="/projects/surface-mounted-power-bank/assets/images/"
+                        data-carousel-alt-prefix="Surface mounted power bank"
+                        aria-label="Surface Mounted Power Bank project gallery"
+                    >
+                        <div class="project-carousel-viewport">
+                            <div class="project-carousel-track"></div>
+                            <div class="project-carousel-overlay">
+                                <button class="project-carousel-button project-carousel-button-prev" type="button" data-carousel-prev aria-label="Show previous project image"></button>
+                                <div class="project-carousel-dots" data-carousel-dots aria-label="Choose project image"></div>
+                                <button class="project-carousel-button project-carousel-button-next" type="button" data-carousel-next aria-label="Show next project image"></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <figcaption>Compact hardware, stable output, safer operation.</figcaption>
+                <figcaption>Power bank visuals covering the 3D model, PCB layout, prototype, and protection schematic.</figcaption>
             </figure>
         </header>
 
@@ -77,5 +94,6 @@
 </footer>
 
 <script src="/projects/surface-mounted-power-bank/assets/js/main.js" defer></script>
+<script src="/projects/shared/assets/js/carousel.js" defer></script>
 </body>
 </html>

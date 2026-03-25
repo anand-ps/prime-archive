@@ -8,7 +8,9 @@
 }
 
 .project-carousel-viewport {
+    aspect-ratio: 16 / 9;
     border-radius: var(--radius-md);
+    min-height: 0;
     overflow: hidden;
     position: relative;
     width: 100%;
@@ -16,18 +18,20 @@
 
 .project-carousel-track {
     display: flex;
+    height: 100%;
     transition: transform 340ms ease;
     width: 100%;
 }
 
 .project-carousel-slide {
     flex: 0 0 100%;
+    height: 100%;
     margin: 0;
 }
 
 .project-carousel-image {
     display: block;
-    height: clamp(340px, 54vw, 720px);
+    height: 100%;
     object-fit: cover;
     object-position: center;
     width: 100%;
@@ -144,18 +148,13 @@
     font-family: "Manrope", "Segoe UI", sans-serif;
     font-size: 0.92rem;
     font-weight: 600;
-    height: clamp(340px, 54vw, 720px);
+    height: 100%;
     justify-content: center;
     padding: 1rem;
     text-align: center;
 }
 
 @media (max-width: 720px) {
-    .project-carousel-image,
-    .project-carousel-empty {
-        height: clamp(260px, 72vw, 460px);
-    }
-
     .project-carousel-button {
         height: 2.7rem;
         width: 2.7rem;
