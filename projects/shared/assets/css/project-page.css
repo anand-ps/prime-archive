@@ -351,6 +351,10 @@ h2 {
     margin-bottom: 0.35rem;
 }
 
+.section-card li::marker {
+    color: var(--accent);
+}
+
 .pull-quote {
     background: color-mix(in srgb, var(--surface-soft) 84%, var(--accent) 16%);
     border: 1px solid color-mix(in srgb, var(--border) 66%, var(--accent) 34%);
