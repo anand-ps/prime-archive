@@ -167,6 +167,14 @@
     .project-carousel-dots {
         bottom: 0.75rem;
     }
+    
+    .project-carousel-dot {
+        height: 0.44rem;
+        width: 0.44rem;
+    }
+    .project-carousel-dots {
+        gap: 0.25rem;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
