@@ -172,9 +172,40 @@
         height: 0.44rem;
         width: 0.44rem;
     }
+
     .project-carousel-dots {
         gap: 0.25rem;
     }
+}
+
+.project-carousel-lightbox {
+    align-items: center;
+    background: rgba(0, 0, 0, 0.85);
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transition: opacity 220ms ease;
+    z-index: 999;
+    padding: 1rem;
+}
+
+.project-carousel-lightbox.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.project-carousel-lightbox-image {
+    max-height: calc(100vh - 2rem);
+    max-width: calc(100vw - 2rem);
+    object-fit: contain;
+    width: auto;
+    height: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {

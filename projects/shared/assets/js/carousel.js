@@ -1,6 +1,37 @@
 const carouselNodes = document.querySelectorAll('[data-carousel]');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+const carouselLightbox = document.createElement('div');
+const carouselLightboxImage = document.createElement('img');
+carouselLightbox.className = 'project-carousel-lightbox';
+carouselLightboxImage.className = 'project-carousel-lightbox-image';
+carouselLightbox.appendChild(carouselLightboxImage);
+document.body.appendChild(carouselLightbox);
+
+function showCarouselLightbox(src, alt) {
+    carouselLightboxImage.src = src;
+    carouselLightboxImage.alt = alt;
+    carouselLightbox.classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+}
+
+function hideCarouselLightbox() {
+    carouselLightbox.classList.remove('is-visible');
+    document.body.style.overflow = '';
+}
+
+carouselLightbox.addEventListener('click', (event) => {
+    if (event.target === carouselLightbox) {
+        hideCarouselLightbox();
+    }
+});
+
+document.addEventListener('keyup', (event) => {
+    if (event.key === 'Escape') {
+        hideCarouselLightbox();
+    }
+});
+
 async function loadSlidesFromManifest(carouselNode) {
     const source = carouselNode.dataset.carouselSource;
     if (!source) {
@@ -35,6 +66,10 @@ async function loadSlidesFromManifest(carouselNode) {
 
         slideNode.appendChild(imageNode);
         trackNode.appendChild(slideNode);
+
+        imageNode.addEventListener('click', () => {
+            showCarouselLightbox(imageNode.src, imageNode.alt);
+        });
     });
 
     return Array.from(trackNode.querySelectorAll('.project-carousel-slide'));
