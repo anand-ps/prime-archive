@@ -1017,6 +1017,14 @@ body::after {
     text-transform: uppercase;
 }
 
+.timeline-period--current {
+    background: linear-gradient(160deg, var(--accent) 0%, var(--accent-strong) 100%);
+    border-color: transparent;
+    color: #fbfaf6 !important;
+    box-shadow: 0 8px 18px rgba(22, 103, 93, 0.45);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
 .contact-panel {
     display: grid;
     gap: 1rem;
