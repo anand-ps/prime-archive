@@ -9,6 +9,7 @@
 
 .project-carousel-viewport {
     aspect-ratio: 16 / 9;
+    background: #000;
     border-radius: var(--radius-md);
     min-height: 0;
     overflow: hidden;
@@ -202,11 +203,21 @@
 }
 
 .project-carousel-lightbox-image {
-    height: 100vh;
+    height: auto;
     width: auto;
-    max-width: none;
+    max-height: 100vh;
+    max-width: 100vw;
     object-fit: contain;
     background-color: #000;
+}
+
+@media (max-width: 720px) and (orientation: portrait) {
+    .project-carousel-lightbox-image {
+        height: auto;
+        max-height: 100vh;
+        max-width: 100vw;
+        width: 100vw;
+    }
 }
 
 .project-carousel-lightbox:focus-visible,
