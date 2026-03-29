@@ -1,0 +1,238 @@
+<!-- File: /projects/smart-swap-battery-case/index.html -->
+<!-- Purpose: Production-grade blog page for completed smartphone modular battery enclosure system -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Swap Battery Unit</title>
+    <meta name="description" content="A modular smartphone battery enclosure with hot-swappable card batteries, intelligent charging, and embedded power management." />
+
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Manrope:wght@500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/projects/shared/assets/css/project-page.css" />
+    <link rel="stylesheet" href="/projects/hot-swappable-smartphone-power-unit/assets/css/styles.css" />
+    <link rel="stylesheet" href="/projects/shared/assets/css/carousel.css" />
+</head>
+
+<body>
+<div class="page-bg" aria-hidden="true"></div>
+
+<header class="project-header">
+    <div class="container">
+        <a class="back-link" href="../../index.html#work">Back to Work</a>
+    </div>
+</header>
+
+<main class="container project-main">
+<article class="post-shell">
+
+<header class="hero-card reveal">
+    <p class="eyebrow">ENGINEERING BLOG</p>
+
+    <div class="post-meta">
+        <span class="meta-pill">Embedded + Power Systems</span>
+        <span class="meta-text">Anand P S</span>
+        <span class="meta-dot">|</span>
+        <time class="meta-text">2026</time>
+        <span class="meta-dot">|</span>
+        <span class="meta-text">~9 min read</span>
+    </div>
+
+    <h1>Design and Implementation of a Modular Hot-Swappable Smartphone Power System</h1>
+
+    <p class="summary">
+        A fully engineered smartphone enclosure integrating a card-based swappable battery architecture, intelligent charging control, and embedded protection systems for uninterrupted mobile power delivery.
+    </p>
+
+    <ul class="stack-list">
+        <li>Power Electronics</li>
+        <li>Embedded Systems</li>
+        <li>Battery Management</li>
+        <li>Hardware Product Design</li>
+    </ul>
+
+    <!-- CAROUSEL -->
+    <figure class="cover-frame reveal">
+        <div class="cover-carousel-shell">
+            <div
+                class="project-carousel"
+                data-carousel
+                data-carousel-interval="4200"
+                data-carousel-source="/projects/hot-swappable-smartphone-power-unit/assets/images/carousel-manifest.json"
+                data-carousel-image-base="/projects/hot-swappable-smartphone-power-unit/assets/images/"
+                data-carousel-alt-prefix="Smart swap battery enclosure"
+            >
+                <div class="project-carousel-viewport">
+                    <div class="project-carousel-track"></div>
+
+                    <div class="project-carousel-overlay">
+                        <button class="project-carousel-button project-carousel-button-prev" type="button" data-carousel-prev></button>
+                        <div class="project-carousel-dots" data-carousel-dots></div>
+                        <button class="project-carousel-button project-carousel-button-next" type="button" data-carousel-next></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <figcaption>3D enclosure design, modular battery card, and protection architecture.</figcaption>
+    </figure>
+</header>
+
+<section class="section-card reveal">
+    <h2>Problem Space</h2>
+    <p>
+        Smartphones remain constrained by fixed internal batteries, forcing users into downtime during charging cycles. Existing power banks introduce cable dependency, increased bulk, and inconsistent power delivery.
+    </p>
+
+    <p>
+        A modular power architecture was implemented to eliminate charging downtime by enabling instant battery replacement without removing the phone enclosure or interrupting usage.
+    </p>
+</section>
+
+<section class="section-card reveal">
+    <h2>System Concept</h2>
+    <p>
+        The system introduces a <strong>credit-card-sized battery module</strong> that can be inserted into a dedicated slot within a smartphone enclosure. When the active battery depletes, it can be replaced instantly with a charged unit.
+    </p>
+
+    <ul>
+        <li>Hot-swappable battery cards</li>
+        <li>Parallel usage and charging workflow</li>
+        <li>Zero device downtime</li>
+        <li>No enclosure removal required</li>
+    </ul>
+</section>
+
+<section class="section-card reveal">
+    <h2>System Architecture</h2>
+    <p>
+        The architecture integrates charging, regulation, protection, and output delivery into a compact embedded system:
+    </p>
+
+    <ul>
+        <li><strong>Charging Layer:</strong> CC/CV lithium-ion charging using TP4056</li>
+        <li><strong>Regulation Layer:</strong> Stable voltage output using AMS1117 LDO</li>
+        <li><strong>Protection Layer:</strong> Multi-stage battery protection logic</li>
+        <li><strong>Control Layer:</strong> Application-driven charging strategy</li>
+    </ul>
+
+    <p>
+        The charging system implements a complete protection chain including overcharge, overcurrent, short circuit, and thermal safeguards embedded into the battery path.
+    </p>
+</section>
+
+<section class="section-card reveal">
+    <h2>Power Electronics Design</h2>
+    <p>
+        The charging subsystem is built around a constant-current/constant-voltage architecture using TP4056, enabling linear charging with automatic termination, thermal regulation, and programmable current control.
+    </p>
+
+    <p>
+        Output regulation is handled using AMS1117 low-dropout regulators capable of delivering stable output with low dropout characteristics and internal current limiting.
+    </p>
+
+    <ul>
+        <li>4.2V regulated charging voltage</li>
+        <li>Programmable charge current up to 1A</li>
+        <li>Thermal shutdown and current limiting</li>
+        <li>Stable regulated output (5.1V)</li>
+    </ul>
+</section>
+
+<section class="section-card reveal">
+    <h2>Battery System</h2>
+    <p>
+        The system uses dual Li-Po battery modules (3.7V nominal), each designed as a removable card:
+    </p>
+
+    <ul>
+        <li>Capacity: 5000mAh × 2</li>
+        <li>Total energy: 18.5Wh × 2</li>
+        <li>Rated output current: 2A (peak up to 5A)</li>
+    </ul>
+
+    <p>
+        The battery pack integrates adaptive charging, dynamic load monitoring, and ultra-low power standby behavior to ensure consistent performance.
+    </p>
+</section>
+
+<section class="section-card reveal">
+    <h2>Protection & Reliability</h2>
+    <p>
+        The system implements layered protection across both charging and discharging paths:
+    </p>
+
+    <ul>
+        <li>Overcharge protection</li>
+        <li>Overcurrent protection</li>
+        <li>Short circuit protection</li>
+        <li>Deep discharge protection</li>
+        <li>Thermal protection</li>
+    </ul>
+
+    <p>
+        This ensures safe operation under dynamic load and environmental conditions.
+    </p>
+</section>
+
+<blockquote class="pull-quote reveal">
+    <p>Power continuity is achieved not by faster charging, but by eliminating the need to wait for it.</p>
+</blockquote>
+
+<section class="section-card reveal">
+    <h2>Software Integration</h2>
+    <p>
+        The system includes an application layer that enables configuration of charging behavior and system policies:
+    </p>
+
+    <ul>
+        <li>Charge scheduling control</li>
+        <li>Adaptive charging strategies</li>
+        <li>Status monitoring and feedback</li>
+        <li>Algorithm-driven battery optimization</li>
+    </ul>
+
+    <p>
+        Communication between the hardware and application layer enables intelligent control over charging cycles and improves battery lifespan.
+    </p>
+</section>
+
+<section class="section-card reveal">
+    <h2>Operational Flow</h2>
+    <p>
+        The device operates as a continuous power system:
+    </p>
+
+    <ul>
+        <li>Active battery supplies power to the smartphone</li>
+        <li>Secondary battery remains in charging cycle</li>
+        <li>Battery swap occurs without interrupting usage</li>
+        <li>Charging logic maintains safe and optimal conditions</li>
+    </ul>
+</section>
+
+<section class="section-card reveal">
+    <h2>Engineering Outcome</h2>
+    <p>
+        A complete modular battery ecosystem was designed, implemented, and validated. The system integrates mechanical enclosure design, embedded electronics, and intelligent control systems into a production-oriented solution.
+    </p>
+
+    <p>
+        The implementation demonstrates strong capability across power electronics, embedded systems, and real-world product engineering constraints.
+    </p>
+</section>
+
+</article>
+</main>
+
+<footer class="project-footer">
+    <div class="container">
+        <p>&copy; <span data-year></span> Anand P S</p>
+    </div>
+</footer>
+
+<script src="/projects/smart-swap-battery-case/assets/js/main.js" defer></script>
+<script src="/projects/shared/assets/js/carousel.js" defer></script>
+
+</body>
+</html>
