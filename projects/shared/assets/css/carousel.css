@@ -78,6 +78,11 @@
     content: "";
     display: block;
     height: 0.75rem;
+    filter:
+        drop-shadow(0.5px 0 0 rgba(6, 10, 18, 0.7))
+        drop-shadow(-0.5px 0 0 rgba(6, 10, 18, 0.7))
+        drop-shadow(0 0.5px 0 rgba(6, 10, 18, 0.7))
+        drop-shadow(0 -0.5px 0 rgba(6, 10, 18, 0.7));
     width: 0.75rem;
 }
 
@@ -153,16 +158,7 @@
 
 @media (max-width: 720px) {
     .project-carousel-button {
-        height: 2.7rem;
-        width: 2.7rem;
-    }
-
-    .project-carousel-button-prev {
-        left: 0.75rem;
-    }
-
-    .project-carousel-button-next {
-        right: 0.75rem;
+        display: none;
     }
 
     .project-carousel-dots {
