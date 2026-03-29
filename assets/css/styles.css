@@ -876,6 +876,9 @@ body::after {
     font-weight: 700;
     line-height: 1;
     padding: 0.38rem 0.58rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .download-actions {
