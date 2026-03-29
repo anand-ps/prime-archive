@@ -409,16 +409,24 @@ h2 {
 
 @media (max-width: 720px) {
     .container {
-        padding: 0 1rem;
+        padding: 0.5rem;
+        max-width: 100%;
     }
 
     .project-main {
-        margin-top: 1.25rem;
+        margin-top: 0;
     }
 
     .post-shell {
-        border-radius: 18px;
-        padding: 1.05rem 0.95rem 1.2rem;
+        border-radius: 0;
+        padding: 1.05rem 0.75rem 1.2rem;
+        border: none;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .post-shell::before {
+        display: none;
     }
 
     .hero-card {
