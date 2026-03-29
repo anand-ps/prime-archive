@@ -6,18 +6,54 @@ const carouselLightboxImage = document.createElement('img');
 carouselLightbox.className = 'project-carousel-lightbox';
 carouselLightboxImage.className = 'project-carousel-lightbox-image';
 carouselLightbox.appendChild(carouselLightboxImage);
+carouselLightbox.tabIndex = -1;
 document.body.appendChild(carouselLightbox);
 
-function showCarouselLightbox(src, alt) {
-    carouselLightboxImage.src = src;
-    carouselLightboxImage.alt = alt;
+let currentLightboxController = null;
+let currentLightboxIndex = 0;
+let lightboxTouchStartX = 0;
+let lightboxTouchStartY = 0;
+let lightboxTouchStartTime = 0;
+
+function updateLightboxImage(index) {
+    if (!currentLightboxController) {
+        return;
+    }
+    const imageNode = currentLightboxController.imageNodes[index];
+    if (!imageNode) {
+        return;
+    }
+    carouselLightboxImage.src = imageNode.src;
+    carouselLightboxImage.alt = imageNode.alt || '';
+}
+
+function showCarouselLightbox(controller, index) {
+    if (!controller) {
+        return;
+    }
+    currentLightboxController = controller;
+    currentLightboxController.goToSlide(index);
+    currentLightboxIndex = currentLightboxController.getActiveIndex();
+    updateLightboxImage(currentLightboxIndex);
     carouselLightbox.classList.add('is-visible');
     document.body.style.overflow = 'hidden';
+    carouselLightbox.focus();
 }
 
 function hideCarouselLightbox() {
     carouselLightbox.classList.remove('is-visible');
     document.body.style.overflow = '';
+    currentLightboxController = null;
+}
+
+function navigateLightbox(delta) {
+    if (!currentLightboxController) {
+        return;
+    }
+    const nextIndex = currentLightboxController.getActiveIndex() + delta;
+    currentLightboxController.goToSlide(nextIndex);
+    currentLightboxIndex = currentLightboxController.getActiveIndex();
+    updateLightboxImage(currentLightboxIndex);
 }
 
 carouselLightbox.addEventListener('click', (event) => {
@@ -26,9 +62,35 @@ carouselLightbox.addEventListener('click', (event) => {
     }
 });
 
-document.addEventListener('keyup', (event) => {
+carouselLightbox.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         hideCarouselLightbox();
+    } else if (event.key === 'ArrowRight') {
+        navigateLightbox(1);
+    } else if (event.key === 'ArrowLeft') {
+        navigateLightbox(-1);
+    }
+});
+
+carouselLightbox.addEventListener('touchstart', (event) => {
+    const touch = event.touches[0];
+    lightboxTouchStartX = touch.clientX;
+    lightboxTouchStartY = touch.clientY;
+    lightboxTouchStartTime = event.timeStamp;
+});
+
+carouselLightbox.addEventListener('touchend', (event) => {
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - lightboxTouchStartX;
+    const deltaY = touch.clientY - lightboxTouchStartY;
+    const deltaTime = event.timeStamp - lightboxTouchStartTime;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40 && deltaTime < 500) {
+        if (deltaX < 0) {
+            navigateLightbox(1);
+        } else {
+            navigateLightbox(-1);
+        }
     }
 });
 
@@ -66,10 +128,6 @@ async function loadSlidesFromManifest(carouselNode) {
 
         slideNode.appendChild(imageNode);
         trackNode.appendChild(slideNode);
-
-        imageNode.addEventListener('click', () => {
-            showCarouselLightbox(imageNode.src, imageNode.alt);
-        });
     });
 
     return Array.from(trackNode.querySelectorAll('.project-carousel-slide'));
@@ -100,14 +158,27 @@ function initializeCarousel(carouselNode, slideNodes, carouselIndex) {
         return;
     }
 
+    const imageNodes = slideNodes.map((slideNode) => slideNode.querySelector('img'));
     const autoplayIntervalMs = Number.parseInt(carouselNode.dataset.carouselInterval || '4200', 10);
     const autoplayEnabled = slideNodes.length > 1 && !prefersReducedMotion;
     const carouselId = carouselNode.id || `project-carousel-${carouselIndex + 1}`;
     let activeIndex = 0;
     let autoplayHandle = null;
     let dotButtons = [];
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    const carouselController = {
+        goToSlide: null,
+        getActiveIndex: () => activeIndex,
+        imageNodes,
+        slideCount: slideNodes.length,
+    };
 
     carouselNode.id = carouselId;
+    const interactiveNode = carouselNode.querySelector('.project-carousel-viewport') || carouselNode;
+    interactiveNode.tabIndex = interactiveNode.tabIndex >= 0 ? interactiveNode.tabIndex : 0;
+
 
     function renderSlides() {
         trackNode.style.transform = `translateX(-${activeIndex * 100}%)`;
@@ -129,6 +200,9 @@ function initializeCarousel(carouselNode, slideNodes, carouselIndex) {
         renderSlides();
     }
 
+    carouselController.goToSlide = goToSlide;
+    carouselNode._carouselController = carouselController;
+
     function stopAutoplay() {
         if (!autoplayHandle) {
             return;
@@ -147,6 +221,15 @@ function initializeCarousel(carouselNode, slideNodes, carouselIndex) {
             goToSlide(activeIndex + 1);
         }, autoplayIntervalMs);
     }
+
+    imageNodes.forEach((imageNode, index) => {
+        if (!imageNode) {
+            return;
+        }
+        imageNode.addEventListener('click', () => {
+            showCarouselLightbox(carouselNode._carouselController, index);
+        });
+    });
 
     if (dotsNode) {
         dotsNode.replaceChildren();
@@ -182,6 +265,44 @@ function initializeCarousel(carouselNode, slideNodes, carouselIndex) {
             startAutoplay();
         });
     }
+
+    interactiveNode.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            goToSlide(activeIndex + 1);
+            stopAutoplay();
+            startAutoplay();
+        } else if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            goToSlide(activeIndex - 1);
+            stopAutoplay();
+            startAutoplay();
+        }
+    });
+
+    interactiveNode.addEventListener('touchstart', (event) => {
+        const touch = event.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchStartTime = event.timeStamp;
+    });
+
+    interactiveNode.addEventListener('touchend', (event) => {
+        const touch = event.changedTouches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+        const deltaTime = event.timeStamp - touchStartTime;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40 && deltaTime < 500) {
+            if (deltaX < 0) {
+                goToSlide(activeIndex + 1);
+            } else {
+                goToSlide(activeIndex - 1);
+            }
+            stopAutoplay();
+            startAutoplay();
+        }
+    });
 
     if (dotsNode) {
         dotsNode.hidden = slideNodes.length < 2;
