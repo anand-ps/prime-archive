@@ -664,14 +664,25 @@ body::after {
 }
 
 .project-media::after {
-    background: var(
-        --project-media-overlay,
-        repeating-linear-gradient(
-            -45deg,
-            rgba(255, 255, 255, 0.08) 0 9px,
-            rgba(255, 255, 255, 0) 9px 18px
-        )
-    );
+    background:
+        linear-gradient(
+            0deg,
+            rgba(6, 9, 16, 0.95) 0%,
+            rgba(6, 9, 16, 0.6) 6%,
+            rgba(6, 9, 16, 0.35) 12%,
+            rgba(6, 9, 16, 0.12) 16%,
+            rgba(6, 9, 16, 0.05) 18%,
+            rgba(6, 9, 16, 0.02) 19%,
+            rgba(6, 9, 16, 0) 20%
+        ),
+        var(
+            --project-media-overlay,
+            repeating-linear-gradient(
+                -45deg,
+                rgba(255, 255, 255, 0.08) 0 9px,
+                rgba(255, 255, 255, 0) 9px 18px
+            )
+        );
     content: "";
     inset: 0;
     pointer-events: none;
@@ -684,8 +695,7 @@ body::after {
 }
 
 .project-media.has-project-image::after {
-    background:
-        linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.12) 24%, rgba(0, 0, 0, 0) 42%);
+    --project-media-overlay: linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0.12) 24%, rgba(0, 0, 0, 0) 42%);
 }
 
 .project-media > * {
