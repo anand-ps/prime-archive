@@ -45,14 +45,11 @@
 
 .project-carousel-button {
     align-items: center;
-    backdrop-filter: blur(10px);
-    background: rgba(15, 23, 33, 0.68);
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    border-radius: 999px;
+    background: none;
+    border: none;
     color: #ffffff;
     cursor: pointer;
     display: flex;
-    font-family: "Manrope", "Segoe UI", sans-serif;
     font-size: 0;
     font-weight: 700;
     height: 3rem;
@@ -64,15 +61,14 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+    transition: transform 160ms ease;
     width: 3rem;
     z-index: 2;
 }
 
-.project-carousel-button:hover,
 .project-carousel-button:focus-visible {
-    background: rgba(15, 23, 33, 0.86);
-    border-color: rgba(255, 255, 255, 0.4);
+    outline: 2px solid rgba(255, 255, 255, 0.8);
+    outline-offset: 0.25rem;
 }
 
 .project-carousel-button::before {
