@@ -4,11 +4,11 @@ Reusable assets for project pages live here.
 
 ## Shared Theme
 
-Base project-page styling lives in:
+Base project-page styling lives in shared assets:
 
-- `projects/shared/assets/css/project-page.css`
+- `projects/shared/assets/js/project-page.js` (utility helpers such as the footer year updater)
 
-Each project keeps its own small `assets/css/styles.css` file only for theme variables such as accent colors and hero gradients.
+Each project keeps its own small `assets/css/styles.css` file only for theme variables such as accent colors and hero gradients. All structural styles, including list treatments, live in the shared CSS so list content is consistently indented and spaced.
 
 ## Carousel
 

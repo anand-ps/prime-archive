@@ -338,6 +338,19 @@ h2 {
     max-width: 92ch;
 }
 
+.section-card ul {
+    list-style: disc;
+    margin: 0.7rem 0 0.85rem;
+    padding-inline-start: 1.5rem;
+    color: color-mix(in srgb, var(--text) 84%, var(--muted));
+}
+
+.section-card li {
+    font-size: clamp(0.98rem, 1.64vw, 1.08rem);
+    line-height: 1.6;
+    margin-bottom: 0.35rem;
+}
+
 .pull-quote {
     background: color-mix(in srgb, var(--surface-soft) 84%, var(--accent) 16%);
     border: 1px solid color-mix(in srgb, var(--border) 66%, var(--accent) 34%);
