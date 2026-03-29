@@ -336,6 +336,9 @@ h2 {
     color: color-mix(in srgb, var(--text) 82%, var(--muted));
     font-size: clamp(1rem, 1.64vw, 1.09rem);
     max-width: 92ch;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
 }
 
 .section-card ul {
@@ -347,8 +350,11 @@ h2 {
 
 .section-card li {
     font-size: clamp(0.98rem, 1.64vw, 1.08rem);
+    hyphens: auto;
     line-height: 1.6;
     margin-bottom: 0.35rem;
+    text-align: justify;
+    text-justify: inter-word;
 }
 
 .section-card li::marker {
