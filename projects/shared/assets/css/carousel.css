@@ -209,6 +209,12 @@
     background-color: #000;
 }
 
+.project-carousel-lightbox:focus-visible,
+.project-carousel-lightbox:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .project-carousel-track,
     .project-carousel-button,
