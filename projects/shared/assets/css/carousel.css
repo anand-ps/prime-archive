@@ -192,7 +192,8 @@
     top: 0;
     transition: opacity 220ms ease;
     z-index: 999;
-    padding: 1rem;
+    padding: 0;
+    overflow: hidden;
 }
 
 .project-carousel-lightbox.is-visible {
@@ -201,11 +202,10 @@
 }
 
 .project-carousel-lightbox-image {
-    max-height: calc(100vh - 2rem);
-    max-width: calc(100vw - 2rem);
-    object-fit: contain;
+    height: 100vh;
     width: auto;
-    height: auto;
+    max-width: none;
+    object-fit: contain;
     background-color: #000;
 }
 
