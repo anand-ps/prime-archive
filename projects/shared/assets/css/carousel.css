@@ -180,7 +180,7 @@
 
 .project-carousel-lightbox {
     align-items: center;
-    background: rgba(0, 0, 0, 0.85);
+    background: #000;
     bottom: 0;
     display: flex;
     justify-content: center;
@@ -206,6 +206,7 @@
     object-fit: contain;
     width: auto;
     height: auto;
+    background-color: #000;
 }
 
 @media (prefers-reduced-motion: reduce) {
