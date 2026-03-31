@@ -112,6 +112,8 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
         const link = createContributorLink(projectSlug, contributor);
         const reverseIndex = totalContributors - index - 1;
         link.style.setProperty('--contributor-enter-delay', `${reverseIndex * 90}ms`);
+        const spreadOffset = (totalContributors - index - 1) * -10;
+        link.style.setProperty('--contributor-spread', `${spreadOffset}px`);
         row.append(link);
     });
 
