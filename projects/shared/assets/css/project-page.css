@@ -540,6 +540,16 @@ h2 {
 }
 
 @media (max-width: 720px) {
+    .page-bg {
+        background:
+            radial-gradient(700px 360px at 18% -6%, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 72%),
+            linear-gradient(180deg, color-mix(in srgb, var(--bg) 98%, #ffffff 2%) 0%, color-mix(in srgb, var(--bg) 94%, transparent) 100%);
+    }
+
+    .page-bg::after {
+        opacity: 0.14;
+    }
+
     .container {
         padding: 0.5rem;
         max-width: 100%;
@@ -555,14 +565,29 @@ h2 {
         border: none;
         box-shadow: none;
         background: transparent;
+        position: relative;
     }
 
     .post-shell::before {
-        display: none;
+        background:
+            linear-gradient(180deg, color-mix(in srgb, var(--surface) 90%, transparent) 0%, color-mix(in srgb, var(--surface) 80%, transparent) 38%, color-mix(in srgb, var(--surface) 72%, transparent) 100%);
+        content: "";
+        display: block;
+        inset: 0;
+        opacity: 0.9;
+        pointer-events: none;
+        position: absolute;
+        z-index: 0;
     }
 
     .hero-card {
         padding-bottom: 1.35rem;
+    }
+
+    .hero-card,
+    .section-card,
+    .pull-quote {
+        z-index: 1;
     }
 
     h1 {
