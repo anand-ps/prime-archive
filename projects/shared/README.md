@@ -18,7 +18,7 @@ Shared files:
 - `projects/shared/assets/css/carousel.css`
 - `projects/shared/assets/js/carousel.js`
 - `projects/shared/scripts/generate-project-image-manifests.js`
-- `projects/shared/assets/icons/favicon.ico` (use this file for every `<link rel="icon">` so the browser shows a consistent tab icon)
+- `assets/icons/favicon.ico` (use this file for every `<link rel="icon">` so the browser shows a consistent tab icon)
 
 ## Contributors
 
