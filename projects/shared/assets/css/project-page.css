@@ -401,11 +401,6 @@ h1 {
     animation-play-state: running;
 }
 
-.contributors-inline-link:hover,
-.contributors-inline-link:focus-visible {
-    z-index: 2;
-}
-
 .contributors-inline-link:focus-visible .contributors-inline-photo,
 .contributors-inline-link:focus-visible .contributor-photo-fallback {
     box-shadow:
