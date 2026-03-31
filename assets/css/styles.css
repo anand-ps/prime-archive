@@ -1002,6 +1002,11 @@ body::after {
     transform: translateY(-2px);
 }
 
+.timeline-card > p:last-child {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
 .timeline-period {
     color: var(--accent-strong);
     display: inline-block;
@@ -1330,6 +1335,7 @@ body::after {
     }
 
     .domain-grid .domain-card {
+        box-shadow: none;
         min-width: 0;
         scroll-snap-align: start;
     }
