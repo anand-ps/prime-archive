@@ -1,4 +1,4 @@
-<!-- File: /projects/dc-machines-protection-system/index.html -->
+<!-- File: /projects/dc-machine-protection-system/index.html -->
 <!-- Purpose: Production-grade blog page for completed DC Motor Protection System (embedded + firmware + hardware integration) -->
 
 <!DOCTYPE html>
@@ -13,7 +13,7 @@
     <link rel="icon" href="/projects/shared/assets/icons/favicon.ico?v=20260330" sizes="any" type="image/x-icon" />
     <link rel="shortcut icon" href="/projects/shared/assets/icons/favicon.ico?v=20260330" type="image/x-icon" />
     <link rel="stylesheet" href="/projects/shared/assets/css/project-page.css" />
-    <link rel="stylesheet" href="/projects/dc-machines-protection-system/assets/css/styles.css" />
+    <link rel="stylesheet" href="/projects/dc-machine-protection-system/assets/css/styles.css" />
     <link rel="stylesheet" href="/projects/shared/assets/css/carousel.css" />
 </head>
 
@@ -41,10 +41,10 @@
         <span class="meta-text">~8 min read</span>
     </div>
 
-    <h1>DC Machines Protection System</h1>
+    <h1>Integrated DC Machine Protection and Advanced Health Monitoring System</h1>
 
     <p class="summary">
-        A real-time protection and monitoring system engineered to detect abnormal electrical conditions in DC machines and trigger deterministic shutdown using embedded control logic.
+        A real-time protection and health monitoring system engineered to detect abnormal electrical conditions in DC machines and trigger deterministic actions or shutdown using intelligent embedded control logic.
     </p>
 
     <ul class="stack-list">
@@ -63,8 +63,8 @@
                 class="project-carousel"
                 data-carousel
                 data-carousel-interval="4200"
-                data-carousel-source="/projects/dc-machines-protection-system/assets/images/carousel-manifest.json"
-                data-carousel-image-base="/projects/dc-machines-protection-system/assets/images/"
+                data-carousel-source="/projects/dc-machine-protection-system/assets/images/carousel-manifest.json"
+                data-carousel-image-base="/projects/dc-machine-protection-system/assets/images/"
                 data-carousel-alt-prefix="DC motor protection system"
             >
                 <div class="project-carousel-viewport">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         </div>
-        <figcaption>Final prototype, circuit integration, and embedded control setup.</figcaption>
+        <figcaption>Final setup, circuit integration, and embedded control system.</figcaption>
     </figure>
 </header>
 
@@ -89,7 +89,7 @@
     </p>
 
     <p>
-        A real-time, configurable protection system was implemented to continuously monitor electrical parameters and enforce immediate shutdown under unsafe conditions.
+        A real-time, configurable protection system was implemented to continuously monitor electrical parameters and enforce immediate actions under unsafe conditions.
     </p>
 </section>
 
@@ -102,8 +102,8 @@
     <ul>
         <li><strong>Sensing Layer:</strong> Current and voltage acquisition</li>
         <li><strong>Processing Layer:</strong> Threshold evaluation and fault detection</li>
-        <li><strong>Actuation Layer:</strong> Relay-based motor disconnection</li>
-        <li><strong>Feedback Layer:</strong> LCD display + buzzer alerts</li>
+        <li><strong>Actuation Layer:</strong> Galvanically isolated load control"</li>
+        <li><strong>Feedback Layer:</strong> Real-time LCD telemetry with audible alert triggers</li>
     </ul>
 </section>
 
@@ -114,29 +114,29 @@
     </p>
 
     <ul>
-        <li>Arduino Nano (ATmega328P-based control unit)</li>
+        <li>ATmega328P-based control unit</li>
         <li>ACS712 Hall-effect current sensor (up to 30A peak detection)</li>
-        <li>Voltage divider circuit for voltage sensing</li>
-        <li>Relay module (10A switching capacity)</li>
+        <li>Voltage divider network for voltage sampling</li>
+        <li>Galvanically isolated relay</li>
         <li>20x4 LCD display with I2C interface</li>
         <li>Rotary encoder for threshold configuration</li>
-        <li>Buzzer for fault indication</li>
+        <li>Piezoelectric buzzer for fault indication</li>
     </ul>
 
     <p>
-        The designed circuit demonstrates tight coupling between sensing, control, and actuation paths, ensuring minimal delay between detection and response.
+        The designed architecture achieves tight coupling between sensing, control, and actuation paths, while maintaining rigorous domain isolation to ensure minimal delay between detection and response without compromising logic-level integrity.
     </p>
 </section>
 
 <section class="section-card reveal">
     <h2>Control Logic & Firmware</h2>
     <p>
-        The firmware was implemented using an event-driven architecture with configurable threshold parameters:
+        Implemented in standard-compliant C++, the firmware utilizes a non-blocking event loop with hardware-abstracted threshold configurations to ensure deterministic response times.    
     </p>
 
     <ul>
         <li>Continuous analog sampling of current and voltage</li>
-        <li>Dynamic threshold comparison (upper and lower bounds)</li>
+        <li>Dynamic threshold comparison</li>
         <li>Relay actuation on fault detection</li>
         <li>User-configurable limits via rotary encoder</li>
         <li>EEPROM-backed persistence for settings</li>
@@ -187,7 +187,7 @@
     </p>
 
     <ul>
-        <li>Accurate current sensing via ACS712</li>
+        <li>Accurate current sensing via ACS712 (scalable to Current Transformer (CT))</li>
         <li>Stable voltage measurement through divider network</li>
         <li>Reliable relay actuation under load</li>
         <li>Consistent user interface behavior</li>
@@ -197,11 +197,11 @@
 <section class="section-card reveal">
     <h2>Engineering Outcome</h2>
     <p>
-        A complete protection system was designed, implemented, and validated for DC motor applications. The solution integrates embedded firmware, real-time sensing, and hardware control into a cohesive system.
+        A complete protection and monitoring system was designed, implemented, and validated for DC machines applications. The solution integrates embedded firmware, real-time sensing, and hardware control into a cohesive system.
     </p>
 
     <p>
-        The architecture is extendable to industrial motor protection systems, smart controllers, and IoT-based monitoring platforms.
+        The architecture is extendable to industrial device protection systems, smart controllers, and IoT-based monitoring platforms.
     </p>
 </section>
 
