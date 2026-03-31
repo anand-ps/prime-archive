@@ -327,6 +327,162 @@ h1 {
     padding-top: 1.55rem;
 }
 
+.contributors-inline {
+    align-items: center;
+    border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.15rem;
+    padding-top: 1rem;
+}
+
+.contributors-inline-label {
+    color: var(--accent-strong);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.contributors-inline-list {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.72rem;
+}
+
+.contributors-inline-link {
+    border-radius: 999px;
+    display: inline-flex;
+    line-height: 0;
+    text-decoration: none;
+    transition: transform 180ms ease;
+}
+
+.contributors-inline-link:hover,
+.contributors-inline-link:focus-visible {
+    transform: translateY(-2px) scale(1.04);
+}
+
+.contributors-inline-link:focus-visible .contributors-inline-photo,
+.contributors-inline-link:focus-visible .contributor-photo-fallback {
+    box-shadow:
+        0 0 0 4px color-mix(in srgb, var(--surface) 92%, transparent),
+        0 0 0 7px color-mix(in srgb, var(--accent) 36%, transparent);
+}
+
+.contributors-inline-photo,
+.contributor-photo-fallback {
+    aspect-ratio: 1;
+    border: 2px solid color-mix(in srgb, var(--surface) 92%, transparent);
+    border-radius: 999px;
+    box-shadow: 0 14px 24px rgba(20, 30, 38, 0.16);
+    display: inline-flex;
+    height: 56px;
+    object-fit: cover;
+    width: 56px;
+}
+
+.contributor-photo-fallback {
+    align-items: center;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 72%, #ffffff 28%), color-mix(in srgb, var(--accent-strong) 78%, #09151b 22%));
+    color: #ffffff;
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    justify-content: center;
+}
+
+.contributors-directory {
+    display: grid;
+    gap: 1rem;
+}
+
+.contributor-profile-card {
+    align-items: center;
+    background: color-mix(in srgb, var(--surface-soft) 84%, var(--accent) 16%);
+    border: 1px solid color-mix(in srgb, var(--border) 68%, var(--accent) 32%);
+    border-radius: var(--radius-md);
+    box-shadow: 0 16px 28px rgba(20, 30, 38, 0.12);
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 124px minmax(0, 1fr);
+    padding: 1rem;
+}
+
+.contributor-profile-card.is-active {
+    border-color: color-mix(in srgb, var(--accent) 72%, var(--border));
+    box-shadow:
+        0 20px 32px rgba(20, 30, 38, 0.16),
+        0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent) inset;
+}
+
+.contributor-profile-media {
+    display: flex;
+    justify-content: center;
+}
+
+.contributor-profile-photo,
+.contributor-profile-photo.contributor-photo-fallback {
+    aspect-ratio: 1;
+    border: 2px solid color-mix(in srgb, var(--surface) 92%, transparent);
+    border-radius: 999px;
+    box-shadow: 0 16px 28px rgba(20, 30, 38, 0.16);
+    height: 108px;
+    object-fit: cover;
+    width: 108px;
+}
+
+.contributor-profile-content {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.contributor-profile-content h2 {
+    margin-bottom: 0;
+}
+
+.contributor-profile-role {
+    color: var(--accent-strong);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.contributor-profile-bio {
+    color: color-mix(in srgb, var(--text) 82%, var(--muted));
+    font-size: 1rem;
+}
+
+.contributor-profile-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.contributor-profile-links a,
+.contributor-profile-project-link {
+    color: color-mix(in srgb, var(--text) 84%, var(--muted));
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    width: fit-content;
+}
+
+.contributor-profile-links a:hover,
+.contributor-profile-links a:focus-visible,
+.contributor-profile-project-link:hover,
+.contributor-profile-project-link:focus-visible {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
 h2 {
     font-size: clamp(1.25rem, 2.1vw, 1.54rem);
     margin-bottom: 0.56rem;
@@ -472,5 +628,12 @@ h2 {
     .pull-quote {
         margin-top: 1.3rem;
         padding: 0.82rem 0.85rem;
+    }
+
+    .contributors-inline,
+    .contributor-profile-card {
+        align-items: flex-start;
+        flex-direction: column;
+        grid-template-columns: 1fr;
     }
 }

@@ -20,6 +20,31 @@ Shared files:
 - `projects/shared/scripts/generate-project-image-manifests.js`
 - `projects/shared/assets/icons/favicon.ico` (use this file for every `<link rel="icon">` so the browser shows a consistent tab icon)
 
+## Contributors
+
+Shared contributor data lives in:
+
+- `projects/shared/data/contributors.json`
+- `projects/shared/data/project-contributors.json`
+- `projects/shared/assets/images/contributors/`
+
+Shared renderer lives in:
+
+- `projects/shared/assets/js/project-page.js`
+- `projects/shared/assets/css/project-page.css`
+
+Each project page can show a one-line contributors strip by setting `data-project-slug` on the `<body>` and adding:
+
+```html
+<section class="contributors-inline reveal" data-contributors-inline></section>
+```
+
+Each project also has its own route at:
+
+- `projects/<project-slug>/contributers/`
+
+The route uses shared data but renders only the contributors mapped to that project.
+
 ## How to add more photos
 
 1. Put the new images into that project's `assets/images/` folder.

@@ -1,0 +1,16 @@
+{
+  "contributors": {
+    "anand-ps": {
+      "id": "anand-ps",
+      "name": "Anand P S",
+      "designation": "Systems Engineer",
+      "photo": "/projects/shared/assets/images/contributors/anand-ps.webp",
+      "bio": "Electrical and Electronics Engineer focused on embedded systems, distributed backend systems, and production-grade software architecture.",
+      "links": {
+        "email": "mailto:anandps.dev@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/anand-ps",
+        "github": "https://github.com/anand-ps"
+      }
+    }
+  }
+}
