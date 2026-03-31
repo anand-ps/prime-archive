@@ -348,7 +348,7 @@ h1 {
 }
 
 .contributors-inline + .section-card {
-    margin-top: 0.8rem;
+    margin-top: 0.15rem;
 }
 
 .contributors-inline-label {
@@ -751,6 +751,12 @@ h2 {
 
     .contributors-inline-label {
         text-align: right;
+    }
+
+    .contributors-inline-photo,
+    .contributor-photo-fallback {
+        height: 52px;
+        width: 52px;
     }
 
     .contributor-profile-card {
