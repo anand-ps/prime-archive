@@ -148,6 +148,14 @@ body {
     padding-bottom: 2rem;
 }
 
+.contributors-page-hero {
+    padding-bottom: 0.9rem;
+}
+
+.contributors-page-hero h1 {
+    margin-bottom: 0.35rem;
+}
+
 .hero-card::after {
     background: linear-gradient(to right, color-mix(in srgb, var(--accent) 62%, transparent), transparent 82%);
     content: "";
@@ -225,6 +233,10 @@ h1 {
     color: color-mix(in srgb, var(--text) 84%, var(--muted));
     font-size: clamp(1.02rem, 2vw, 1.18rem);
     max-width: 84ch;
+}
+
+[data-contributors-page-list] {
+    margin-top: 0;
 }
 
 .stack-list {
@@ -328,35 +340,50 @@ h1 {
 }
 
 .contributors-inline {
-    align-items: center;
-    border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    align-items: flex-end;
     display: flex;
-    gap: 1rem;
-    margin-top: 1.15rem;
-    padding-top: 1rem;
+    justify-content: flex-end;
+    margin-top: 0.7rem;
+    padding-top: 0;
+}
+
+.contributors-inline + .section-card {
+    margin-top: 0.8rem;
 }
 
 .contributors-inline-label {
-    color: var(--accent-strong);
+    color: var(--text);
     font-family: "Manrope", "Segoe UI", sans-serif;
-    font-size: 0.78rem;
+    font-size: 0.82rem;
     font-weight: 800;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
+    text-align: right;
     text-transform: uppercase;
     white-space: nowrap;
+}
+
+.contributors-inline-cluster {
+    align-items: flex-end;
+    display: grid;
+    gap: 0.45rem;
+    justify-content: flex-end;
+    min-width: 0;
 }
 
 .contributors-inline-list {
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.72rem;
+    gap: 0;
+    padding-left: 0.4rem;
 }
 
 .contributors-inline-link {
     border-radius: 999px;
     display: inline-flex;
     line-height: 0;
+    margin-left: -0.4rem;
+    position: relative;
     text-decoration: none;
     transition: transform 180ms ease;
 }
@@ -364,6 +391,7 @@ h1 {
 .contributors-inline-link:hover,
 .contributors-inline-link:focus-visible {
     transform: translateY(-2px) scale(1.04);
+    z-index: 2;
 }
 
 .contributors-inline-link:focus-visible .contributors-inline-photo,
@@ -376,13 +404,13 @@ h1 {
 .contributors-inline-photo,
 .contributor-photo-fallback {
     aspect-ratio: 1;
-    border: 2px solid color-mix(in srgb, var(--surface) 92%, transparent);
+    border: 3px solid color-mix(in srgb, var(--surface) 96%, transparent);
     border-radius: 999px;
-    box-shadow: 0 14px 24px rgba(20, 30, 38, 0.16);
+    box-shadow: 0 12px 24px rgba(20, 30, 38, 0.14);
     display: inline-flex;
-    height: 56px;
+    height: 60px;
     object-fit: cover;
-    width: 56px;
+    width: 60px;
 }
 
 .contributor-photo-fallback {
@@ -398,25 +426,37 @@ h1 {
 .contributors-directory {
     display: grid;
     gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
 .contributor-profile-card {
-    align-items: center;
-    background: color-mix(in srgb, var(--surface-soft) 84%, var(--accent) 16%);
-    border: 1px solid color-mix(in srgb, var(--border) 68%, var(--accent) 32%);
-    border-radius: var(--radius-md);
-    box-shadow: 0 16px 28px rgba(20, 30, 38, 0.12);
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: 124px minmax(0, 1fr);
-    padding: 1rem;
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 92%, transparent) 100%);
+    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+    border-radius: 20px;
+    box-shadow:
+        0 18px 34px rgba(20, 30, 38, 0.07),
+        0 1px 0 color-mix(in srgb, #ffffff 16%, transparent) inset;
+    display: block;
+    min-height: 100%;
+    min-height: 24rem;
+    padding: 1.7rem 1.2rem 1.45rem;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .contributor-profile-card.is-active {
-    border-color: color-mix(in srgb, var(--accent) 72%, var(--border));
+    border-color: color-mix(in srgb, var(--accent) 44%, var(--border));
     box-shadow:
-        0 20px 32px rgba(20, 30, 38, 0.16),
-        0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent) inset;
+        0 18px 36px rgba(20, 30, 38, 0.08),
+        0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent) inset;
+}
+
+.contributor-profile-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
+    box-shadow:
+        0 22px 38px rgba(20, 30, 38, 0.09),
+        0 1px 0 color-mix(in srgb, #ffffff 18%, transparent) inset;
+    transform: translateY(-2px);
 }
 
 .contributor-profile-media {
@@ -427,60 +467,129 @@ h1 {
 .contributor-profile-photo,
 .contributor-profile-photo.contributor-photo-fallback {
     aspect-ratio: 1;
-    border: 2px solid color-mix(in srgb, var(--surface) 92%, transparent);
+    border: 2px solid color-mix(in srgb, var(--border) 56%, transparent);
     border-radius: 999px;
-    box-shadow: 0 16px 28px rgba(20, 30, 38, 0.16);
-    height: 108px;
+    box-shadow: 0 14px 24px rgba(20, 30, 38, 0.09);
+    height: 96px;
     object-fit: cover;
-    width: 108px;
+    width: 96px;
 }
 
 .contributor-profile-content {
     display: grid;
-    gap: 0.45rem;
+    gap: 1rem;
+    min-height: 100%;
+}
+
+.contributor-profile-identity {
+    display: grid;
+    gap: 0.26rem;
+    min-width: 0;
+}
+
+.contributor-profile-top {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    text-align: center;
 }
 
 .contributor-profile-content h2 {
+    font-family: "Sora", "Segoe UI", sans-serif;
+    color: var(--text);
+    font-size: clamp(1.08rem, 1.55vw, 1.24rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.14;
     margin-bottom: 0;
 }
 
 .contributor-profile-role {
-    color: var(--accent-strong);
+    color: color-mix(in srgb, var(--muted) 94%, #7f8794);
     font-family: "Manrope", "Segoe UI", sans-serif;
     font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0;
 }
 
 .contributor-profile-bio {
-    color: color-mix(in srgb, var(--text) 82%, var(--muted));
-    font-size: 1rem;
+    color: color-mix(in srgb, var(--muted) 94%, #7f8794);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    max-width: none;
+    text-align: center;
+}
+
+.contributor-profile-actions {
+    align-items: center;
+    border-top: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: auto;
+    padding-top: 0.9rem;
 }
 
 .contributor-profile-links {
+    justify-content: center;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
+    gap: 0.9rem;
 }
 
-.contributor-profile-links a,
-.contributor-profile-project-link {
-    color: color-mix(in srgb, var(--text) 84%, var(--muted));
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    font-size: 0.84rem;
-    font-weight: 700;
+.contributor-profile-action-link {
+    align-items: center;
+    display: inline-flex;
+    height: 1.5rem;
+    justify-content: center;
     text-decoration: none;
-    width: fit-content;
+    transition: transform 160ms ease, opacity 160ms ease;
+    width: 1.5rem;
 }
 
-.contributor-profile-links a:hover,
-.contributor-profile-links a:focus-visible,
-.contributor-profile-project-link:hover,
-.contributor-profile-project-link:focus-visible {
-    color: var(--accent);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
+.contributor-profile-action-link:hover,
+.contributor-profile-action-link:focus-visible {
+    transform: translateY(-1px);
+    opacity: 0.88;
+}
+
+.contributor-profile-action-icon {
+    background-color: currentColor;
+    display: block;
+    height: 1.18rem;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    width: 1.18rem;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+}
+
+.contributor-profile-action-icon.icon-google {
+    color: #ea4335;
+    -webkit-mask-image: url("/assets/icons/brand-google.svg");
+    mask-image: url("/assets/icons/brand-google.svg");
+}
+
+.contributor-profile-action-icon.icon-linkedin {
+    color: #0a66c2;
+    -webkit-mask-image: url("/assets/icons/brand-linkedin.svg");
+    mask-image: url("/assets/icons/brand-linkedin.svg");
+}
+
+.contributor-profile-action-icon.icon-github {
+    color: #24292f;
+    -webkit-mask-image: url("/assets/icons/brand-github.svg");
+    mask-image: url("/assets/icons/brand-github.svg");
+}
+
+@media (prefers-color-scheme: dark) {
+    .contributor-profile-action-icon.icon-github {
+        color: #f0f6fc;
+    }
 }
 
 h2 {
@@ -630,10 +739,40 @@ h2 {
         padding: 0.82rem 0.85rem;
     }
 
-    .contributors-inline,
+    .contributors-inline {
+        align-items: flex-end;
+        justify-content: flex-end;
+    }
+
+    .contributors-inline-cluster {
+        align-items: flex-end;
+        justify-content: flex-end;
+    }
+
+    .contributors-inline-label {
+        text-align: right;
+    }
+
     .contributor-profile-card {
-        align-items: flex-start;
-        flex-direction: column;
-        grid-template-columns: 1fr;
+        min-height: 28rem;
+        padding: 1.2rem 1.8rem 2.1rem;
+    }
+
+    .contributor-profile-top {
+        gap: 1.1rem;
+        padding-top: 2rem;
+    }
+
+    .contributor-profile-content {
+        gap: 1.1rem;
+    }
+
+    .contributor-profile-bio {
+        padding-inline: 0.35rem;
+    }
+
+    .contributor-profile-actions {
+        gap: 1rem;
+        padding-top: 1.05rem;
     }
 }

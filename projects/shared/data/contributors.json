@@ -11,6 +11,30 @@
         "linkedin": "https://www.linkedin.com/in/anand-ps",
         "github": "https://github.com/anand-ps"
       }
+    },
+    "reva-pradeep": {
+      "id": "reva-pradeep",
+      "name": "Reva Pradeep",
+      "designation": "Product Manager",
+      "photo": "/projects/shared/assets/images/contributors/reva-pradeep.jpg",
+      "bio": "Electrical and Electronics Engineer focused on embedded systems, distributed backend systems, and production-grade software architecture.",
+      "links": {
+        "email": "mailto:reva-pradeep@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/anand-ps",
+        "github": "https://github.com/anand-ps"
+      }
+    },
+    "nesrin-anwer": {
+      "id": "nesrin-anwer",
+      "name": "Nesrin Anwer",
+      "designation": "Design Engineer",
+      "photo": "/projects/shared/assets/images/contributors/nesrin-anwer.png",
+      "bio": "Electrical and Electronics Engineer focused on embedded systems, and project management.",
+      "links": {
+        "email": "mailto:nesrin@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/anand-ps",
+        "github": "https://github.com/anand-ps"
+      }
     }
   }
 }

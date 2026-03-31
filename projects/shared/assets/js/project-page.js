@@ -7,6 +7,11 @@ if (yearNode) {
 const PROJECT_CONTRIBUTORS_PATH = '/projects/shared/data/project-contributors.json';
 const CONTRIBUTORS_PATH = '/projects/shared/data/contributors.json';
 const MAX_PROJECT_CONTRIBUTORS = 6;
+const CONTRIBUTOR_ICON_CLASSES = {
+    Email: 'icon-google',
+    LinkedIn: 'icon-linkedin',
+    GitHub: 'icon-github'
+};
 
 function getProjectSlug() {
     const slugNode = document.body;
@@ -62,6 +67,18 @@ function createContributorLink(projectSlug, contributor) {
     return link;
 }
 
+function createContributorActionIcon(label) {
+    const iconClassName = CONTRIBUTOR_ICON_CLASSES[label];
+    if (!iconClassName) {
+        return null;
+    }
+
+    const icon = document.createElement('span');
+    icon.className = `contributor-profile-action-icon ${iconClassName}`;
+    icon.setAttribute('aria-hidden', 'true');
+    return icon;
+}
+
 function createContributorCard(projectSlug, contributor, activeMemberId) {
     const card = document.createElement('article');
     card.className = 'contributor-profile-card';
@@ -78,6 +95,12 @@ function createContributorCard(projectSlug, contributor, activeMemberId) {
     const content = document.createElement('div');
     content.className = 'contributor-profile-content';
 
+    const identity = document.createElement('div');
+    identity.className = 'contributor-profile-identity';
+
+    const topRow = document.createElement('div');
+    topRow.className = 'contributor-profile-top';
+
     const name = document.createElement('h2');
     name.textContent = contributor.name || 'Contributor';
 
@@ -85,7 +108,10 @@ function createContributorCard(projectSlug, contributor, activeMemberId) {
     designation.className = 'contributor-profile-role';
     designation.textContent = contributor.designation || 'Project Contributor';
 
-    content.append(name, designation);
+    identity.append(name, designation);
+    topRow.append(media);
+    topRow.append(identity);
+    content.append(topRow);
 
     if (contributor.bio) {
         const bio = document.createElement('p');
@@ -108,8 +134,18 @@ function createContributorCard(projectSlug, contributor, activeMemberId) {
         }
 
         const anchor = document.createElement('a');
+        anchor.className = 'contributor-profile-action-link';
         anchor.href = href;
-        anchor.textContent = label;
+        anchor.setAttribute('aria-label', `${contributor.name || 'Contributor'} ${label}`);
+        anchor.title = '';
+
+        const icon = createContributorActionIcon(label);
+        if (icon) {
+            anchor.append(icon);
+        } else {
+            anchor.textContent = label;
+        }
+
         if (/^https?:/i.test(href)) {
             anchor.target = '_blank';
             anchor.rel = 'noreferrer';
@@ -117,17 +153,18 @@ function createContributorCard(projectSlug, contributor, activeMemberId) {
         linksRow.append(anchor);
     });
 
+    const actions = document.createElement('div');
+    actions.className = 'contributor-profile-actions';
+
     if (linksRow.childElementCount > 0) {
-        content.append(linksRow);
+        actions.append(linksRow);
     }
 
-    const projectLink = document.createElement('a');
-    projectLink.className = 'contributor-profile-project-link';
-    projectLink.href = `/projects/${projectSlug}/index.html`;
-    projectLink.textContent = 'Back to project';
-    content.append(projectLink);
+    if (actions.childElementCount > 0) {
+        content.append(actions);
+    }
 
-    card.append(media, content);
+    card.append(content);
     return card;
 }
 
@@ -161,7 +198,10 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
     const label = document.createElement('span');
     label.className = 'contributors-inline-label';
     label.textContent = 'Contributors';
-    host.append(label);
+
+    const cluster = document.createElement('div');
+    cluster.className = 'contributors-inline-cluster';
+    cluster.append(label);
 
     const row = document.createElement('div');
     row.className = 'contributors-inline-list';
@@ -175,7 +215,9 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
         row.append(createContributorLink(projectSlug, contributor));
     });
 
-    host.append(row);
+    cluster.append(row);
+
+    host.append(cluster);
 }
 
 function renderContributorsPage(projectSlug, project, contributorsById) {
