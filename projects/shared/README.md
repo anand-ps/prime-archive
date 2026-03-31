@@ -7,6 +7,12 @@ Reusable assets for project pages live here.
 Base project-page styling lives in shared assets:
 
 - `projects/shared/assets/js/project-page.js` (utility helpers such as the footer year updater)
+- `projects/shared/assets/css/project-page.css` (project detail pages and inline contributors strip)
+
+Contributor profile pages use separate shared files:
+
+- `projects/shared/assets/js/contributor-page.js`
+- `projects/shared/assets/css/contributor-page.css`
 
 Each project keeps its own small `assets/css/styles.css` file only for theme variables such as accent colors and hero gradients. All structural styles, including list treatments, live in the shared CSS so list content is consistently indented and spaced.
 
@@ -28,10 +34,15 @@ Shared contributor data lives in:
 - `projects/shared/data/project-contributors.json`
 - `projects/shared/assets/images/contributors/`
 
-Shared renderer lives in:
+Project page renderer lives in:
 
 - `projects/shared/assets/js/project-page.js`
 - `projects/shared/assets/css/project-page.css`
+
+Contributor page renderer lives in:
+
+- `projects/shared/assets/js/contributor-page.js`
+- `projects/shared/assets/css/contributor-page.css`
 
 Each project page can show a one-line contributors strip by setting `data-project-slug` on the `<body>` and adding:
 

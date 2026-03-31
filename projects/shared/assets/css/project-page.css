@@ -148,14 +148,6 @@ body {
     padding-bottom: 2rem;
 }
 
-.contributors-page-hero {
-    padding-bottom: 0.9rem;
-}
-
-.contributors-page-hero h1 {
-    margin-bottom: 0.35rem;
-}
-
 .hero-card::after {
     background: linear-gradient(to right, color-mix(in srgb, var(--accent) 62%, transparent), transparent 82%);
     content: "";
@@ -233,10 +225,6 @@ h1 {
     color: color-mix(in srgb, var(--text) 84%, var(--muted));
     font-size: clamp(1.02rem, 2vw, 1.18rem);
     max-width: 84ch;
-}
-
-[data-contributors-page-list] {
-    margin-top: 0;
 }
 
 .stack-list {
@@ -442,175 +430,6 @@ h1 {
     }
 }
 
-.contributors-directory {
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-
-.contributor-profile-card {
-    background:
-        linear-gradient(180deg, color-mix(in srgb, var(--surface) 98%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 92%, transparent) 100%);
-    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
-    border-radius: 20px;
-    box-shadow:
-        0 18px 34px rgba(20, 30, 38, 0.07),
-        0 1px 0 color-mix(in srgb, #ffffff 16%, transparent) inset;
-    display: block;
-    min-height: 100%;
-    min-height: 24rem;
-    padding: 1.7rem 1.2rem 1.45rem;
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-}
-
-.contributor-profile-card.is-active {
-    border-color: color-mix(in srgb, var(--accent) 44%, var(--border));
-    box-shadow:
-        0 18px 36px rgba(20, 30, 38, 0.08),
-        0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent) inset;
-}
-
-.contributor-profile-card:hover {
-    border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
-    box-shadow:
-        0 22px 38px rgba(20, 30, 38, 0.09),
-        0 1px 0 color-mix(in srgb, #ffffff 18%, transparent) inset;
-    transform: translateY(-2px);
-}
-
-.contributor-profile-media {
-    display: flex;
-    justify-content: center;
-}
-
-.contributor-profile-photo,
-.contributor-profile-photo.contributor-photo-fallback {
-    aspect-ratio: 1;
-    border: 2px solid color-mix(in srgb, var(--border) 56%, transparent);
-    border-radius: 999px;
-    box-shadow: 0 14px 24px rgba(20, 30, 38, 0.09);
-    height: 96px;
-    object-fit: cover;
-    width: 96px;
-}
-
-.contributor-profile-content {
-    display: grid;
-    gap: 1rem;
-    min-height: 100%;
-}
-
-.contributor-profile-identity {
-    display: grid;
-    gap: 0.26rem;
-    min-width: 0;
-}
-
-.contributor-profile-top {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-    text-align: center;
-}
-
-.contributor-profile-content h2 {
-    font-family: "Sora", "Segoe UI", sans-serif;
-    color: var(--text);
-    font-size: clamp(1.08rem, 1.55vw, 1.24rem);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 1.14;
-    margin-bottom: 0;
-}
-
-.contributor-profile-role {
-    color: color-mix(in srgb, var(--muted) 94%, #7f8794);
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    font-size: 0.82rem;
-    font-weight: 500;
-    letter-spacing: 0;
-}
-
-.contributor-profile-bio {
-    color: color-mix(in srgb, var(--muted) 94%, #7f8794);
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    font-size: 0.8rem;
-    line-height: 1.5;
-    max-width: none;
-    text-align: center;
-}
-
-.contributor-profile-actions {
-    align-items: center;
-    border-top: 1px solid color-mix(in srgb, var(--border) 74%, transparent);
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-    margin-top: auto;
-    padding-top: 0.9rem;
-}
-
-.contributor-profile-links {
-    justify-content: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.9rem;
-}
-
-.contributor-profile-action-link {
-    align-items: center;
-    display: inline-flex;
-    height: 1.5rem;
-    justify-content: center;
-    text-decoration: none;
-    transition: transform 160ms ease, opacity 160ms ease;
-    width: 1.5rem;
-}
-
-.contributor-profile-action-link:hover,
-.contributor-profile-action-link:focus-visible {
-    transform: translateY(-1px);
-    opacity: 0.88;
-}
-
-.contributor-profile-action-icon {
-    background-color: currentColor;
-    display: block;
-    height: 1.18rem;
-    mask-position: center;
-    mask-repeat: no-repeat;
-    mask-size: contain;
-    width: 1.18rem;
-    -webkit-mask-position: center;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-size: contain;
-}
-
-.contributor-profile-action-icon.icon-google {
-    color: #ea4335;
-    -webkit-mask-image: url("/assets/icons/brand-google.svg");
-    mask-image: url("/assets/icons/brand-google.svg");
-}
-
-.contributor-profile-action-icon.icon-linkedin {
-    color: #0a66c2;
-    -webkit-mask-image: url("/assets/icons/brand-linkedin.svg");
-    mask-image: url("/assets/icons/brand-linkedin.svg");
-}
-
-.contributor-profile-action-icon.icon-github {
-    color: #24292f;
-    -webkit-mask-image: url("/assets/icons/brand-github.svg");
-    mask-image: url("/assets/icons/brand-github.svg");
-}
-
-@media (prefers-color-scheme: dark) {
-    .contributor-profile-action-icon.icon-github {
-        color: #f0f6fc;
-    }
-}
-
 h2 {
     font-size: clamp(1.25rem, 2.1vw, 1.54rem);
     margin-bottom: 0.56rem;
@@ -778,26 +597,4 @@ h2 {
         width: 52px;
     }
 
-    .contributor-profile-card {
-        min-height: 28rem;
-        padding: 1.2rem 1.8rem 2.1rem;
-    }
-
-    .contributor-profile-top {
-        gap: 1.1rem;
-        padding-top: 2rem;
-    }
-
-    .contributor-profile-content {
-        gap: 1.1rem;
-    }
-
-    .contributor-profile-bio {
-        padding-inline: 0.35rem;
-    }
-
-    .contributor-profile-actions {
-        gap: 1rem;
-        padding-top: 1.05rem;
-    }
 }
