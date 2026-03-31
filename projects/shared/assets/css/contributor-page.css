@@ -229,6 +229,7 @@ h1 {
     display: block;
     min-height: 100%;
     padding: 1.4rem 1.2rem 1.15rem;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .contributor-profile-card.is-active {
@@ -236,6 +237,14 @@ h1 {
     box-shadow:
         0 18px 36px rgba(20, 30, 38, 0.08),
         0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent) inset;
+}
+
+.contributor-profile-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+    box-shadow:
+        0 24px 42px rgba(20, 30, 38, 0.1),
+        0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent) inset;
+    transform: translateY(-3px);
 }
 
 .contributor-profile-media {
