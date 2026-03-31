@@ -207,17 +207,54 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
     row.className = 'contributors-inline-list';
 
     const contributorIds = Array.isArray(project?.contributors) ? project.contributors.slice(0, MAX_PROJECT_CONTRIBUTORS) : [];
-    contributorIds.forEach((contributorId) => {
+    const totalContributors = contributorIds.length;
+
+    contributorIds.forEach((contributorId, index) => {
         const contributor = contributorsById[contributorId];
         if (!contributor) {
             return;
         }
-        row.append(createContributorLink(projectSlug, contributor));
+
+        const link = createContributorLink(projectSlug, contributor);
+        const reverseIndex = totalContributors - index - 1;
+        link.style.setProperty('--contributor-enter-delay', `${reverseIndex * 90}ms`);
+        row.append(link);
     });
 
     cluster.append(row);
 
     host.append(cluster);
+}
+
+function initContributorsInlineReveal() {
+    const inlineHost = document.querySelector('[data-contributors-inline]');
+    if (!inlineHost) {
+        return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+        inlineHost.classList.add('contributors-inline-visible');
+        return;
+    }
+
+    const observer = new IntersectionObserver(
+        (entries, currentObserver) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                entry.target.classList.add('contributors-inline-visible');
+                currentObserver.unobserve(entry.target);
+            });
+        },
+        {
+            rootMargin: '0px 0px -10% 0px',
+            threshold: 0.2
+        }
+    );
+
+    observer.observe(inlineHost);
 }
 
 function renderContributorsPage(projectSlug, project, contributorsById) {
@@ -267,6 +304,7 @@ async function initContributors() {
 
         renderInlineContributors(projectSlug, project, contributors);
         renderContributorsPage(projectSlug, project, contributors);
+        initContributorsInlineReveal();
     } catch (error) {
         [inlineHost, pageHost].filter(Boolean).forEach((host) => {
             host.textContent = 'Contributor profiles are unavailable right now.';
