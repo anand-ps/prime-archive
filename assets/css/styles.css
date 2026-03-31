@@ -580,7 +580,7 @@ body::after {
     width: 6px;
 }
 
-.work-grid {
+.projects-grid {
     display: grid;
     gap: 1rem;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1315,7 +1315,7 @@ body::after {
         grid-template-columns: 1fr;
     }
 
-    .work-grid {
+    .projects-grid {
         grid-template-columns: 1fr;
     }
 
