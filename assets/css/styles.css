@@ -1312,7 +1312,26 @@ body::after {
     }
 
     .domain-grid {
-        grid-template-columns: 1fr;
+        display: grid;
+        gap: 0.85rem;
+        grid-auto-columns: 100%;
+        grid-auto-flow: column;
+        grid-template-columns: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-x: contain;
+        padding-bottom: 0.35rem;
+        scroll-snap-type: x proximity;
+        scrollbar-width: none;
+    }
+
+    .domain-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .domain-grid .domain-card {
+        min-width: 0;
+        scroll-snap-align: start;
     }
 
     .projects-grid {
