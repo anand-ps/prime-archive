@@ -84,6 +84,12 @@ body {
     z-index: 20;
 }
 
+.project-header .container {
+    align-items: center;
+    display: flex;
+    min-height: 4.9rem;
+}
+
 .back-link {
     align-items: center;
     color: var(--accent-strong);
@@ -93,7 +99,7 @@ body {
     font-weight: 700;
     gap: 0.45rem;
     letter-spacing: 0.05em;
-    padding: 1.02rem 0;
+    padding: 0;
     text-decoration: none;
     text-transform: uppercase;
 }
