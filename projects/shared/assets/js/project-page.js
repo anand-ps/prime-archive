@@ -102,6 +102,7 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
 
     const contributorIds = Array.isArray(project?.contributors) ? project.contributors.slice(0, MAX_PROJECT_CONTRIBUTORS) : [];
     const totalContributors = contributorIds.length;
+    row.classList.toggle('contributors-inline-list-single', totalContributors === 1);
 
     contributorIds.forEach((contributorId, index) => {
         const contributor = contributorsById[contributorId];
