@@ -7,6 +7,7 @@ if (yearNode) {
 const PROJECT_CONTRIBUTORS_PATH = '/projects/shared/data/project-contributors.json';
 const CONTRIBUTORS_PATH = '/projects/shared/data/contributors.json';
 const MAX_PROJECT_CONTRIBUTORS = 6;
+const CONTRIBUTORS_INLINE_SPREAD_STEP = 23;
 
 function getProjectSlug() {
     const slugNode = document.body;
@@ -124,8 +125,10 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
         const link = createContributorLink(projectSlug, contributor);
         const reverseIndex = totalContributors - index - 1;
         link.style.setProperty('--contributor-enter-delay', `${reverseIndex * 90}ms`);
-        const spreadOffset = (totalContributors - index - 1) * -18;
+        const spreadOffset = (totalContributors - index - 1) * -CONTRIBUTORS_INLINE_SPREAD_STEP;
         link.style.setProperty('--contributor-spread', `${spreadOffset}px`);
+        // Keep the rightmost avatar above the overlapping stack so its outer ring remains visible.
+        link.style.zIndex = String(index + 1);
         row.append(link);
     });
 
