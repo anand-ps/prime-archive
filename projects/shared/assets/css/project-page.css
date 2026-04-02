@@ -15,6 +15,7 @@
     --hero-gradient: linear-gradient(135deg, #1b3b52 0%, #1d5f72 45%, #1f7f76 100%);
     --contributors-inline-overlap: 1rem;
     --contributors-inline-spread-step: 23px;
+    --contributors-inline-entry-offset: 30px;
     --radius-lg: 24px;
     --radius-md: 16px;
     --max-width: 1120px;
@@ -451,7 +452,7 @@ h1 {
 @keyframes contributor-inline-unit-reveal {
     from {
         opacity: 0;
-        translate: 10px 0;
+        translate: var(--contributors-inline-entry-offset) 0;
     }
     to {
         opacity: 1;
