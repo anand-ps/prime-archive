@@ -39,6 +39,16 @@ function createContributorPageImage(contributor, className) {
         image.alt = contributor.name ? `${contributor.name} portrait` : 'Contributor portrait';
         image.loading = 'lazy';
         image.decoding = 'async';
+        // Keep photo crops consistent while allowing optional face-focused positioning from contributor data.
+        image.style.objectFit = 'cover';
+        const focusX = contributor.focus?.x ?? 50;
+        const focusY = contributor.focus?.y ?? 50;
+        image.style.objectPosition = `${focusX}% ${focusY}%`;
+        // Optional zoom tightens the crop per contributor without changing the default rendering.
+        const zoom = contributor.zoom ?? 1;
+        image.style.transform = `scale(${zoom})`;
+        // Anchor zoom to the same face-focus point so the subject stays visually stable.
+        image.style.transformOrigin = `${focusX}% ${focusY}%`;
         return image;
     }
 

@@ -4,7 +4,12 @@
       "id": "anand-ps",
       "name": "Anand P S",
       "designation": "Systems Engineer",
-      "photo": "/projects/shared/assets/images/contributors/anand-ps.webp",
+      "photo": "/projects/shared/assets/images/contributors/anand-ps.jpg",
+      "focus": {
+        "x": 65,
+        "y": 5
+      },
+      "zoom": 1.3,
       "bio": "Electrical and Electronics Engineer focused on embedded systems, distributed backend systems, and production-grade software architecture.",
       "links": {
         "email": "mailto:anandps.dev@gmail.com",
@@ -17,6 +22,11 @@
       "name": "Reva Pradeep",
       "designation": "Product Manager",
       "photo": "/projects/shared/assets/images/contributors/reva-pradeep.jpg",
+      "focus": {
+        "x": 50,
+        "y": 34
+      },
+      "zoom": 1.12,
       "bio": "Electrical and Electronics Engineer focused on embedded systems, distributed backend systems, and production-grade software architecture.",
       "links": {
         "email": "mailto:reva-pradeep@gmail.com",
@@ -29,6 +39,11 @@
       "name": "Nesrin Anwer",
       "designation": "Design Engineer",
       "photo": "/projects/shared/assets/images/contributors/nesrin-anwer.png",
+      "focus": {
+        "x": 52,
+        "y": 32
+      },
+      "zoom": 1.08,
       "bio": "Electrical and Electronics Engineer focused on embedded systems, and project management.",
       "links": {
         "email": "mailto:nesrin@gmail.com",

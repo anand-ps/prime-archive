@@ -42,6 +42,17 @@ function createContributorImage(contributor, className) {
         image.alt = contributor.name ? `${contributor.name} portrait` : 'Contributor portrait';
         image.loading = 'lazy';
         image.decoding = 'async';
+        // Match contributor page cropping with optional face-focus coordinates from contributor data.
+        image.style.objectFit = 'cover';
+        const focusX = contributor.focus?.x ?? 50;
+        const focusY = contributor.focus?.y ?? 50;
+        image.style.objectPosition = `${focusX}% ${focusY}%`;
+        // Optional zoom tightens the inline crop per contributor without changing the default rendering.
+        const zoom = contributor.zoom ?? 1;
+        image.style.setProperty('--contributor-zoom', String(zoom));
+        image.style.setProperty('--contributor-enter-zoom', String(zoom * 0.96));
+        // Anchor zoom to the same face-focus point so the subject stays visually stable.
+        image.style.transformOrigin = `${focusX}% ${focusY}%`;
         return image;
     }
 

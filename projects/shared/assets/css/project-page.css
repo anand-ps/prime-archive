@@ -390,6 +390,7 @@ h1 {
     line-height: 0;
     margin-left: -1rem;
     opacity: 0;
+    overflow: hidden;
     position: relative;
     text-decoration: none;
     transform: translateX(0);
@@ -429,6 +430,7 @@ h1 {
     display: inline-flex;
     height: 60px;
     object-fit: cover;
+    transform: scale(var(--contributor-zoom, 1));
     width: 60px;
 }
 
@@ -453,10 +455,10 @@ h1 {
 
 @keyframes contributor-inline-reveal {
     from {
-        transform: translateX(10px) scale(0.96);
+        transform: translateX(10px) scale(var(--contributor-enter-zoom, 0.96));
     }
     to {
-        transform: translateX(0) scale(1);
+        transform: translateX(0) scale(var(--contributor-zoom, 1));
     }
 }
 
