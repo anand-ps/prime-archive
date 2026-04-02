@@ -6,11 +6,11 @@
       "designation": "Systems Engineer",
       "photo": "/projects/shared/assets/images/contributors/anand-ps.jpg",
       "focus": {
-        "x": 65,
-        "y": 5
+        "x": 68,
+        "y": 1
       },
-      "zoom": 1.3,
-      "bio": "Electrical and Electronics Engineer focused on embedded systems, distributed backend systems, and production-grade software architecture.",
+      "zoom": 1.1,
+      "bio": "Engineer specializing in distributed backend architectures, embedded systems, and production-grade software design. Builds efficient, fault-tolerant systems with a focus on scalability and long-term maintainability.",
       "links": {
         "email": "mailto:anandps.dev@gmail.com",
         "linkedin": "https://www.linkedin.com/in/anand-ps",
@@ -24,14 +24,14 @@
       "photo": "/projects/shared/assets/images/contributors/reva-pradeep.jpg",
       "focus": {
         "x": 50,
-        "y": 34
+        "y": 50
       },
-      "zoom": 1.12,
-      "bio": "Electrical and Electronics Engineer focused on embedded systems, distributed backend systems, and production-grade software architecture.",
+      "zoom": 1,
+      "bio": "Product-focused professional with experience in business analysis and leading social initiatives. Combines analytical thinking with structured execution to drive outcomes. Brings a leadership mindset with a focus on problem-solving and impact.",
       "links": {
-        "email": "mailto:reva-pradeep@gmail.com",
-        "linkedin": "https://www.linkedin.com/in/anand-ps",
-        "github": "https://github.com/anand-ps"
+        "email": "mailto:revapradeep01@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/reva-pradeep-248546202",
+        "github": "https://github.com"
       }
     },
     "nesrin-anwer": {
@@ -40,15 +40,100 @@
       "designation": "Design Engineer",
       "photo": "/projects/shared/assets/images/contributors/nesrin-anwer.png",
       "focus": {
-        "x": 52,
-        "y": 32
+        "x": 50,
+        "y": 50
       },
-      "zoom": 1.08,
-      "bio": "Electrical and Electronics Engineer focused on embedded systems, and project management.",
+      "zoom": 1,
+      "bio": "Electrical and electronics engineer integrating data analytics into system design. Focused on renewable energy, control systems, and signal processing. Driven by hands-on learning and structured problem-solving.",
       "links": {
-        "email": "mailto:nesrin@gmail.com",
-        "linkedin": "https://www.linkedin.com/in/anand-ps",
-        "github": "https://github.com/anand-ps"
+        "email": "mailto:nesrinanwer999@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/nesrin-anwer-a7b0b721a",
+        "github": "https://github.com"
+      }
+    },
+    "ameer-ts": {
+      "id": "ameer-ts",
+      "name": "Ameer T S",
+      "designation": "Design Engineer",
+      "photo": "/projects/shared/assets/images/contributors/ameer-ts.jpg",
+      "focus": {
+        "x": 50,
+        "y": 50
+      },
+      "zoom": 1,
+      "bio": "Electrical engineer with hands-on experience in industrial systems and high-voltage operations. Skilled in PLCs, protective relays, transformers, and SCADA, with a focus on system reliability and efficient operations, and preventive maintenance in critical electrical infrastructure.",
+      "links": {
+        "email": "mailto:ameerts008@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/ameerts",
+        "github": "https://github.com"
+      }
+    },
+    "sahal-mh": {
+      "id": "sahal-mh",
+      "name": "Muhammed Sahal M H",
+      "designation": "Design Engineer",
+      "photo": "/projects/shared/assets/images/contributors/sahal-mh.jpg",
+      "focus": {
+        "x": 50,
+        "y": 50
+      },
+      "zoom": 1,
+      "bio": "Electrical engineer with experience across industrial manufacturing and power systems. Skilled in CNC machine operations, control panel assembly, diagnostics, and substation operations. Focused on system efficiency, fault resolution, and reliable electrical system performance.",
+      "links": {
+        "email": "mailto:sahalhameed3322@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/muhammed-sahal-m-h-391256194",
+        "github": "https://github.com"
+      }
+    },
+    "ananya-ajith": {
+      "id": "ananya-ajith",
+      "name": "Ananya Ajith Kallungal",
+      "designation": "Design Engineer",
+      "photo": "/projects/shared/assets/images/contributors/ananya-ajith.png",
+      "focus": {
+        "x": 50,
+        "y": 50
+      },
+      "zoom": 1,
+      "bio": "Engineer skilled in machine learning, Python, and data-driven systems, with a background in electrical engineering. Focused on building scalable, efficient solutions while applying analytical models and system-level thinking to solve complex problems.",
+      "links": {
+        "email": "mailto:ananya@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/ananya-ajith-kallungal",
+        "github": "https://github.com"
+      }
+    },
+    "anagha-s": {
+      "id": "anagha-s",
+      "name": "Anagha S",
+      "designation": "Design Engineer",
+      "photo": "/projects/shared/assets/images/contributors/anagha-s.jpg",
+      "focus": {
+        "x": 50,
+        "y": 50
+      },
+      "zoom": 1,
+      "bio": "Software developer with a strong focus on machine learning and video analytics. Combines analytical thinking with an artistic approach to build efficient and impactful solutions. Focused on clean architecture, problem-solving, and continuous technical growth.",
+      "links": {
+        "email": "mailto:anaghamenon.mec@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/anagha-s-menon-here",
+        "github": "https://github.com/ANAGHA-20"
+      }
+    },
+    "sidharth-s": {
+      "id": "sidharth-s",
+      "name": "Sidharth S",
+      "designation": "Design Engineer",
+      "photo": "/projects/shared/assets/images/contributors/sidharth-s.jpg",
+      "focus": {
+        "x": 50,
+        "y": 50
+      },
+      "zoom": 1,
+      "bio": "Senior software engineer specializing in distributed systems and scalable backend architecture. Experienced in building high-performance applications using React, TypeScript, Node.js, and Go, with expertise in databases like Aerospike and ArangoDB. Focused on performance optimization, system reliability, and designing robust, production-grade solutions.",
+      "links": {
+        "email": "mailto:siddhuinchakattu@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/sidharthism/",
+        "github": "https://github.com/sidharthism"
       }
     }
   }
