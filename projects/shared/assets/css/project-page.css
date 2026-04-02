@@ -408,7 +408,7 @@ h1 {
 
 .contributors-inline-list:hover .contributors-inline-link,
 .contributors-inline-list:focus-within .contributors-inline-link {
-    transform: translateX(var(--contributor-spread, 0));
+    transform: translateX(calc(var(--contributor-stack-index, 0) * -1 * var(--contributors-inline-spread-step)));
 }
 
 .contributors-inline-visible .contributors-inline-link {
