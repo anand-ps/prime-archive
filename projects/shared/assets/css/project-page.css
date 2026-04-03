@@ -16,6 +16,8 @@
     --contributors-inline-overlap: 1rem;
     --contributors-inline-spread-step: 23px;
     --contributors-inline-entry-offset: 30px;
+    --contributors-inline-hit-padding-x: 18px;
+    --contributors-inline-hit-padding-y: 12px;
     --radius-lg: 24px;
     --radius-md: 16px;
     --max-width: 1120px;
@@ -372,12 +374,23 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     gap: 0;
-    padding-left: 0.4rem;
+    margin:
+        calc(-1 * var(--contributors-inline-hit-padding-y))
+        calc(-1 * var(--contributors-inline-hit-padding-x))
+        calc(-1 * var(--contributors-inline-hit-padding-y))
+        calc(-1 * (var(--contributors-inline-hit-padding-x) + (var(--contributors-inline-max-stack-index, 0) * var(--contributors-inline-spread-step))));
+    padding:
+        var(--contributors-inline-hit-padding-y)
+        var(--contributors-inline-hit-padding-x)
+        var(--contributors-inline-hit-padding-y)
+        calc(var(--contributors-inline-hit-padding-x) + 0.4rem + (var(--contributors-inline-max-stack-index, 0) * var(--contributors-inline-spread-step)));
+    position: relative;
 }
 
 .contributors-inline-list.contributors-inline-list-single {
     justify-content: flex-end;
-    padding-left: 0;
+    margin-left: calc(-1 * var(--contributors-inline-hit-padding-x));
+    padding-left: var(--contributors-inline-hit-padding-x);
 }
 
 .contributors-inline-list.contributors-inline-list-single .contributors-inline-link {
