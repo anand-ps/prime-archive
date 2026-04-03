@@ -15,8 +15,8 @@
     --hero-gradient: linear-gradient(135deg, #1b3b52 0%, #1d5f72 45%, #1f7f76 100%);
     --contributors-inline-avatar-size: 56px;
     --contributors-inline-avatar-size-mobile: 48px;
-    --contributors-inline-overlap: 1rem;
-    --contributors-inline-spread-step: 23px;
+    --contributors-inline-overlap: 0.6rem;
+    --contributors-inline-spread-step: 18px;
     --contributors-inline-entry-offset: 30px;
     --contributors-inline-hit-padding-x: 18px;
     --contributors-inline-hit-padding-y: 12px;
