@@ -7,7 +7,8 @@ if (yearNode) {
 const PROJECT_CONTRIBUTORS_PATH = '/projects/shared/data/project-contributors.json';
 const CONTRIBUTORS_PATH = '/projects/shared/data/contributors.json';
 const MAX_PROJECT_CONTRIBUTORS = 6;
-const CONTRIBUTORS_INLINE_COLLAPSE_DELAY_MS = 1000;
+const CONTRIBUTORS_INLINE_COLLAPSE_DELAY_MS = 500;
+const CONTRIBUTORS_INLINE_REVEAL_STAGGER_MS = 90;
 
 function getProjectSlug() {
     const slugNode = document.body;
@@ -116,6 +117,7 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
     const totalContributors = contributorIds.length;
     row.classList.toggle('contributors-inline-list-single', totalContributors === 1);
     row.style.setProperty('--contributors-inline-max-stack-index', String(Math.max(totalContributors - 1, 0)));
+    row.style.setProperty('--contributors-inline-reveal-stagger-ms', `${CONTRIBUTORS_INLINE_REVEAL_STAGGER_MS}ms`);
 
     contributorIds.forEach((contributorId, index) => {
         const contributor = contributorsById[contributorId];
@@ -125,7 +127,7 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
 
         const link = createContributorLink(projectSlug, contributor);
         const reverseIndex = totalContributors - index - 1;
-        link.style.setProperty('--contributor-enter-delay', `${index * 90}ms`);
+        link.style.setProperty('--contributor-enter-delay', `calc(${index} * var(--contributors-inline-reveal-stagger-ms))`);
         link.style.setProperty('--contributor-stack-index', String(reverseIndex));
         // Keep the leftmost avatar above the overlapping stack so later avatars tuck underneath it.
         link.style.zIndex = String(totalContributors - index);
