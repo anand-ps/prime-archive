@@ -55,12 +55,12 @@
       "id": "ameer-ts",
       "name": "Ameer T S",
       "designation": "Design Engineer",
-      "photo": "/projects/shared/assets/images/contributors/ameer-ts.jpg",
+      "photo": "/projects/shared/assets/images/contributors/ameer-ts.jpeg",
       "focus": {
-        "x": 50,
-        "y": 50
+        "x": 54,
+        "y": 55
       },
-      "zoom": 1,
+      "zoom": 2.1,
       "bio": "Electrical engineer with hands-on experience in industrial systems and high-voltage operations. Skilled in PLCs, protective relays, transformers, and SCADA, with a focus on system reliability and efficient operations, and preventive maintenance in critical electrical infrastructure.",
       "links": {
         "email": "mailto:ameerts008@gmail.com",
@@ -89,12 +89,12 @@
       "id": "ananya-ajith",
       "name": "Ananya Ajith Kallungal",
       "designation": "Design Engineer",
-      "photo": "/projects/shared/assets/images/contributors/ananya-ajith.png",
+      "photo": "/projects/shared/assets/images/contributors/ananya-ajith.jpeg",
       "focus": {
         "x": 50,
-        "y": 50
+        "y": 60
       },
-      "zoom": 1,
+      "zoom": 1.9,
       "bio": "Engineer skilled in machine learning, Python, and data-driven systems, with a background in electrical engineering. Focused on building scalable, efficient solutions while applying analytical models and system-level thinking to solve complex problems.",
       "links": {
         "email": "mailto:ananya@gmail.com",
@@ -106,12 +106,12 @@
       "id": "anagha-s",
       "name": "Anagha S",
       "designation": "Design Engineer",
-      "photo": "/projects/shared/assets/images/contributors/anagha-s.jpg",
+      "photo": "/projects/shared/assets/images/contributors/anagha-s.jpeg",
       "focus": {
-        "x": 50,
-        "y": 50
+        "x": 40,
+        "y": 13
       },
-      "zoom": 1,
+      "zoom": 2.4,
       "bio": "Software developer with a strong focus on machine learning and video analytics. Combines analytical thinking with an artistic approach to build efficient and impactful solutions. Focused on clean architecture, problem-solving, and continuous technical growth.",
       "links": {
         "email": "mailto:anaghamenon.mec@gmail.com",
