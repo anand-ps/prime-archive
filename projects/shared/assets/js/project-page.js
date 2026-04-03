@@ -147,7 +147,7 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
         link.style.setProperty('--contributor-enter-delay', `calc(${index} * var(--contributors-inline-reveal-stagger-ms))`);
         link.style.setProperty('--contributor-stack-index', String(reverseIndex));
         // Keep the leftmost avatar above the overlapping stack so later avatars tuck underneath it.
-        link.style.zIndex = String(totalContributors - index);
+        link.style.setProperty('--contributor-z-index', String(totalContributors - index));
         row.append(link);
     });
 
