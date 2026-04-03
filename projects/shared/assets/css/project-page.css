@@ -468,9 +468,10 @@ h1 {
         transform 180ms ease;
     z-index: 30;
     background: color-mix(in srgb, var(--surface) 97%, #ffffff 3%);
-    border: 1px solid color-mix(in srgb, var(--border) 86%, #ffffff 14%);
+    border: 1px solid color-mix(in srgb, var(--border) 92%, var(--text) 8%);
     border-radius: 12px;
     box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--surface) 78%, transparent) inset,
         0 1px 0 color-mix(in srgb, #ffffff 62%, transparent) inset;
     color: color-mix(in srgb, var(--text) 96%, transparent);
     display: grid;
