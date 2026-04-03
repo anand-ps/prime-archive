@@ -126,8 +126,8 @@ function renderInlineContributors(projectSlug, project, contributorsById) {
         const reverseIndex = totalContributors - index - 1;
         link.style.setProperty('--contributor-enter-delay', `${reverseIndex * 90}ms`);
         link.style.setProperty('--contributor-stack-index', String(reverseIndex));
-        // Keep the rightmost avatar above the overlapping stack so its outer ring remains visible.
-        link.style.zIndex = String(index + 1);
+        // Keep the leftmost avatar above the overlapping stack so later avatars tuck underneath it.
+        link.style.zIndex = String(totalContributors - index);
         row.append(link);
     });
 
