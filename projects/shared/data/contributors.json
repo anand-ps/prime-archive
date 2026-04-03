@@ -9,7 +9,7 @@
         "x": 68,
         "y": 1
       },
-      "zoom": 1.1,
+      "zoom": 1,
       "bio": "Engineer specializing in distributed backend architectures, embedded systems, and production-grade software design. Builds efficient, fault-tolerant systems with a focus on scalability and long-term maintainability.",
       "links": {
         "email": "mailto:anandps.dev@gmail.com",
@@ -88,7 +88,7 @@
     "ananya-ajith": {
       "id": "ananya-ajith",
       "name": "Ananya Ajith Kallungal",
-      "designation": "Design Engineer",
+      "designation": "ML Engineer",
       "photo": "/projects/shared/assets/images/contributors/ananya-ajith.jpeg",
       "focus": {
         "x": 50,
@@ -97,7 +97,7 @@
       "zoom": 1.9,
       "bio": "Engineer skilled in machine learning, Python, and data-driven systems, with a background in electrical engineering. Focused on building scalable, efficient solutions while applying analytical models and system-level thinking to solve complex problems.",
       "links": {
-        "email": "mailto:ananya@gmail.com",
+        "email": "mailto:ananyakallungal@gmail.com",
         "linkedin": "https://www.linkedin.com/in/ananya-ajith-kallungal",
         "github": "https://github.com"
       }
