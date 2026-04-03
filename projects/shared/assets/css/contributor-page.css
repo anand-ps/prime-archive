@@ -12,6 +12,7 @@
     --border: #d6cec0;
     --accent: #1c7c72;
     --accent-strong: #145a53;
+    --contributor-profile-avatar-size: 150px;
     --radius-lg: 24px;
     --radius-md: 16px;
     --max-width: 1120px;
@@ -258,9 +259,9 @@ h1 {
     display: flex;
     justify-content: center;
     /* Clip oversized photos inside the circular media frame, including zoomed images. */
-    height: 96px;
+    height: var(--contributor-profile-avatar-size);
     overflow: hidden;
-    width: 96px;
+    width: var(--contributor-profile-avatar-size);
 }
 
 .contributor-profile-photo,
