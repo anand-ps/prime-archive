@@ -70,8 +70,25 @@ function createContributorLink(projectSlug, contributor) {
     link.className = 'contributors-inline-link';
     link.href = createProfileUrl(projectSlug, contributor.id);
     link.setAttribute('aria-label', `View ${contributor.name} and project contributors`);
-    link.title = `${contributor.name} - ${contributor.designation || 'Contributor'}`;
-    link.append(createContributorImage(contributor, 'contributors-inline-photo'));
+
+    const media = document.createElement('span');
+    media.className = 'contributors-inline-link-media';
+    media.append(createContributorImage(contributor, 'contributors-inline-photo'));
+
+    const tooltip = document.createElement('span');
+    tooltip.className = 'contributors-inline-tooltip';
+    tooltip.setAttribute('aria-hidden', 'true');
+
+    const tooltipName = document.createElement('span');
+    tooltipName.className = 'contributors-inline-tooltip-name';
+    tooltipName.textContent = contributor.name || 'Contributor';
+
+    const tooltipRole = document.createElement('span');
+    tooltipRole.className = 'contributors-inline-tooltip-role';
+    tooltipRole.textContent = contributor.designation || 'Contributor';
+
+    tooltip.append(tooltipName, tooltipRole);
+    link.append(media, tooltip);
     return link;
 }
 
