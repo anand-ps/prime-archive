@@ -423,6 +423,7 @@ h1 {
 }
 
 .contributors-inline:hover .contributors-inline-link,
+.contributors-inline.is-hover-expanded .contributors-inline-link,
 .contributors-inline:focus-within .contributors-inline-link {
     transform: translateX(calc(var(--contributor-stack-index, 0) * -1 * var(--contributors-inline-spread-step)));
 }

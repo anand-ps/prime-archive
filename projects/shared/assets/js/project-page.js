@@ -7,6 +7,7 @@ if (yearNode) {
 const PROJECT_CONTRIBUTORS_PATH = '/projects/shared/data/project-contributors.json';
 const CONTRIBUTORS_PATH = '/projects/shared/data/contributors.json';
 const MAX_PROJECT_CONTRIBUTORS = 6;
+const CONTRIBUTORS_INLINE_COLLAPSE_DELAY_MS = 1000;
 
 function getProjectSlug() {
     const slugNode = document.body;
@@ -167,6 +168,48 @@ function initContributorsInlineReveal() {
     observer.observe(inlineHost);
 }
 
+function initContributorsInlineHoverPersistence() {
+    const inlineHost = document.querySelector('[data-contributors-inline]');
+    if (!inlineHost) {
+        return;
+    }
+
+    let collapseTimerId = null;
+
+    function clearCollapseTimer() {
+        if (collapseTimerId === null) {
+            return;
+        }
+
+        window.clearTimeout(collapseTimerId);
+        collapseTimerId = null;
+    }
+
+    function expandInlineContributors() {
+        clearCollapseTimer();
+        inlineHost.classList.add('is-hover-expanded');
+    }
+
+    function scheduleInlineContributorsCollapse() {
+        clearCollapseTimer();
+        collapseTimerId = window.setTimeout(() => {
+            inlineHost.classList.remove('is-hover-expanded');
+            collapseTimerId = null;
+        }, CONTRIBUTORS_INLINE_COLLAPSE_DELAY_MS);
+    }
+
+    inlineHost.addEventListener('pointerenter', expandInlineContributors);
+    inlineHost.addEventListener('pointerleave', scheduleInlineContributorsCollapse);
+    inlineHost.addEventListener('focusin', expandInlineContributors);
+    inlineHost.addEventListener('focusout', () => {
+        if (inlineHost.contains(document.activeElement)) {
+            return;
+        }
+
+        scheduleInlineContributorsCollapse();
+    });
+}
+
 async function initContributors() {
     const inlineHost = document.querySelector('[data-contributors-inline]');
     if (!inlineHost) {
@@ -180,6 +223,7 @@ async function initContributors() {
 
         renderInlineContributors(projectSlug, project, contributors);
         initContributorsInlineReveal();
+        initContributorsInlineHoverPersistence();
     } catch (error) {
         inlineHost.textContent = 'Contributor profiles are unavailable right now.';
     }
