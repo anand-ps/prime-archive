@@ -191,20 +191,6 @@ body {
     margin-bottom: 1rem;
 }
 
-.meta-pill {
-    background: color-mix(in srgb, var(--surface-soft) 84%, var(--accent) 16%);
-    border: 1px solid color-mix(in srgb, var(--border) 62%, var(--accent) 38%);
-    border-radius: 999px;
-    color: var(--accent-strong);
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    font-size: 0.69rem;
-    font-weight: 800;
-    letter-spacing: 0.07em;
-    line-height: 1;
-    padding: 0.3rem 0.55rem;
-    text-transform: uppercase;
-}
-
 .meta-text,
 .post-meta time {
     color: color-mix(in srgb, var(--muted) 86%, var(--text));
@@ -219,6 +205,67 @@ body {
     font-family: "Manrope", "Segoe UI", sans-serif;
     font-size: 0.72rem;
     font-weight: 700;
+}
+
+.project-meta-action {
+    align-items: center;
+    background: color-mix(in srgb, var(--surface) 97%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    border-radius: 999px;
+    box-shadow:
+        0 8px 18px rgba(20, 30, 38, 0.07),
+        0 1px 0 color-mix(in srgb, #ffffff 72%, transparent) inset;
+    color: color-mix(in srgb, var(--text) 84%, var(--accent-strong) 16%);
+    display: inline-flex;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.69rem;
+    font-weight: 800;
+    gap: 0.42rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    min-height: 1.9rem;
+    padding: 0.34rem 0.62rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease;
+}
+
+.project-meta-action:hover,
+.project-meta-action:focus-visible {
+    border-color: color-mix(in srgb, var(--accent) 34%, var(--border) 66%);
+    box-shadow:
+        0 12px 24px rgba(20, 30, 38, 0.1),
+        0 1px 0 color-mix(in srgb, #ffffff 72%, transparent) inset;
+    color: var(--accent-strong);
+    transform: translateY(-1px);
+}
+
+.project-meta-action:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--accent) 22%, #ffffff 78%);
+    outline-offset: 2px;
+}
+
+.project-meta-action-icon {
+    background-color: currentColor;
+    display: block;
+    flex: 0 0 auto;
+    height: 0.92rem;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    width: 0.92rem;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+}
+
+.project-meta-action-icon.icon-github {
+    -webkit-mask-image: url("/assets/icons/brand-github.svg");
+    mask-image: url("/assets/icons/brand-github.svg");
 }
 
 h1,
@@ -715,6 +762,12 @@ h2 {
     .pull-quote {
         margin-top: 1.3rem;
         padding: 0.82rem 0.85rem;
+    }
+
+    .project-meta-action {
+        font-size: 0.66rem;
+        min-height: 1.78rem;
+        padding: 0.32rem 0.56rem;
     }
 
     .contributors-inline {
