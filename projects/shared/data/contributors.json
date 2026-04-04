@@ -20,13 +20,13 @@
     "reva-pradeep": {
       "id": "reva-pradeep",
       "name": "Reva Pradeep",
-      "designation": "Product Manager",
-      "photo": "/projects/shared/assets/images/contributors/reva-pradeep.jpg",
+      "designation": "Business & Product Analysts",
+      "photo": "/projects/shared/assets/images/contributors/reva-pradeep.jpeg",
       "focus": {
-        "x": 50,
-        "y": 50
+        "x": 45,
+        "y": 37
       },
-      "zoom": 1,
+      "zoom": 2,
       "bio": "Product-focused professional with experience in business analysis and leading social initiatives. Combines analytical thinking with structured execution to drive outcomes. Brings a leadership mindset with a focus on problem-solving and impact.",
       "links": {
         "email": "mailto:revapradeep01@gmail.com",
@@ -37,13 +37,13 @@
     "nesrin-anwer": {
       "id": "nesrin-anwer",
       "name": "Nesrin Anwer",
-      "designation": "Design Engineer",
-      "photo": "/projects/shared/assets/images/contributors/nesrin-anwer.png",
+      "designation": "Signal & Data Analytics Developer",
+      "photo": "/projects/shared/assets/images/contributors/nesrin-anwer.jpeg",
       "focus": {
-        "x": 50,
-        "y": 50
+        "x": 7,
+        "y": 65
       },
-      "zoom": 1,
+      "zoom": 2.5,
       "bio": "Electrical and electronics engineer integrating data analytics into system design. Focused on renewable energy, control systems, and signal processing. Driven by hands-on learning and structured problem-solving.",
       "links": {
         "email": "mailto:nesrinanwer999@gmail.com",
@@ -72,7 +72,7 @@
       "id": "sahal-mh",
       "name": "Muhammed Sahal M H",
       "designation": "Hardware Developer",
-      "photo": "/projects/shared/assets/images/contributors/sahal-mh.jpeg",
+      "photo": "/projects/shared/assets/images/contributors/sahal-mh.jpg",
       "focus": {
         "x": 50,
         "y": 10
