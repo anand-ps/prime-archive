@@ -4,12 +4,12 @@
       "id": "anand-ps",
       "name": "Anand P S",
       "designation": "Systems Engineer",
-      "photo": "/projects/shared/assets/images/contributors/anand-ps.png",
+      "photo": "/projects/shared/assets/images/contributors/anand-ps.jpg",
       "focus": {
-        "x": 54,
-        "y": 20
+        "x": 60,
+        "y": 3
       },
-      "zoom": 1.4,
+      "zoom": 1,
       "bio": "Engineer specializing in distributed backend architectures, embedded systems, and production-grade software design. Builds efficient, fault-tolerant systems with a focus on scalability and long-term maintainability.",
       "links": {
         "email": "mailto:anandps.dev@gmail.com",
@@ -20,18 +20,18 @@
     "reva-pradeep": {
       "id": "reva-pradeep",
       "name": "Reva Pradeep",
-      "designation": "Business & Product Analysts",
+      "designation": "Business & Product Analyst",
       "photo": "/projects/shared/assets/images/contributors/reva-pradeep.jpeg",
       "focus": {
         "x": 45,
-        "y": 37
+        "y": 40
       },
-      "zoom": 2,
+      "zoom": 1.7,
       "bio": "Product-focused professional with experience in business analysis and leading social initiatives. Combines analytical thinking with structured execution to drive outcomes. Brings a leadership mindset with a focus on problem-solving and impact.",
       "links": {
         "email": "mailto:revapradeep01@gmail.com",
         "linkedin": "https://www.linkedin.com/in/reva-pradeep-248546202",
-        "github": "https://github.com"
+        "github": "https://github.com/Reva-Pradeep"
       }
     },
     "nesrin-anwer": {
@@ -74,10 +74,10 @@
       "designation": "Hardware Developer",
       "photo": "/projects/shared/assets/images/contributors/sahal-mh.jpg",
       "focus": {
-        "x": 50,
-        "y": 10
+        "x": 45,
+        "y": 37
       },
-      "zoom": 1,
+      "zoom": 2.5,
       "bio": "Electrical engineer with experience across industrial manufacturing and power systems. Skilled in CNC machine operations, control panel assembly, diagnostics, and substation operations. Focused on system efficiency, fault resolution, and reliable electrical system performance.",
       "links": {
         "email": "mailto:sahalhameed3322@gmail.com",
