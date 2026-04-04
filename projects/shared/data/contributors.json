@@ -4,12 +4,12 @@
       "id": "anand-ps",
       "name": "Anand P S",
       "designation": "Systems Engineer",
-      "photo": "/projects/shared/assets/images/contributors/anand-ps.jpg",
+      "photo": "/projects/shared/assets/images/contributors/anand-ps.png",
       "focus": {
-        "x": 68,
-        "y": 1
+        "x": 54,
+        "y": 20
       },
-      "zoom": 1,
+      "zoom": 1.4,
       "bio": "Engineer specializing in distributed backend architectures, embedded systems, and production-grade software design. Builds efficient, fault-tolerant systems with a focus on scalability and long-term maintainability.",
       "links": {
         "email": "mailto:anandps.dev@gmail.com",
@@ -54,7 +54,7 @@
     "ameer-ts": {
       "id": "ameer-ts",
       "name": "Ameer T S",
-      "designation": "Design Engineer",
+      "designation": "Power Electronics Developer",
       "photo": "/projects/shared/assets/images/contributors/ameer-ts.jpeg",
       "focus": {
         "x": 54,
@@ -65,17 +65,17 @@
       "links": {
         "email": "mailto:ameerts008@gmail.com",
         "linkedin": "https://www.linkedin.com/in/ameerts",
-        "github": "https://github.com"
+        "github": "https://github.com/ameeribnushajahan"
       }
     },
     "sahal-mh": {
       "id": "sahal-mh",
       "name": "Muhammed Sahal M H",
-      "designation": "Design Engineer",
-      "photo": "/projects/shared/assets/images/contributors/sahal-mh.jpg",
+      "designation": "Hardware Developer",
+      "photo": "/projects/shared/assets/images/contributors/sahal-mh.jpeg",
       "focus": {
         "x": 50,
-        "y": 50
+        "y": 10
       },
       "zoom": 1,
       "bio": "Electrical engineer with experience across industrial manufacturing and power systems. Skilled in CNC machine operations, control panel assembly, diagnostics, and substation operations. Focused on system efficiency, fault resolution, and reliable electrical system performance.",
@@ -88,7 +88,7 @@
     "ananya-ajith": {
       "id": "ananya-ajith",
       "name": "Ananya Ajith Kallungal",
-      "designation": "ML Engineer",
+      "designation": "ML Developer",
       "photo": "/projects/shared/assets/images/contributors/ananya-ajith.jpeg",
       "focus": {
         "x": 50,
@@ -105,7 +105,7 @@
     "anagha-s": {
       "id": "anagha-s",
       "name": "Anagha S",
-      "designation": "Design Engineer",
+      "designation": "Software Developer",
       "photo": "/projects/shared/assets/images/contributors/anagha-s.jpeg",
       "focus": {
         "x": 40,
@@ -122,18 +122,35 @@
     "sidharth-s": {
       "id": "sidharth-s",
       "name": "Sidharth S",
-      "designation": "Design Engineer",
-      "photo": "/projects/shared/assets/images/contributors/sidharth-s.jpg",
+      "designation": "Software Developer",
+      "photo": "/projects/shared/assets/images/contributors/sidharth-s.jpeg",
       "focus": {
         "x": 50,
-        "y": 50
+        "y": 40
       },
       "zoom": 1,
-      "bio": "Senior software engineer specializing in distributed systems and scalable backend architecture. Experienced in building high-performance applications using React, TypeScript, Node.js, and Go, with expertise in databases like Aerospike and ArangoDB. Focused on performance optimization, system reliability, and designing robust, production-grade solutions.",
+      "bio": "Software developer specializing in distributed systems and scalable backend architecture. Experienced in building high-performance applications using React, TypeScript, Node.js, and Go, with expertise in databases like Aerospike and ArangoDB. Focused on performance optimization, system reliability, and designing robust, production-grade solutions.",
       "links": {
         "email": "mailto:siddhuinchakattu@gmail.com",
         "linkedin": "https://www.linkedin.com/in/sidharthism/",
         "github": "https://github.com/sidharthism"
+      }
+    },
+    "gopika-gopikrishnan": {
+      "id": "gopika-gopikrishnan",
+      "name": "Gopika Gopikrishnan",
+      "designation": "Software Developer",
+      "photo": "/projects/shared/assets/images/contributors/gopika-gopikrishnan.jpeg",
+      "focus": {
+        "x": 50,
+        "y": 40
+      },
+      "zoom": 1,
+      "bio": "Software developer specializing in distributed systems and scalable backend architecture. Experienced in building high-performance applications using React, TypeScript, Node.js, and Go, with expertise in databases like Aerospike and ArangoDB. Focused on performance optimization, system reliability, and designing robust, production-grade solutions.",
+      "links": {
+        "email": "mailto:gopikagopikrishnan@gmail.com",
+        "linkedin": "https://www.linkedin.com/in/gopika-g-krishnan",
+        "github": "https://github.com/gopikagopikrishnan"
       }
     }
   }
