@@ -139,7 +139,7 @@ function buildProjectCards(projects) {
         return [
             '    <article class="contributor-project-card">',
             `        <h3>${escapeHtml(project.title)}</h3>`,
-            `        <p class="contributor-project-meta">${escapeHtml(`${project.contributionLabel} on ${project.title}.`)}<br>Visit the project page for the full system walkthrough and team context.</p>`,
+            `        <p class="contributor-project-meta">${escapeHtml(`${project.contributionLabel} on ${project.title}.`)}<br>Visit the project page for the full context.</p>`,
             '        <div class="contributor-project-actions">',
             `            <a class="contributor-profile-cta" href="${escapeHtml(getProjectPath(project.slug))}">View Project</a>`,
             `            <a class="contributor-project-link" href="${escapeHtml(getProjectContributorDirectoryPath(project.slug))}">Project Team</a>`,
@@ -258,7 +258,7 @@ function buildProfilePage(contributor, projects) {
 
 <header class="project-header">
     <div class="container">
-        <a class="back-link" href="/#projects">Back to Portfolio</a>
+        <a class="back-link" href="/">Back to Home</a>
     </div>
 </header>
 
@@ -267,8 +267,7 @@ function buildProfilePage(contributor, projects) {
 <header class="hero-card reveal contributors-page-hero">
     <p class="eyebrow">CONTRIBUTOR PROFILE</p>
     <div class="post-meta">
-        <span class="meta-pill">Projects</span>
-        <span class="meta-text">${escapeHtml(projectCountLabel)}</span>
+        <span class="meta-pill">Contributor</span>
     </div>
     <h1>${escapeHtml(contributor.name)}</h1>
 </header>

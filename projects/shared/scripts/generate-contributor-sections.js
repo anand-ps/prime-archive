@@ -247,7 +247,6 @@ function buildProfileLinks(contributor) {
 }
 
 function buildContributorCard(contributor) {
-    const linksMarkup = buildProfileLinks(contributor);
     const profileHref = getPersonPath(contributor.id);
     const sections = [
         `<article class="contributor-profile-card" id="member-${escapeHtml(contributor.id)}">`,
@@ -266,10 +265,6 @@ function buildContributorCard(contributor) {
 
     sections.push('        <div class="contributor-profile-actions">');
     sections.push(`            <a class="contributor-profile-cta" href="${escapeHtml(profileHref)}">View Profile</a>`);
-
-    if (linksMarkup) {
-        sections.push(indentBlock(linksMarkup, 3));
-    }
 
     sections.push('        </div>');
     sections.push('    </div>');

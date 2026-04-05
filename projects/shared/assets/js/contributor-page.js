@@ -175,7 +175,6 @@ function createContributorPageCard(contributor, activeMemberId) {
         profileLink.href = profileUrl;
         profileLink.textContent = 'View Profile';
         actions.append(profileLink);
-        actions.append(linksRow);
         content.append(actions);
     } else {
         const actions = document.createElement('div');

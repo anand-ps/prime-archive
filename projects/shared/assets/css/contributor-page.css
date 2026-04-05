@@ -409,6 +409,15 @@ h1 {
     transform: translateY(-1px);
 }
 
+.contributors-directory .contributor-profile-cta {
+    width: 100%;
+}
+
+.contributors-directory .contributor-profile-actions {
+    align-items: center;
+    width: 100%;
+}
+
 .contributor-profile-links {
     justify-content: center;
     display: flex;
@@ -579,6 +588,7 @@ h1 {
 }
 
 .contributor-project-actions {
+    align-items: center;
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
