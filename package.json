@@ -8,8 +8,9 @@
     "generate:carousels": "node projects/shared/scripts/generate-project-image-manifests.js",
     "generate:project-html": "node projects/shared/scripts/generate-project-image-html.js",
     "generate:contributors": "node projects/shared/scripts/generate-contributor-sections.js",
+    "generate:github-repos": "node projects/shared/scripts/fetch-contributor-github-repos.js",
     "generate:contributor-profiles": "node projects/shared/scripts/generate-contributor-profiles.js",
-    "prestart": "npm run generate:contributor-thumbs && npm run generate:carousels && npm run generate:project-html && npm run generate:contributors && npm run generate:contributor-profiles",
+    "prestart": "npm run generate:contributor-thumbs && npm run generate:carousels && npm run generate:project-html && npm run generate:contributors && npm run generate:github-repos && npm run generate:contributor-profiles",
     "start": "serve ."
   },
   "repository": {

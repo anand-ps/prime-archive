@@ -4,6 +4,7 @@ const path = require('path');
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
 const contributorsPath = path.join(repoRoot, 'projects', 'shared', 'data', 'contributors.json');
 const projectContributorsPath = path.join(repoRoot, 'projects', 'shared', 'data', 'project-contributors.json');
+const githubReposPath = path.join(repoRoot, 'projects', 'shared', 'data', 'github-repos.json');
 const contributorsRoot = path.join(repoRoot, 'contributors');
 const sitemapPath = path.join(repoRoot, 'sitemap.xml');
 const siteOrigin = 'https://anandps.in';
@@ -67,6 +68,15 @@ function getProjectUrl(projectSlug) {
 
 function getProjectContributorDirectoryPath(projectSlug) {
     return `/projects/${projectSlug}/contributors/`;
+}
+
+function getRepoNameFromUrl(url) {
+    if (!url) {
+        return '';
+    }
+
+    const match = String(url).trim().match(/^https?:\/\/github\.com\/[^/?#]+\/([^/?#]+)\/?$/i);
+    return match ? match[1].toLowerCase() : '';
 }
 
 function buildMetaLinks(contributor) {
@@ -136,13 +146,25 @@ function buildProjectCards(projects) {
     }
 
     const cards = projects.map((project) => {
+        const isGithubRepo = project.type === 'github-repo';
+        const title = project.title || project.name || 'Repository';
+        const detailLine = isGithubRepo
+            ? (project.description || 'Public GitHub repository.')
+            : `${project.contributionLabel} on ${title}.`;
+        const secondaryAction = isGithubRepo
+            ? '            <span class="contributor-project-link contributor-project-link-disabled" aria-disabled="true">Project Team</span>'
+            : `            <a class="contributor-project-link" href="${escapeHtml(getProjectContributorDirectoryPath(project.slug))}">Project Team</a>`;
+        const primaryHref = isGithubRepo
+            ? project.repoUrl
+            : getProjectPath(project.slug);
+
         return [
             '    <article class="contributor-project-card">',
-            `        <h3>${escapeHtml(project.title)}</h3>`,
-            `        <p class="contributor-project-meta">${escapeHtml(`${project.contributionLabel} on ${project.title}.`)}<br>Visit the project page for the full context.</p>`,
+            `        <h3>${escapeHtml(title)}</h3>`,
+            `        <p class="contributor-project-meta">${escapeHtml(detailLine)}<br>${isGithubRepo ? 'Visit the repository for the full context.' : 'Visit the project page for the full context.'}</p>`,
             '        <div class="contributor-project-actions">',
-            `            <a class="contributor-profile-cta" href="${escapeHtml(getProjectPath(project.slug))}">View Project</a>`,
-            `            <a class="contributor-project-link" href="${escapeHtml(getProjectContributorDirectoryPath(project.slug))}">Project Team</a>`,
+            `            <a class="contributor-profile-cta" href="${escapeHtml(primaryHref)}"${isGithubRepo ? ' target="_blank" rel="noreferrer"' : ''}>View Project</a>`,
+            secondaryAction,
             '        </div>',
             '    </article>'
         ].join('\n');
@@ -178,11 +200,14 @@ function buildSubjectOf(projects) {
     return [
         '  "subjectOf": [',
         projects.map((project) => {
+            const targetUrl = project.type === 'github-repo'
+                ? project.repoUrl
+                : getProjectUrl(project.slug);
             return [
                 '    {',
                 '      "@type": "CreativeWork",',
-                `      "name": ${escapeJson(project.title)},`,
-                `      "url": ${escapeJson(getProjectUrl(project.slug))}`,
+                `      "name": ${escapeJson(project.title || project.name || 'Repository')},`,
+                `      "url": ${escapeJson(targetUrl || '')}`,
                 '    }'
             ].join('\n');
         }).join(',\n'),
@@ -324,14 +349,43 @@ function buildContributorProjectMap(projects) {
             }
 
             map.get(contributorId).push({
+                type: 'portfolio-project',
                 slug: projectSlug,
                 title: project.title || projectSlug.replace(/-/g, ' '),
+                repoUrl: project.repoUrl || '',
                 contributionLabel: 'Contributor'
             });
         });
     });
 
     return map;
+}
+
+function mergeContributorProjects(portfolioProjects, githubReposByContributor, contributorId) {
+    const merged = [...portfolioProjects];
+    const seenRepoNames = new Set(
+        portfolioProjects
+            .map((project) => getRepoNameFromUrl(project.repoUrl))
+            .filter(Boolean)
+    );
+    const githubRepos = githubReposByContributor[contributorId]?.repos || [];
+
+    githubRepos.forEach((repo) => {
+        const repoName = String(repo.name || '').toLowerCase();
+        if (!repoName || seenRepoNames.has(repoName)) {
+            return;
+        }
+
+        merged.push({
+            type: 'github-repo',
+            name: repo.name || repo.full_name || 'Repository',
+            title: repo.name || repo.full_name || 'Repository',
+            repoUrl: repo.html_url || '',
+            description: repo.description || `${repo.full_name || repo.name || 'Repository'} public GitHub repository.`
+        });
+    });
+
+    return merged;
 }
 
 function generateSitemap(projects, contributorsById) {
@@ -374,13 +428,21 @@ function generateSitemap(projects, contributorsById) {
 function main() {
     const contributorsData = readJson(contributorsPath);
     const projectContributorsData = readJson(projectContributorsPath);
+    const githubReposData = fs.existsSync(githubReposPath)
+        ? readJson(githubReposPath)
+        : { contributors: {} };
     const contributorsById = contributorsData.contributors || {};
     const projects = projectContributorsData.projects || {};
     const projectsByContributor = buildContributorProjectMap(projects);
+    const githubReposByContributor = githubReposData.contributors || {};
     let updatedCount = 0;
 
     Object.values(contributorsById).forEach((contributor) => {
-        const contributorProjects = projectsByContributor.get(contributor.id) || [];
+        const contributorProjects = mergeContributorProjects(
+            projectsByContributor.get(contributor.id) || [],
+            githubReposByContributor,
+            contributor.id
+        );
         const filePath = path.join(contributorsRoot, contributor.id, 'index.html');
         if (writeFileIfChanged(filePath, buildProfilePage(contributor, contributorProjects))) {
             console.log(`Updated ${path.relative(repoRoot, filePath)}`);

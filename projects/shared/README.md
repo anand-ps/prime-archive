@@ -46,6 +46,7 @@ Contributor page renderer lives in:
 - `projects/shared/assets/js/contributor-page.js`
 - `projects/shared/assets/css/contributor-page.css`
 - `projects/shared/scripts/generate-contributor-sections.js`
+- `projects/shared/scripts/fetch-contributor-github-repos.js`
 - `projects/shared/scripts/generate-contributor-profiles.js`
 
 Each project page can show a one-line contributors strip by setting `data-project-slug` on the `<body>` and adding:
@@ -76,6 +77,8 @@ Each contributor also gets an indexable profile route at:
 ```powershell
 powershell -ExecutionPolicy Bypass -File projects/shared/scripts/generate-contributor-thumbnails.ps1
 node projects/shared/scripts/generate-contributor-sections.js
+node projects/shared/scripts/fetch-contributor-github-repos.js
+node projects/shared/scripts/generate-contributor-profiles.js
 ```
 
 This refreshes:
@@ -83,6 +86,7 @@ This refreshes:
 - contributor inline thumbnails used by project-page avatar strips
 - each project page's inline contributor strip
 - each project contributor route's profile cards
+- cached public GitHub repositories for contributors with valid GitHub profiles
 - each individual contributor profile page
 - contributor entries inside the page JSON-LD blocks
 - sitemap entries for contributor profiles

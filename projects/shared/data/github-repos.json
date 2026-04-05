@@ -1,0 +1,833 @@
+{
+  "generatedAt": "2026-04-05T22:26:59.452Z",
+  "contributors": {
+    "anand-ps": {
+      "username": "anand-ps",
+      "repos": [
+        {
+          "id": 1169148935,
+          "name": "prime-archive",
+          "full_name": "anand-ps/prime-archive",
+          "html_url": "https://github.com/anand-ps/prime-archive",
+          "description": "A selective record of focused effort and evolving perspective.",
+          "language": "HTML",
+          "stargazers_count": 8,
+          "pushed_at": "2026-04-05T22:16:17Z"
+        },
+        {
+          "id": 1201605870,
+          "name": "anand-ps",
+          "full_name": "anand-ps/anand-ps",
+          "html_url": "https://github.com/anand-ps/anand-ps",
+          "description": "Engineer specializing in distributed backend architectures, embedded systems, firmware development, and production-grade software design. Builds efficient, fault-tolerant systems with a focus on scalability and long-term maintainability.",
+          "language": "",
+          "stargazers_count": 8,
+          "pushed_at": "2026-04-05T10:24:19Z"
+        },
+        {
+          "id": 1201831150,
+          "name": "avr-architecture",
+          "full_name": "anand-ps/avr-architecture",
+          "html_url": "https://github.com/anand-ps/avr-architecture",
+          "description": "",
+          "language": "",
+          "stargazers_count": 7,
+          "pushed_at": "2026-04-05T08:15:09Z"
+        },
+        {
+          "id": 1176200170,
+          "name": "react-foundation",
+          "full_name": "anand-ps/react-foundation",
+          "html_url": "https://github.com/anand-ps/react-foundation",
+          "description": "A foundation on top of react framework ",
+          "language": "CSS",
+          "stargazers_count": 3,
+          "pushed_at": "2026-03-20T18:31:31Z"
+        },
+        {
+          "id": 631534165,
+          "name": "Config-Raspberry-Pi",
+          "full_name": "anand-ps/Config-Raspberry-Pi",
+          "html_url": "https://github.com/anand-ps/Config-Raspberry-Pi",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 7,
+          "pushed_at": "2023-05-14T12:59:30Z"
+        },
+        {
+          "id": 552180603,
+          "name": "Robotto",
+          "full_name": "anand-ps/Robotto",
+          "html_url": "https://github.com/anand-ps/Robotto",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 4,
+          "pushed_at": "2022-10-16T02:24:07Z"
+        },
+        {
+          "id": 449596721,
+          "name": "OneDialect",
+          "full_name": "anand-ps/OneDialect",
+          "html_url": "https://github.com/anand-ps/OneDialect",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 2,
+          "pushed_at": "2022-01-19T07:53:18Z"
+        },
+        {
+          "id": 434971704,
+          "name": "Surface-mounted-power-bank",
+          "full_name": "anand-ps/Surface-mounted-power-bank",
+          "html_url": "https://github.com/anand-ps/Surface-mounted-power-bank",
+          "description": "Here is a system to instantaneously charge your smartphone with in a SNAP. ",
+          "language": "",
+          "stargazers_count": 3,
+          "pushed_at": "2021-12-24T08:43:06Z"
+        },
+        {
+          "id": 374768926,
+          "name": "Induction-Motor-Dry-Run-Preventer",
+          "full_name": "anand-ps/Induction-Motor-Dry-Run-Preventer",
+          "html_url": "https://github.com/anand-ps/Induction-Motor-Dry-Run-Preventer",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 7,
+          "pushed_at": "2021-12-19T18:07:52Z"
+        },
+        {
+          "id": 439777491,
+          "name": "PLC-Based-Lift",
+          "full_name": "anand-ps/PLC-Based-Lift",
+          "html_url": "https://github.com/anand-ps/PLC-Based-Lift",
+          "description": "",
+          "language": "",
+          "stargazers_count": 5,
+          "pushed_at": "2021-12-19T04:57:35Z"
+        },
+        {
+          "id": 434966119,
+          "name": "Industrial-grade-3-phase-load-equalizer",
+          "full_name": "anand-ps/Industrial-grade-3-phase-load-equalizer",
+          "html_url": "https://github.com/anand-ps/Industrial-grade-3-phase-load-equalizer",
+          "description": "Here is a system to equalize the overall load on every phases of a 3 phase system to almost a steady and same value.",
+          "language": "",
+          "stargazers_count": 4,
+          "pushed_at": "2021-12-05T18:08:43Z"
+        },
+        {
+          "id": 374758646,
+          "name": "Universal-SLA-Battery-Charger",
+          "full_name": "anand-ps/Universal-SLA-Battery-Charger",
+          "html_url": "https://github.com/anand-ps/Universal-SLA-Battery-Charger",
+          "description": "",
+          "language": "",
+          "stargazers_count": 2,
+          "pushed_at": "2021-12-04T18:31:18Z"
+        },
+        {
+          "id": 375301825,
+          "name": "IoT_Based_Modern-Sanitizer-Dispenser",
+          "full_name": "anand-ps/IoT_Based_Modern-Sanitizer-Dispenser",
+          "html_url": "https://github.com/anand-ps/IoT_Based_Modern-Sanitizer-Dispenser",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 7,
+          "pushed_at": "2021-12-04T18:26:59Z"
+        },
+        {
+          "id": 434960878,
+          "name": "Data-acquisition-system-for-lathe",
+          "full_name": "anand-ps/Data-acquisition-system-for-lathe",
+          "html_url": "https://github.com/anand-ps/Data-acquisition-system-for-lathe",
+          "description": "This is a system used to measure the force exerted on the tool which is used in Lathe at mechanical workshops.",
+          "language": "C++",
+          "stargazers_count": 2,
+          "pushed_at": "2021-12-04T17:20:40Z"
+        },
+        {
+          "id": 434955324,
+          "name": "Induction-based-steam-cake-maker",
+          "full_name": "anand-ps/Induction-based-steam-cake-maker",
+          "html_url": "https://github.com/anand-ps/Induction-based-steam-cake-maker",
+          "description": "This is a device to improve steam cake making process. Here it uses an Induction base to heat up the water in an efficient way and making the entire device as a portable one.",
+          "language": "",
+          "stargazers_count": 4,
+          "pushed_at": "2021-12-04T16:50:55Z"
+        },
+        {
+          "id": 375316892,
+          "name": "Attiny13-based-LED-driver",
+          "full_name": "anand-ps/Attiny13-based-LED-driver",
+          "html_url": "https://github.com/anand-ps/Attiny13-based-LED-driver",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 3,
+          "pushed_at": "2021-06-19T21:02:21Z"
+        },
+        {
+          "id": 374751926,
+          "name": "Candle-Power-Bank",
+          "full_name": "anand-ps/Candle-Power-Bank",
+          "html_url": "https://github.com/anand-ps/Candle-Power-Bank",
+          "description": "",
+          "language": "",
+          "stargazers_count": 6,
+          "pushed_at": "2021-06-07T17:48:05Z"
+        },
+        {
+          "id": 374715080,
+          "name": "Industrial-Grade-Notification-System",
+          "full_name": "anand-ps/Industrial-Grade-Notification-System",
+          "html_url": "https://github.com/anand-ps/Industrial-Grade-Notification-System",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 5,
+          "pushed_at": "2021-06-07T16:52:40Z"
+        },
+        {
+          "id": 368556797,
+          "name": "PIR-based-Presence-detection",
+          "full_name": "anand-ps/PIR-based-Presence-detection",
+          "html_url": "https://github.com/anand-ps/PIR-based-Presence-detection",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 4,
+          "pushed_at": "2021-05-18T16:12:57Z"
+        }
+      ]
+    },
+    "reva-pradeep": {
+      "username": "Reva-Pradeep",
+      "repos": []
+    },
+    "ameer-ts": {
+      "username": "ameeribnushajahan",
+      "repos": [
+        {
+          "id": 438316570,
+          "name": "first-HARDWARE-PROJECT",
+          "full_name": "ameeribnushajahan/first-HARDWARE-PROJECT",
+          "html_url": "https://github.com/ameeribnushajahan/first-HARDWARE-PROJECT",
+          "description": "",
+          "language": "",
+          "stargazers_count": 0,
+          "pushed_at": "2021-12-14T16:09:14Z"
+        }
+      ]
+    },
+    "sahal-mh": {
+      "username": "muhammed-sahal-m-h",
+      "repos": []
+    },
+    "ananya-ajith": {
+      "username": "ananya-ajith-kallungal",
+      "repos": [
+        {
+          "id": 318585135,
+          "name": "newgithub",
+          "full_name": "ananya-ajith-kallungal/newgithub",
+          "html_url": "https://github.com/ananya-ajith-kallungal/newgithub",
+          "description": "",
+          "language": "",
+          "stargazers_count": 0,
+          "pushed_at": "2020-12-04T17:16:14Z"
+        }
+      ]
+    },
+    "anagha-s": {
+      "username": "ANAGHA-20",
+      "repos": [
+        {
+          "id": 665071891,
+          "name": "Tic-Tac-Toe",
+          "full_name": "ANAGHA-20/Tic-Tac-Toe",
+          "html_url": "https://github.com/ANAGHA-20/Tic-Tac-Toe",
+          "description": "React Tutorial implementation for Tic-Tac-Toe",
+          "language": "JavaScript",
+          "stargazers_count": 0,
+          "pushed_at": "2023-07-11T11:23:09Z"
+        },
+        {
+          "id": 662871148,
+          "name": "4-rolling-balls-challenge",
+          "full_name": "ANAGHA-20/4-rolling-balls-challenge",
+          "html_url": "https://github.com/ANAGHA-20/4-rolling-balls-challenge",
+          "description": "",
+          "language": "Java",
+          "stargazers_count": 0,
+          "pushed_at": "2023-07-06T04:23:45Z"
+        },
+        {
+          "id": 662117148,
+          "name": "java_excercism_practice",
+          "full_name": "ANAGHA-20/java_excercism_practice",
+          "html_url": "https://github.com/ANAGHA-20/java_excercism_practice",
+          "description": "",
+          "language": "Java",
+          "stargazers_count": 0,
+          "pushed_at": "2023-07-04T11:48:40Z"
+        },
+        {
+          "id": 659052470,
+          "name": "git-test",
+          "full_name": "ANAGHA-20/git-test",
+          "html_url": "https://github.com/ANAGHA-20/git-test",
+          "description": "Testing github lessons",
+          "language": "",
+          "stargazers_count": 0,
+          "pushed_at": "2023-06-27T06:36:20Z"
+        },
+        {
+          "id": 318502991,
+          "name": "ANN-vs-CNN",
+          "full_name": "ANAGHA-20/ANN-vs-CNN",
+          "html_url": "https://github.com/ANAGHA-20/ANN-vs-CNN",
+          "description": "",
+          "language": "Jupyter Notebook",
+          "stargazers_count": 0,
+          "pushed_at": "2022-10-15T15:18:24Z"
+        },
+        {
+          "id": 551993236,
+          "name": "R-projects",
+          "full_name": "ANAGHA-20/R-projects",
+          "html_url": "https://github.com/ANAGHA-20/R-projects",
+          "description": "",
+          "language": "R",
+          "stargazers_count": 0,
+          "pushed_at": "2022-10-15T15:15:04Z"
+        },
+        {
+          "id": 551966931,
+          "name": "FashionEye",
+          "full_name": "ANAGHA-20/FashionEye",
+          "html_url": "https://github.com/ANAGHA-20/FashionEye",
+          "description": "",
+          "language": "Jupyter Notebook",
+          "stargazers_count": 1,
+          "pushed_at": "2022-10-15T14:36:14Z"
+        },
+        {
+          "id": 551835521,
+          "name": "ML-projects",
+          "full_name": "ANAGHA-20/ML-projects",
+          "html_url": "https://github.com/ANAGHA-20/ML-projects",
+          "description": "My attempts to try out new things in ML",
+          "language": "Jupyter Notebook",
+          "stargazers_count": 0,
+          "pushed_at": "2022-10-15T13:59:44Z"
+        },
+        {
+          "id": 519479226,
+          "name": "pipeline_paddle",
+          "full_name": "ANAGHA-20/pipeline_paddle",
+          "html_url": "https://github.com/ANAGHA-20/pipeline_paddle",
+          "description": "",
+          "language": "Python",
+          "stargazers_count": 0,
+          "pushed_at": "2022-07-31T19:04:12Z"
+        },
+        {
+          "id": 431931140,
+          "name": "OneDialect",
+          "full_name": "ANAGHA-20/OneDialect",
+          "html_url": "https://github.com/ANAGHA-20/OneDialect",
+          "description": "",
+          "language": "Python",
+          "stargazers_count": 0,
+          "pushed_at": "2022-02-23T23:57:49Z"
+        },
+        {
+          "id": 370903660,
+          "name": "Titanic_Ml",
+          "full_name": "ANAGHA-20/Titanic_Ml",
+          "html_url": "https://github.com/ANAGHA-20/Titanic_Ml",
+          "description": "My first kaggle notebook",
+          "language": "Jupyter Notebook",
+          "stargazers_count": 0,
+          "pushed_at": "2021-05-26T04:21:29Z"
+        },
+        {
+          "id": 361449781,
+          "name": "ANAGHA-20",
+          "full_name": "ANAGHA-20/ANAGHA-20",
+          "html_url": "https://github.com/ANAGHA-20/ANAGHA-20",
+          "description": "Config files for my GitHub profile.",
+          "language": "",
+          "stargazers_count": 0,
+          "pushed_at": "2021-04-25T14:26:38Z"
+        },
+        {
+          "id": 329567994,
+          "name": "DataScienceProjectsR",
+          "full_name": "ANAGHA-20/DataScienceProjectsR",
+          "html_url": "https://github.com/ANAGHA-20/DataScienceProjectsR",
+          "description": "This is my repository created as part of my course in R",
+          "language": "Rebol",
+          "stargazers_count": 0,
+          "pushed_at": "2021-01-14T09:58:53Z"
+        },
+        {
+          "id": 313294134,
+          "name": "FashionMnistClassifier",
+          "full_name": "ANAGHA-20/FashionMnistClassifier",
+          "html_url": "https://github.com/ANAGHA-20/FashionMnistClassifier",
+          "description": "My first try on image classification",
+          "language": "Jupyter Notebook",
+          "stargazers_count": 1,
+          "pushed_at": "2020-11-16T14:06:08Z"
+        }
+      ]
+    },
+    "sidharth-s": {
+      "username": "sidharthism",
+      "repos": [
+        {
+          "id": 916629981,
+          "name": "dsa",
+          "full_name": "sidharthism/dsa",
+          "html_url": "https://github.com/sidharthism/dsa",
+          "description": "Data structures and algorithms",
+          "language": "Python",
+          "stargazers_count": 0,
+          "pushed_at": "2025-01-14T14:00:41Z"
+        },
+        {
+          "id": 598090708,
+          "name": "cdlab",
+          "full_name": "sidharthism/cdlab",
+          "html_url": "https://github.com/sidharthism/cdlab",
+          "description": "",
+          "language": "C",
+          "stargazers_count": 0,
+          "pushed_at": "2023-02-07T06:02:13Z"
+        },
+        {
+          "id": 247142927,
+          "name": "web-dev",
+          "full_name": "sidharthism/web-dev",
+          "html_url": "https://github.com/sidharthism/web-dev",
+          "description": "Web Development",
+          "language": "JavaScript",
+          "stargazers_count": 2,
+          "pushed_at": "2023-01-05T23:49:13Z"
+        },
+        {
+          "id": 556205336,
+          "name": "react-hooks",
+          "full_name": "sidharthism/react-hooks",
+          "html_url": "https://github.com/sidharthism/react-hooks",
+          "description": "",
+          "language": "JavaScript",
+          "stargazers_count": 0,
+          "pushed_at": "2022-10-24T05:11:23Z"
+        },
+        {
+          "id": 527879350,
+          "name": "Python3",
+          "full_name": "sidharthism/Python3",
+          "html_url": "https://github.com/sidharthism/Python3",
+          "description": "Programming with Python 3",
+          "language": "Jupyter Notebook",
+          "stargazers_count": 2,
+          "pushed_at": "2022-08-25T05:59:26Z"
+        },
+        {
+          "id": 524768623,
+          "name": "api-load-testing",
+          "full_name": "sidharthism/api-load-testing",
+          "html_url": "https://github.com/sidharthism/api-load-testing",
+          "description": "API Load Testing",
+          "language": "Python",
+          "stargazers_count": 1,
+          "pushed_at": "2022-08-18T04:26:22Z"
+        },
+        {
+          "id": 518809828,
+          "name": "LLD",
+          "full_name": "sidharthism/LLD",
+          "html_url": "https://github.com/sidharthism/LLD",
+          "description": "Low Level Design Problems",
+          "language": "C++",
+          "stargazers_count": 0,
+          "pushed_at": "2022-07-28T11:01:46Z"
+        },
+        {
+          "id": 459658768,
+          "name": "stitching-management",
+          "full_name": "sidharthism/stitching-management",
+          "html_url": "https://github.com/sidharthism/stitching-management",
+          "description": "",
+          "language": "HTML",
+          "stargazers_count": 0,
+          "pushed_at": "2022-02-25T09:24:46Z"
+        },
+        {
+          "id": 414526511,
+          "name": "templates",
+          "full_name": "sidharthism/templates",
+          "html_url": "https://github.com/sidharthism/templates",
+          "description": "React, Svelte and GraphQL Server templates for a modern reactive web app",
+          "language": "HTML",
+          "stargazers_count": 1,
+          "pushed_at": "2021-10-29T03:44:56Z"
+        },
+        {
+          "id": 287362813,
+          "name": "sidharthism",
+          "full_name": "sidharthism/sidharthism",
+          "html_url": "https://github.com/sidharthism/sidharthism",
+          "description": "",
+          "language": "",
+          "stargazers_count": 0,
+          "pushed_at": "2021-06-10T18:15:27Z"
+        },
+        {
+          "id": 372810777,
+          "name": "humiture-dashboard",
+          "full_name": "sidharthism/humiture-dashboard",
+          "html_url": "https://github.com/sidharthism/humiture-dashboard",
+          "description": "A unified dashboard for monitoring humidity and temperature",
+          "language": "JavaScript",
+          "stargazers_count": 1,
+          "pushed_at": "2021-06-08T08:21:35Z"
+        },
+        {
+          "id": 362616945,
+          "name": "meccsatt",
+          "full_name": "sidharthism/meccsatt",
+          "html_url": "https://github.com/sidharthism/meccsatt",
+          "description": "",
+          "language": "CSS",
+          "stargazers_count": 9,
+          "pushed_at": "2021-05-12T03:14:55Z"
+        },
+        {
+          "id": 340612985,
+          "name": "RCLCV",
+          "full_name": "sidharthism/RCLCV",
+          "html_url": "https://github.com/sidharthism/RCLCV",
+          "description": "React Component Life Cycle Visualizer",
+          "language": "JavaScript",
+          "stargazers_count": 2,
+          "pushed_at": "2021-02-22T21:53:43Z"
+        },
+        {
+          "id": 333790399,
+          "name": "flashlearn",
+          "full_name": "sidharthism/flashlearn",
+          "html_url": "https://github.com/sidharthism/flashlearn",
+          "description": "",
+          "language": "JavaScript",
+          "stargazers_count": 2,
+          "pushed_at": "2021-02-13T11:21:37Z"
+        },
+        {
+          "id": 326279547,
+          "name": "healthcareplus",
+          "full_name": "sidharthism/healthcareplus",
+          "html_url": "https://github.com/sidharthism/healthcareplus",
+          "description": "Health Care Plus by MentalScripts",
+          "language": "TypeScript",
+          "stargazers_count": 3,
+          "pushed_at": "2021-01-14T21:15:29Z"
+        },
+        {
+          "id": 314772233,
+          "name": "dsc-website",
+          "full_name": "sidharthism/dsc-website",
+          "html_url": "https://github.com/sidharthism/dsc-website",
+          "description": "Developer Student Clubs MEC",
+          "language": "JavaScript",
+          "stargazers_count": 0,
+          "pushed_at": "2020-11-21T23:04:46Z"
+        },
+        {
+          "id": 304451901,
+          "name": "the-seekers-diary",
+          "full_name": "sidharthism/the-seekers-diary",
+          "html_url": "https://github.com/sidharthism/the-seekers-diary",
+          "description": "The Seeker's Diary",
+          "language": "JavaScript",
+          "stargazers_count": 1,
+          "pushed_at": "2020-10-16T08:39:27Z"
+        },
+        {
+          "id": 291150582,
+          "name": "granpi",
+          "full_name": "sidharthism/granpi",
+          "html_url": "https://github.com/sidharthism/granpi",
+          "description": "A simple piano built using Vue and audioSynth.js",
+          "language": "Vue",
+          "stargazers_count": 1,
+          "pushed_at": "2020-08-29T07:00:17Z"
+        },
+        {
+          "id": 286819517,
+          "name": "gridsome-blog",
+          "full_name": "sidharthism/gridsome-blog",
+          "html_url": "https://github.com/sidharthism/gridsome-blog",
+          "description": "",
+          "language": "Vue",
+          "stargazers_count": 0,
+          "pushed_at": "2020-08-14T14:37:31Z"
+        },
+        {
+          "id": 285614954,
+          "name": "ACL",
+          "full_name": "sidharthism/ACL",
+          "html_url": "https://github.com/sidharthism/ACL",
+          "description": "Address Category Listing using FortiGuard Web Filter Lookup",
+          "language": "Python",
+          "stargazers_count": 0,
+          "pushed_at": "2020-08-07T09:13:54Z"
+        },
+        {
+          "id": 274731349,
+          "name": "tudutudutodo",
+          "full_name": "sidharthism/tudutudutodo",
+          "html_url": "https://github.com/sidharthism/tudutudutodo",
+          "description": "To - Do App",
+          "language": "HTML",
+          "stargazers_count": 1,
+          "pushed_at": "2020-07-27T21:57:52Z"
+        },
+        {
+          "id": 283022502,
+          "name": "vercel",
+          "full_name": "sidharthism/vercel",
+          "html_url": "https://github.com/sidharthism/vercel",
+          "description": "",
+          "language": "",
+          "stargazers_count": 0,
+          "pushed_at": "2020-07-27T21:47:04Z"
+        },
+        {
+          "id": 278854925,
+          "name": "sub-its",
+          "full_name": "sidharthism/sub-its",
+          "html_url": "https://github.com/sidharthism/sub-its",
+          "description": "A Subreddit app using Vue",
+          "language": "HTML",
+          "stargazers_count": 0,
+          "pushed_at": "2020-07-17T12:42:20Z"
+        },
+        {
+          "id": 257658697,
+          "name": "excel2020marketing",
+          "full_name": "sidharthism/excel2020marketing",
+          "html_url": "https://github.com/sidharthism/excel2020marketing",
+          "description": "",
+          "language": "CSS",
+          "stargazers_count": 1,
+          "pushed_at": "2020-07-15T14:22:38Z"
+        },
+        {
+          "id": 279057694,
+          "name": "excel2020marketing-new",
+          "full_name": "sidharthism/excel2020marketing-new",
+          "html_url": "https://github.com/sidharthism/excel2020marketing-new",
+          "description": "",
+          "language": "CSS",
+          "stargazers_count": 0,
+          "pushed_at": "2020-07-14T15:03:17Z"
+        },
+        {
+          "id": 261596020,
+          "name": "vr-tour-web",
+          "full_name": "sidharthism/vr-tour-web",
+          "html_url": "https://github.com/sidharthism/vr-tour-web",
+          "description": "VR Tour in Web.",
+          "language": "HTML",
+          "stargazers_count": 0,
+          "pushed_at": "2020-05-05T22:23:59Z"
+        },
+        {
+          "id": 206617821,
+          "name": "sidharthism.github.io",
+          "full_name": "sidharthism/sidharthism.github.io",
+          "html_url": "https://github.com/sidharthism/sidharthism.github.io",
+          "description": "",
+          "language": "CSS",
+          "stargazers_count": 0,
+          "pushed_at": "2020-04-13T18:20:41Z"
+        },
+        {
+          "id": 247520822,
+          "name": "SafeNet",
+          "full_name": "sidharthism/SafeNet",
+          "html_url": "https://github.com/sidharthism/SafeNet",
+          "description": "Women_Safety",
+          "language": "Dart",
+          "stargazers_count": 1,
+          "pushed_at": "2020-03-17T18:44:52Z"
+        },
+        {
+          "id": 247645890,
+          "name": "git",
+          "full_name": "sidharthism/git",
+          "html_url": "https://github.com/sidharthism/git",
+          "description": "Git resources",
+          "language": "",
+          "stargazers_count": 2,
+          "pushed_at": "2020-03-17T14:08:34Z"
+        },
+        {
+          "id": 247143989,
+          "name": "python-dev",
+          "full_name": "sidharthism/python-dev",
+          "html_url": "https://github.com/sidharthism/python-dev",
+          "description": "",
+          "language": "",
+          "stargazers_count": 1,
+          "pushed_at": "2020-03-13T19:20:05Z"
+        }
+      ]
+    },
+    "gopika-gopikrishnan": {
+      "username": "gopikagopikrishnan",
+      "repos": [
+        {
+          "id": 1189155922,
+          "name": "gopikagopikrishnan.github.io",
+          "full_name": "gopikagopikrishnan/gopikagopikrishnan.github.io",
+          "html_url": "https://github.com/gopikagopikrishnan/gopikagopikrishnan.github.io",
+          "description": "",
+          "language": "HTML",
+          "stargazers_count": 0,
+          "pushed_at": "2026-03-31T08:06:50Z"
+        },
+        {
+          "id": 700881244,
+          "name": "Haar-Classifier-and-LBPH-based-Attendance-System",
+          "full_name": "gopikagopikrishnan/Haar-Classifier-and-LBPH-based-Attendance-System",
+          "html_url": "https://github.com/gopikagopikrishnan/Haar-Classifier-and-LBPH-based-Attendance-System",
+          "description": "A facial recognition based attendance system using real time computer vision algorithm",
+          "language": "Python",
+          "stargazers_count": 0,
+          "pushed_at": "2026-03-23T06:00:55Z"
+        },
+        {
+          "id": 1140406982,
+          "name": "gopikagopikrishnan",
+          "full_name": "gopikagopikrishnan/gopikagopikrishnan",
+          "html_url": "https://github.com/gopikagopikrishnan/gopikagopikrishnan",
+          "description": "",
+          "language": "",
+          "stargazers_count": 1,
+          "pushed_at": "2026-03-23T02:44:34Z"
+        },
+        {
+          "id": 1020124215,
+          "name": "ADAPT",
+          "full_name": "gopikagopikrishnan/ADAPT",
+          "html_url": "https://github.com/gopikagopikrishnan/ADAPT",
+          "description": "Adaptive Depth Agnostic Patch-wise Tunable multibeamformer",
+          "language": "Python",
+          "stargazers_count": 1,
+          "pushed_at": "2026-03-22T09:03:13Z"
+        },
+        {
+          "id": 518077679,
+          "name": "8051MC_Temperature-based-Fan-Speed-Control",
+          "full_name": "gopikagopikrishnan/8051MC_Temperature-based-Fan-Speed-Control",
+          "html_url": "https://github.com/gopikagopikrishnan/8051MC_Temperature-based-Fan-Speed-Control",
+          "description": "The project dealt with controlling the speed of a DC Fan using assembly language programming with the aid of 8051 Microcontroller. The simulation and hardware implementation was done.",
+          "language": "C",
+          "stargazers_count": 0,
+          "pushed_at": "2026-01-23T08:30:05Z"
+        },
+        {
+          "id": 512248379,
+          "name": "Basics-of-Verilog",
+          "full_name": "gopikagopikrishnan/Basics-of-Verilog",
+          "html_url": "https://github.com/gopikagopikrishnan/Basics-of-Verilog",
+          "description": "This repository includes the basic verilog codes starting from logic gate implementation to combinational circuits.",
+          "language": "Verilog",
+          "stargazers_count": 0,
+          "pushed_at": "2026-01-23T08:18:13Z"
+        },
+        {
+          "id": 570657310,
+          "name": "Hobby-Arduino-Projects",
+          "full_name": "gopikagopikrishnan/Hobby-Arduino-Projects",
+          "html_url": "https://github.com/gopikagopikrishnan/Hobby-Arduino-Projects",
+          "description": "Implemented Arduino Simple Projects with ElectroBot Basic Starter Kit for UNO R3",
+          "language": "C++",
+          "stargazers_count": 0,
+          "pushed_at": "2026-01-23T05:51:33Z"
+        },
+        {
+          "id": 1140272663,
+          "name": "Bipolar-NRZ-Encoding-and-QPSK",
+          "full_name": "gopikagopikrishnan/Bipolar-NRZ-Encoding-and-QPSK",
+          "html_url": "https://github.com/gopikagopikrishnan/Bipolar-NRZ-Encoding-and-QPSK",
+          "description": "",
+          "language": "MATLAB",
+          "stargazers_count": 0,
+          "pushed_at": "2026-01-23T05:40:11Z"
+        },
+        {
+          "id": 1045539320,
+          "name": "DaaS_INF2006_TA",
+          "full_name": "gopikagopikrishnan/DaaS_INF2006_TA",
+          "html_url": "https://github.com/gopikagopikrishnan/DaaS_INF2006_TA",
+          "description": "",
+          "language": "HCL",
+          "stargazers_count": 0,
+          "pushed_at": "2025-08-27T11:15:22Z"
+        },
+        {
+          "id": 700879690,
+          "name": "Elderly-Fall-Detection-and-Alert-System",
+          "full_name": "gopikagopikrishnan/Elderly-Fall-Detection-and-Alert-System",
+          "html_url": "https://github.com/gopikagopikrishnan/Elderly-Fall-Detection-and-Alert-System",
+          "description": "",
+          "language": "C++",
+          "stargazers_count": 0,
+          "pushed_at": "2023-10-05T13:30:53Z"
+        },
+        {
+          "id": 568343568,
+          "name": "Dam-Shutter-Alerting-and-Opening-System",
+          "full_name": "gopikagopikrishnan/Dam-Shutter-Alerting-and-Opening-System",
+          "html_url": "https://github.com/gopikagopikrishnan/Dam-Shutter-Alerting-and-Opening-System",
+          "description": "A miniproject using 741 Operational Amplifiers and 555 Timer Circuit inorder to open shutters of a dam using pressure sensing in real time and alerting people using a siren made using 555 Timer.",
+          "language": "",
+          "stargazers_count": 0,
+          "pushed_at": "2023-01-14T19:24:21Z"
+        },
+        {
+          "id": 524281609,
+          "name": "Mobile-Battery-Charging-Circuit",
+          "full_name": "gopikagopikrishnan/Mobile-Battery-Charging-Circuit",
+          "html_url": "https://github.com/gopikagopikrishnan/Mobile-Battery-Charging-Circuit",
+          "description": "A basic mobile battery charging circuit using linear voltage regulators and rectifiers alongwith a step-down transformer.",
+          "language": "",
+          "stargazers_count": 0,
+          "pushed_at": "2022-09-19T18:01:44Z"
+        },
+        {
+          "id": 450194120,
+          "name": "Practice-Python",
+          "full_name": "gopikagopikrishnan/Practice-Python",
+          "html_url": "https://github.com/gopikagopikrishnan/Practice-Python",
+          "description": "The repository includes practice exercises for python programmin language starting from basics",
+          "language": "Python",
+          "stargazers_count": 0,
+          "pushed_at": "2022-01-21T09:25:20Z"
+        },
+        {
+          "id": 439874799,
+          "name": "Quiz-Game",
+          "full_name": "gopikagopikrishnan/Quiz-Game",
+          "html_url": "https://github.com/gopikagopikrishnan/Quiz-Game",
+          "description": "A simple typing quiz game with Python 3.",
+          "language": "Python",
+          "stargazers_count": 0,
+          "pushed_at": "2021-12-19T13:46:48Z"
+        }
+      ]
+    }
+  }
+}
