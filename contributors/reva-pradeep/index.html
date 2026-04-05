@@ -92,6 +92,45 @@
     </div>
 </footer>
 
+<script>
+document.addEventListener('click', async (event) => {
+    const trigger = event.target.closest('[data-copy-url]');
+    if (!trigger) {
+        return;
+    }
+
+    const url = trigger.getAttribute('data-copy-url');
+    if (!url) {
+        return;
+    }
+
+    const originalLabel = trigger.querySelector('span:last-child');
+
+    try {
+        await navigator.clipboard.writeText(url);
+        if (originalLabel) {
+            originalLabel.textContent = 'Copied';
+        } else {
+            trigger.textContent = 'Copied';
+        }
+    } catch (error) {
+        if (originalLabel) {
+            originalLabel.textContent = 'Copy failed';
+        } else {
+            trigger.textContent = 'Copy failed';
+        }
+    }
+
+    window.setTimeout(() => {
+        if (originalLabel) {
+            originalLabel.textContent = 'Copy URL';
+        } else {
+            trigger.textContent = 'Copy URL';
+        }
+    }, 1400);
+});
+</script>
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

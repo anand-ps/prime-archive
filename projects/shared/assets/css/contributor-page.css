@@ -600,6 +600,7 @@ h1 {
     border: 1px solid var(--border);
     border-radius: 11px;
     color: var(--text);
+    cursor: pointer;
     display: inline-flex;
     font-family: "Manrope", "Segoe UI", sans-serif;
     font-size: 0.76rem;
@@ -613,6 +614,28 @@ h1 {
 .contributor-project-link:hover,
 .contributor-project-link:focus-visible {
     transform: translateY(-1px);
+}
+
+.contributor-project-link-copy {
+    gap: 0.45rem;
+}
+
+.contributor-project-link-icon {
+    background-color: currentColor;
+    display: block;
+    height: 0.95rem;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    width: 0.95rem;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+}
+
+.contributor-project-link-icon.icon-github {
+    -webkit-mask-image: url("/assets/icons/brand-github.svg");
+    mask-image: url("/assets/icons/brand-github.svg");
 }
 
 .reveal {

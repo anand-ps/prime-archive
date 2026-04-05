@@ -152,7 +152,7 @@ function buildProjectCards(projects) {
             ? (project.description || 'Public GitHub repository.')
             : `${project.contributionLabel} on ${title}.`;
         const secondaryAction = isGithubRepo
-            ? '            <span class="contributor-project-link contributor-project-link-disabled" aria-disabled="true">Project Team</span>'
+            ? `            <button class="contributor-project-link contributor-project-link-copy" type="button" data-copy-url="${escapeHtml(project.repoUrl || '')}" aria-label="${escapeHtml(`Copy GitHub URL for ${title}`)}"><span class="contributor-project-link-icon icon-github" aria-hidden="true"></span><span>Copy URL</span></button>`
             : `            <a class="contributor-project-link" href="${escapeHtml(getProjectContributorDirectoryPath(project.slug))}">Project Team</a>`;
         const primaryHref = isGithubRepo
             ? project.repoUrl
@@ -322,6 +322,45 @@ ${indentBlock(buildProjectCards(projects), 1)}
         <p>&copy; ${new Date().getFullYear()} Anand P S</p>
     </div>
 </footer>
+
+<script>
+document.addEventListener('click', async (event) => {
+    const trigger = event.target.closest('[data-copy-url]');
+    if (!trigger) {
+        return;
+    }
+
+    const url = trigger.getAttribute('data-copy-url');
+    if (!url) {
+        return;
+    }
+
+    const originalLabel = trigger.querySelector('span:last-child');
+
+    try {
+        await navigator.clipboard.writeText(url);
+        if (originalLabel) {
+            originalLabel.textContent = 'Copied';
+        } else {
+            trigger.textContent = 'Copied';
+        }
+    } catch (error) {
+        if (originalLabel) {
+            originalLabel.textContent = 'Copy failed';
+        } else {
+            trigger.textContent = 'Copy failed';
+        }
+    }
+
+    window.setTimeout(() => {
+        if (originalLabel) {
+            originalLabel.textContent = 'Copy URL';
+        } else {
+            trigger.textContent = 'Copy URL';
+        }
+    }, 1400);
+});
+</script>
 
 <script type="application/ld+json">
 ${schemaLines.join('\n')}

@@ -86,7 +86,7 @@
             <p class="contributor-project-meta">ananya-ajith-kallungal/newgithub public GitHub repository.<br>Visit the repository for the full context.</p>
             <div class="contributor-project-actions">
                 <a class="contributor-profile-cta" href="https://github.com/ananya-ajith-kallungal/newgithub" target="_blank" rel="noreferrer">View Project</a>
-                <span class="contributor-project-link contributor-project-link-disabled" aria-disabled="true">Project Team</span>
+                <button class="contributor-project-link contributor-project-link-copy" type="button" data-copy-url="https://github.com/ananya-ajith-kallungal/newgithub" aria-label="Copy GitHub URL for newgithub"><span class="contributor-project-link-icon icon-github" aria-hidden="true"></span><span>Copy URL</span></button>
             </div>
         </article>
     </div>
@@ -99,6 +99,45 @@
         <p>&copy; 2026 Anand P S</p>
     </div>
 </footer>
+
+<script>
+document.addEventListener('click', async (event) => {
+    const trigger = event.target.closest('[data-copy-url]');
+    if (!trigger) {
+        return;
+    }
+
+    const url = trigger.getAttribute('data-copy-url');
+    if (!url) {
+        return;
+    }
+
+    const originalLabel = trigger.querySelector('span:last-child');
+
+    try {
+        await navigator.clipboard.writeText(url);
+        if (originalLabel) {
+            originalLabel.textContent = 'Copied';
+        } else {
+            trigger.textContent = 'Copied';
+        }
+    } catch (error) {
+        if (originalLabel) {
+            originalLabel.textContent = 'Copy failed';
+        } else {
+            trigger.textContent = 'Copy failed';
+        }
+    }
+
+    window.setTimeout(() => {
+        if (originalLabel) {
+            originalLabel.textContent = 'Copy URL';
+        } else {
+            trigger.textContent = 'Copy URL';
+        }
+    }, 1400);
+});
+</script>
 
 <script type="application/ld+json">
 {
