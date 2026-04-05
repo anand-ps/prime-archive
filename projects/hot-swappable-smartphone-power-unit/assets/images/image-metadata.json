@@ -1,0 +1,22 @@
+{
+  "images": {
+    "1_3D Model.webp": {
+      "alt": "3D model of the modular hot-swappable smartphone power unit enclosure"
+    },
+    "2_Power Bank 3D view- Prototype.webp": {
+      "alt": "Prototype 3D view of the smartphone power bank enclosure with swappable battery slot"
+    },
+    "3_Multilayer_PCB.webp": {
+      "alt": "Multilayer PCB layout designed for the hot-swappable smartphone power unit"
+    },
+    "4_MC PCB with Components.webp": {
+      "alt": "Assembled PCB with mounted components for the smartphone power unit prototype"
+    },
+    "5_schematic_dc_protection.webp": {
+      "alt": "Protection circuit schematic used in the hot-swappable smartphone power unit"
+    }
+  },
+  "homepage": {
+    "alt": "Project preview for Surface Mounted Power Bank"
+  }
+}

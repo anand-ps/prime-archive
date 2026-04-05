@@ -57,15 +57,43 @@ function getInitials(name) {
         .join('') || '?';
 }
 
+function createVersionToken(value) {
+    let hash = 5381;
+    const text = String(value ?? '');
+
+    for (let index = 0; index < text.length; index += 1) {
+        hash = ((hash << 5) + hash) + text.charCodeAt(index);
+        hash >>>= 0;
+    }
+
+    return hash.toString(36);
+}
+
+function getInlinePhotoUrl(contributor) {
+    const baseInlinePhoto = contributor.photo
+        .replace('/contributors/', '/contributors/inline/')
+        .replace(/\.[^.]+$/, '.jpg');
+    const focusX = contributor.focus?.x ?? 50;
+    const focusY = contributor.focus?.y ?? 50;
+    const zoom = contributor.zoom ?? 1;
+    const versionToken = createVersionToken([
+        contributor.id || '',
+        contributor.photo || '',
+        formatNumber(focusX),
+        formatNumber(focusY),
+        formatNumber(zoom)
+    ].join('|'));
+
+    return `${baseInlinePhoto}?v=${versionToken}`;
+}
+
 function buildInlineMedia(contributor) {
     if (contributor.photo) {
-        const focusX = contributor.focus?.x ?? 50;
-        const focusY = contributor.focus?.y ?? 50;
-        const zoom = contributor.zoom ?? 1;
+        const inlinePhoto = getInlinePhotoUrl(contributor);
 
         return [
             '<span class="contributors-inline-link-media">',
-            `    <img class="contributors-inline-photo" src="${escapeHtml(contributor.photo)}" alt="${escapeHtml(`${contributor.name} portrait`)}" width="160" height="160" loading="eager" fetchpriority="high" decoding="async" style="object-fit: cover; object-position: ${formatNumber(focusX)}% ${formatNumber(focusY)}%; --contributor-zoom: ${formatNumber(zoom)}; --contributor-enter-zoom: ${formatNumber(zoom * 0.96)}; --contributor-focus-x: ${formatNumber(focusX)}%; --contributor-focus-y: ${formatNumber(focusY)}%;" />`,
+            `    <img class="contributors-inline-photo" src="${escapeHtml(inlinePhoto)}" alt="" aria-hidden="true" width="160" height="160" loading="eager" fetchpriority="high" decoding="async" />`,
             '</span>'
         ].join('\n');
     }
@@ -115,6 +143,38 @@ function buildInlineSection(projectSlug, contributorIds, contributorsById) {
         '    </div>',
         '</section>'
     ].join('\n');
+}
+
+function getContributorPhotoPreloadLinks(contributorIds, contributorsById, limit) {
+    return contributorIds
+        .slice(0, limit)
+        .map((id) => contributorsById[id])
+        .filter((contributor) => contributor && contributor.photo)
+        .map((contributor) => {
+            const inlinePhoto = getInlinePhotoUrl(contributor);
+            return `    <link rel="preload" as="image" href="${escapeHtml(inlinePhoto)}" imagesrcset="${escapeHtml(inlinePhoto)}" fetchpriority="high" />`;
+        })
+        .join('\n');
+}
+
+function buildGeneratedHeadBlock(preloadLinks) {
+    return [
+        '    <!-- GENERATED CONTRIBUTOR PRELOADS START -->',
+        preloadLinks,
+        '    <!-- GENERATED CONTRIBUTOR PRELOADS END -->'
+    ].join('\n');
+}
+
+function upsertGeneratedHeadBlock(content, headBlock, filePath, description) {
+    const withoutBlocks = content.replace(/[ \t]*<!-- GENERATED CONTRIBUTOR PRELOADS START -->[\s\S]*?<!-- GENERATED CONTRIBUTOR PRELOADS END -->\n*/g, '');
+
+    return replaceOrThrow(
+        withoutBlocks,
+        /([ \t]*<link rel="preconnect" href="https:\/\/fonts\.gstatic\.com" crossorigin \/>)[ \t\r\n]*([ \t]*<link href="https:\/\/fonts\.googleapis\.com\/css2\?family=Lora[\s\S]*?rel="stylesheet" \/>)/,
+        `$1\n${headBlock}\n$2`,
+        filePath,
+        description
+    );
 }
 
 function buildProfileMedia(contributor) {
@@ -279,6 +339,10 @@ function replaceOrThrow(content, pattern, replacement, filePath, description) {
 
 function updateProjectPage(filePath, projectSlug, contributorIds, contributorsById) {
     let content = fs.readFileSync(filePath, 'utf8').replace(/\r?\n/g, '\n');
+    const preloadLinks = getContributorPhotoPreloadLinks(contributorIds, contributorsById, maxInlineContributors);
+    const headBlock = buildGeneratedHeadBlock(preloadLinks);
+
+    content = upsertGeneratedHeadBlock(content, headBlock, filePath, 'project contributor preload links');
 
     content = replaceOrThrow(
         content,
@@ -302,6 +366,10 @@ function updateProjectPage(filePath, projectSlug, contributorIds, contributorsBy
 
 function updateContributorPage(filePath, projectTitle, contributorIds, contributorsById) {
     let content = fs.readFileSync(filePath, 'utf8').replace(/\r?\n/g, '\n');
+    const preloadLinks = getContributorPhotoPreloadLinks(contributorIds, contributorsById, maxContributorPageMembers);
+    const headBlock = buildGeneratedHeadBlock(preloadLinks);
+
+    content = upsertGeneratedHeadBlock(content, headBlock, filePath, 'contributor page preload links');
 
     content = replaceOrThrow(
         content,

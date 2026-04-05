@@ -3,5 +3,6 @@
 
 User-agent: *
 Allow: /
+Disallow: /projects/shared/assets/images/contributors/inline/
 
 Sitemap: https://anandps.in/sitemap.xml

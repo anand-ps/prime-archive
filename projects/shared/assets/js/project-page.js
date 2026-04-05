@@ -29,6 +29,45 @@ function getInitials(name) {
         .join('');
 }
 
+function formatContributorNumber(value) {
+    const numericValue = Number(value);
+    if (!Number.isFinite(numericValue)) {
+        return '0';
+    }
+
+    return numericValue.toFixed(3).replace(/\.?0+$/, '');
+}
+
+function createVersionToken(value) {
+    let hash = 5381;
+    const text = String(value ?? '');
+
+    for (let index = 0; index < text.length; index += 1) {
+        hash = ((hash << 5) + hash) + text.charCodeAt(index);
+        hash >>>= 0;
+    }
+
+    return hash.toString(36);
+}
+
+function getInlinePhotoUrl(contributor) {
+    const baseInlinePhoto = contributor.photo
+        .replace('/contributors/', '/contributors/inline/')
+        .replace(/\.[^.]+$/, '.jpg');
+    const focusX = contributor.focus?.x ?? 50;
+    const focusY = contributor.focus?.y ?? 50;
+    const zoom = contributor.zoom ?? 1;
+    const versionToken = createVersionToken([
+        contributor.id || '',
+        contributor.photo || '',
+        formatContributorNumber(focusX),
+        formatContributorNumber(focusY),
+        formatContributorNumber(zoom)
+    ].join('|'));
+
+    return `${baseInlinePhoto}?v=${versionToken}`;
+}
+
 function createProfileUrl(projectSlug, contributorId) {
     const url = new URL(`/projects/${projectSlug}/contributers/`, window.location.origin);
     if (contributorId) {
@@ -41,8 +80,9 @@ function createContributorImage(contributor, className) {
     if (contributor.photo) {
         const image = document.createElement('img');
         image.className = className;
-        image.src = contributor.photo;
-        image.alt = contributor.name ? `${contributor.name} portrait` : 'Contributor portrait';
+        image.src = getInlinePhotoUrl(contributor);
+        image.alt = '';
+        image.setAttribute('aria-hidden', 'true');
         image.width = 160;
         image.height = 160;
         // The inline strip renders only a few visible avatars, so eager loading
@@ -50,18 +90,6 @@ function createContributorImage(contributor, className) {
         image.loading = 'eager';
         image.fetchPriority = 'high';
         image.decoding = 'sync';
-        // Match contributor page cropping with optional face-focus coordinates from contributor data.
-        image.style.objectFit = 'cover';
-        const focusX = contributor.focus?.x ?? 50;
-        const focusY = contributor.focus?.y ?? 50;
-        image.style.objectPosition = `${focusX}% ${focusY}%`;
-        // Optional zoom tightens the inline crop per contributor without changing the default rendering.
-        const zoom = contributor.zoom ?? 1;
-        image.style.setProperty('--contributor-zoom', String(zoom));
-        image.style.setProperty('--contributor-enter-zoom', String(zoom * 0.96));
-        // Anchor zoom to the same face-focus point so the subject stays visually stable.
-        image.style.setProperty('--contributor-focus-x', `${focusX}%`);
-        image.style.setProperty('--contributor-focus-y', `${focusY}%`);
         return image;
     }
 

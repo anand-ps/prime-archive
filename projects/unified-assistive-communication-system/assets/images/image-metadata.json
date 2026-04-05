@@ -1,0 +1,25 @@
+{
+  "images": {
+    "1_assistive_device_master_unit.webp": {
+      "alt": "Master unit of the OneDialect assistive communication system"
+    },
+    "2_raspberrypi_based_master_slave_unit.webp": {
+      "alt": "Raspberry Pi based master and slave units for the assistive communication system"
+    },
+    "3_sbc_unit_side_view.webp": {
+      "alt": "Side view of the single-board computer unit in the assistive device"
+    },
+    "4_dev_stage_edited.webp": {
+      "alt": "Development-stage integration snapshot of the assistive communication prototype"
+    },
+    "5_arduino_based_slave_unit.webp": {
+      "alt": "Arduino-based slave interaction unit for the OneDialect system"
+    },
+    "6_assistive_device_master_unit_side_view.webp": {
+      "alt": "Side profile of the OneDialect master hardware prototype"
+    }
+  },
+  "homepage": {
+    "alt": "Project preview for OneDialect - Assistive Communication Device"
+  }
+}

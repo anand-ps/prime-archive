@@ -475,6 +475,7 @@ h1 {
 }
 
 .contributors-inline-link-media {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--surface-soft) 82%, var(--accent) 18%), color-mix(in srgb, var(--surface) 78%, var(--surface-soft) 22%));
     border-radius: 999px;
     box-shadow:
         0 0 0 3px color-mix(in srgb, var(--surface) 96%, transparent),
@@ -566,18 +567,12 @@ h1 {
 .contributors-inline-photo,
 .contributor-photo-fallback {
     aspect-ratio: 1;
+    background: color-mix(in srgb, var(--surface-soft) 90%, var(--accent) 10%);
     backface-visibility: hidden;
     border-radius: 999px;
     display: block;
     height: 100%;
     object-fit: cover;
-    transform:
-        translateZ(0)
-        scale(var(--contributor-zoom, 1));
-    transform-origin:
-        var(--contributor-focus-x, 50%)
-        var(--contributor-focus-y, 50%);
-    will-change: transform;
     width: 100%;
 }
 

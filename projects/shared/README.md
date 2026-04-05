@@ -24,6 +24,7 @@ Shared files:
 - `projects/shared/assets/css/carousel.css`
 - `projects/shared/assets/js/carousel.js`
 - `projects/shared/scripts/generate-project-image-manifests.js`
+- `projects/shared/scripts/generate-project-image-html.js`
 - `assets/icons/favicon.ico` (use this file for every `<link rel="icon">` so the browser shows a consistent tab icon)
 
 ## Contributors
@@ -33,6 +34,7 @@ Shared contributor data lives in:
 - `projects/shared/data/contributors.json`
 - `projects/shared/data/project-contributors.json`
 - `projects/shared/assets/images/contributors/`
+- `projects/shared/assets/images/contributors/inline/`
 
 Project page renderer lives in:
 
@@ -67,11 +69,13 @@ The route uses shared data but renders only the contributors mapped to that proj
 2. Run:
 
 ```powershell
+powershell -ExecutionPolicy Bypass -File projects/shared/scripts/generate-contributor-thumbnails.ps1
 node projects/shared/scripts/generate-contributor-sections.js
 ```
 
 This refreshes:
 
+- contributor inline thumbnails used by project-page avatar strips
 - each project page's inline contributor strip
 - each contributor route's profile cards
 - contributor entries inside the page JSON-LD blocks
@@ -83,11 +87,35 @@ This refreshes:
 
 ```powershell
 node projects/shared/scripts/generate-project-image-manifests.js
+node projects/shared/scripts/generate-project-image-html.js
 ```
 
 3. Refresh the project page.
 
-The script generates `carousel-manifest.json` inside each project's `assets/images/` folder, and the shared carousel reads from that manifest.
+The manifest generator creates `carousel-manifest.json` inside each project's `assets/images/` folder.
+The HTML generator then refreshes:
+
+- static carousel slide HTML on each project page
+- project image entries inside each project page JSON-LD block
+- homepage project-card preview images from the first image in each manifest
+
+To customize SEO alt text per slide, add an `image-metadata.json` file inside that project's `assets/images/` folder:
+
+```json
+{
+  "images": {
+    "1_example.webp": {
+      "alt": "Custom SEO alt text for this slide"
+    }
+  },
+  "homepage": {
+    "alt": "Custom alt text for the homepage project card image"
+  }
+}
+```
+
+If a file is missing from `image-metadata.json`, the generator falls back to the page's `data-carousel-alt-prefix`.
+It also prints a warning so missing metadata is easy to catch during generation.
 
 ## Notes
 

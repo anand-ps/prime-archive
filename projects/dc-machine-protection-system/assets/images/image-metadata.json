@@ -1,0 +1,19 @@
+{
+  "images": {
+    "1_dc_machine_protection_device.webp": {
+      "alt": "Primary hardware prototype of the DC machine protection system"
+    },
+    "2_dc_machine_protection_device.webp": {
+      "alt": "Front view of the integrated DC machine protection setup"
+    },
+    "3_dc_machine_protection_device.webp": {
+      "alt": "Embedded control and sensing assembly for DC machine protection"
+    },
+    "4_dc_machine_protection_device.webp": {
+      "alt": "Complete relay-based prototype for protecting DC machines from electrical faults"
+    }
+  },
+  "homepage": {
+    "alt": "Project preview for DC Machines Protection System"
+  }
+}
