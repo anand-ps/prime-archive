@@ -37,6 +37,8 @@ function createContributorPageImage(contributor, className) {
         image.className = className;
         image.src = contributor.photo;
         image.alt = contributor.name ? `${contributor.name} portrait` : 'Contributor portrait';
+        image.width = 160;
+        image.height = 160;
         // This page renders only a small fixed set of avatars, so eager loading
         // avoids browser lazy-loading delays that can leave visible portraits blank
         // until the next interaction or repaint.
@@ -213,9 +215,39 @@ function renderContributorPage(projectSlug, project, contributorsById) {
     }
 }
 
+function activateContributorCardFromQuery(host) {
+    if (!host) {
+        return;
+    }
+
+    const activeMemberId = new URLSearchParams(window.location.search).get('member');
+    const cards = host.querySelectorAll('.contributor-profile-card');
+
+    cards.forEach((card) => {
+        card.classList.remove('is-active');
+    });
+
+    if (!activeMemberId) {
+        return;
+    }
+
+    const activeCard = document.getElementById(`member-${activeMemberId}`);
+    if (!activeCard) {
+        return;
+    }
+
+    activeCard.classList.add('is-active');
+    activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 async function initContributorPage() {
     const host = document.querySelector('[data-contributors-page-list]');
     if (!host) {
+        return;
+    }
+
+    if (host.querySelector('.contributor-profile-card')) {
+        activateContributorCardFromQuery(host);
         return;
     }
 
@@ -224,6 +256,7 @@ async function initContributorPage() {
         const projectSlug = getContributorProjectSlug();
         const project = projectSlug ? projects[projectSlug] : null;
         renderContributorPage(projectSlug, project, contributors);
+        activateContributorCardFromQuery(host);
     } catch (error) {
         host.textContent = 'Contributor profiles are unavailable right now.';
     }

@@ -25,6 +25,8 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
     <meta name="twitter:title" content="Anand P S | Systems Engineer" />
     <meta name="twitter:description" content="Embedded systems, electrical engineering, distributed backend systems." />
     <meta name="twitter:image" content="https://anandps.in/assets/images/anand_light_theme.webp" />
+    <meta property="og:image:alt" content="Portrait of Anand P S" />
+    <meta name="twitter:image:alt" content="Portrait of Anand P S" />
 
     <link rel="icon" href="/assets/icons/favicon.ico?v=20260330" sizes="any" type="image/x-icon" />
     <link rel="shortcut icon" href="/assets/icons/favicon.ico?v=20260330" type="image/x-icon" />
@@ -111,7 +113,7 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
             <picture>
                 <source media="(prefers-color-scheme: dark)" srcset="assets/images/dark/anand.webp" />
                 <source media="(prefers-color-scheme: light)" srcset="assets/images/light/anand.webp" />
-                <img src="assets/images/light/anand.webp" alt="Anand P S" loading="lazy" />
+                <img src="assets/images/light/anand.webp" alt="Portrait of Anand P S" width="860" height="1000" loading="eager" fetchpriority="high" />
             </picture>
         </div>
     </div>
@@ -213,13 +215,8 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
     <div class="projects-grid">
         <article class="panel project-card project-card-finance">
             <a class="project-card-link" href="projects/finance-management-system/index.html" aria-label="View project: Personal Finance Management System">
-                <div
-                    class="project-media"
-                    role="img"
-                    aria-label="Project visual for Personal Finance Management System"
-                    data-project-thumbnail-source="/projects/finance-management-system/assets/images/carousel-manifest.json"
-                    data-project-thumbnail-base="/projects/finance-management-system/assets/images/"
-                >
+                <div class="project-media has-project-image">
+                    <img class="project-media-image" src="/projects/finance-management-system/assets/images/1_event_dashboard_mac.webp" alt="Dashboard preview of the Personal Finance Management System" width="1200" height="675" loading="lazy" decoding="async" />
                     <span class="project-media-badge">Fintech</span>
                     <span class="project-media-title">Cloud Finance Service</span>
                 </div>
@@ -237,13 +234,8 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
         </article>
         <article class="panel project-card project-card-assistive">
             <a class="project-card-link" href="projects/unified-assistive-communication-system/index.html" aria-label="View project: OneDialect - Assistive Communication Device">
-                <div
-                    class="project-media"
-                    role="img"
-                    aria-label="Project visual for OneDialect Assistive Communication Device"
-                    data-project-thumbnail-source="/projects/unified-assistive-communication-system/assets/images/carousel-manifest.json"
-                    data-project-thumbnail-base="/projects/unified-assistive-communication-system/assets/images/"
-                >
+                <div class="project-media has-project-image">
+                    <img class="project-media-image" src="/projects/unified-assistive-communication-system/assets/images/1_assistive_device_master_unit.webp" alt="OneDialect assistive communication system hardware prototype" width="1200" height="675" loading="lazy" decoding="async" />
                     <span class="project-media-badge">Assistive Tech</span>
                     <span class="project-media-title">Assistive Device</span>
                 </div>
@@ -261,13 +253,8 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
         </article>
         <article class="panel project-card project-card-power">
             <a class="project-card-link" href="projects/hot-swappable-smartphone-power-unit/index.html" aria-label="View project: Surface Mounted Power Bank">
-                <div
-                    class="project-media"
-                    role="img"
-                    aria-label="Project visual for Surface Mounted Power Bank"
-                    data-project-thumbnail-source="/projects/hot-swappable-smartphone-power-unit/assets/images/carousel-manifest.json"
-                    data-project-thumbnail-base="/projects/hot-swappable-smartphone-power-unit/assets/images/"
-                >
+                <div class="project-media has-project-image">
+                    <img class="project-media-image" src="/projects/hot-swappable-smartphone-power-unit/assets/images/1_3D%20Model.webp" alt="3D model of the hot-swappable smartphone power unit" width="1200" height="675" loading="lazy" decoding="async" />
                     <span class="project-media-badge">Flash Charge</span>
                     <span class="project-media-title">Power Backup Module</span>
                 </div>
@@ -285,13 +272,8 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
         </article>
         <article class="panel project-card project-card-protection">
             <a class="project-card-link" href="projects/dc-machine-protection-system/index.html" aria-label="View project: DC Machines Protection System">
-                <div
-                    class="project-media"
-                    role="img"
-                    aria-label="Project visual for DC Machines Protection System"
-                    data-project-thumbnail-source="/projects/dc-machine-protection-system/assets/images/carousel-manifest.json"
-                    data-project-thumbnail-base="/projects/dc-machine-protection-system/assets/images/"
-                >
+                <div class="project-media has-project-image">
+                    <img class="project-media-image" src="/projects/dc-machine-protection-system/assets/images/1_dc_machine_protection_device.webp" alt="Embedded hardware prototype for the DC machine protection system" width="1200" height="675" loading="lazy" decoding="async" />
                     <span class="project-media-badge">System Protection</span>
                     <span class="project-media-title">Protection Control</span>
                 </div>
@@ -355,13 +337,19 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
   "name": "Anand P S",
   "jobTitle": "Systems Engineer",
   "url": "https://anandps.in/",
+  "image": "https://anandps.in/assets/images/light/anand.webp",
+  "description": "Systems engineer focused on embedded systems, distributed backend systems, and scalable software architecture.",
+  "sameAs": [
+    "https://www.linkedin.com/in/anand-ps",
+    "https://github.com/anand-ps"
+  ],
   "worksFor": {
     "@type": "Organization",
     "name": "Oracle"
   },
   "alumniOf": {
-    "@type": "ModelEngineeringCollege",
-    "name": "Bachelor of Technology in Electrical and Electronics Engineering"
+    "@type": "CollegeOrUniversity",
+    "name": "Model Engineering College"
   }
 }
 </script>

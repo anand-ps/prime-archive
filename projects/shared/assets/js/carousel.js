@@ -95,9 +95,14 @@ carouselLightbox.addEventListener('touchend', (event) => {
 });
 
 async function loadSlidesFromManifest(carouselNode) {
+    const existingSlides = Array.from(carouselNode.querySelectorAll('.project-carousel-slide'));
+    if (existingSlides.length > 0) {
+        return existingSlides;
+    }
+
     const source = carouselNode.dataset.carouselSource;
     if (!source) {
-        return Array.from(carouselNode.querySelectorAll('.project-carousel-slide'));
+        return [];
     }
 
     const response = await fetch(source, { cache: 'no-store' });

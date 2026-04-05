@@ -326,6 +326,11 @@ async function loadProjectThumbnails() {
 
     await Promise.all(
         Array.from(projectThumbnailNodes).map(async (thumbnailNode) => {
+            if (thumbnailNode.querySelector('.project-media-image')) {
+                thumbnailNode.classList.add('has-project-image');
+                return;
+            }
+
             const source = thumbnailNode.dataset.projectThumbnailSource;
             const base = thumbnailNode.dataset.projectThumbnailBase || '';
 

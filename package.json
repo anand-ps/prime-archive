@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "generate:carousels": "node projects/shared/scripts/generate-project-image-manifests.js",
-    "prestart": "npm run generate:carousels",
+    "generate:contributors": "node projects/shared/scripts/generate-contributor-sections.js",
+    "prestart": "npm run generate:carousels && npm run generate:contributors",
     "start": "serve ."
   },
   "repository": {

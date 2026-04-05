@@ -43,6 +43,7 @@ Contributor page renderer lives in:
 
 - `projects/shared/assets/js/contributor-page.js`
 - `projects/shared/assets/css/contributor-page.css`
+- `projects/shared/scripts/generate-contributor-sections.js`
 
 Each project page can show a one-line contributors strip by setting `data-project-slug` on the `<body>` and adding:
 
@@ -55,6 +56,25 @@ Each project also has its own route at:
 - `projects/<project-slug>/contributers/`
 
 The route uses shared data but renders only the contributors mapped to that project.
+
+## How to refresh contributor HTML
+
+1. Update:
+
+- `projects/shared/data/contributors.json`
+- `projects/shared/data/project-contributors.json`
+
+2. Run:
+
+```powershell
+node projects/shared/scripts/generate-contributor-sections.js
+```
+
+This refreshes:
+
+- each project page's inline contributor strip
+- each contributor route's profile cards
+- contributor entries inside the page JSON-LD blocks
 
 ## How to add more photos
 

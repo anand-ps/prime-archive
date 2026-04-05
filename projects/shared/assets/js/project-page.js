@@ -43,6 +43,8 @@ function createContributorImage(contributor, className) {
         image.className = className;
         image.src = contributor.photo;
         image.alt = contributor.name ? `${contributor.name} portrait` : 'Contributor portrait';
+        image.width = 160;
+        image.height = 160;
         // The inline strip renders only a few visible avatars, so eager loading
         // avoids delayed paints that can leave portraits blank until a later interaction.
         image.loading = 'eager';
@@ -311,6 +313,13 @@ function initContributorsInlineTooltipAlignment() {
 async function initContributors() {
     const inlineHost = document.querySelector('[data-contributors-inline]');
     if (!inlineHost) {
+        return;
+    }
+
+    if (inlineHost.querySelector('.contributors-inline-link')) {
+        initContributorsInlineReveal();
+        initContributorsInlineHoverPersistence();
+        initContributorsInlineTooltipAlignment();
         return;
     }
 
