@@ -394,11 +394,11 @@ h1 {
     color: #ffffff;
     display: inline-flex;
     font-family: "Manrope", "Segoe UI", sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.76rem;
     font-weight: 700;
     justify-content: center;
     letter-spacing: 0.02em;
-    padding: 0.62rem 0.9rem;
+    padding: 0.54rem 0.78rem;
     text-decoration: none;
     transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, color 160ms ease;
 }
@@ -433,13 +433,19 @@ h1 {
 }
 
 .contributor-profile-links-large {
+    align-items: center;
+    align-self: start;
+    display: flex;
     gap: 1.15rem;
     justify-content: flex-start;
+    margin-left: 0;
+    width: 100%;
 }
 
 .contributor-profile-links-large .contributor-profile-action-link {
     height: 2.6rem;
-    width: 2.6rem;
+    justify-content: flex-start;
+    width: auto;
 }
 
 .contributor-profile-links-large .contributor-profile-action-icon {
@@ -530,6 +536,7 @@ h1 {
 .contributor-project-list {
     display: grid;
     gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .contributor-project-card {
@@ -585,10 +592,10 @@ h1 {
     color: var(--text);
     display: inline-flex;
     font-family: "Manrope", "Segoe UI", sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.76rem;
     font-weight: 700;
     justify-content: center;
-    padding: 0.62rem 0.9rem;
+    padding: 0.54rem 0.78rem;
     text-decoration: none;
     transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, color 160ms ease;
 }
@@ -686,6 +693,10 @@ h1 {
     .contributor-profile-layout {
         grid-template-columns: 1fr;
         align-items: start;
+    }
+
+    .contributor-project-list {
+        grid-template-columns: 1fr;
     }
 
     .contributor-profile-page .contributor-profile-visual .contributor-profile-media {

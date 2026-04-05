@@ -139,7 +139,7 @@ function buildProjectCards(projects) {
         return [
             '    <article class="contributor-project-card">',
             `        <h3>${escapeHtml(project.title)}</h3>`,
-            `        <p class="contributor-project-meta">${escapeHtml(`${project.contributionLabel} on ${project.title}. Visit the project page for the full system walkthrough and team context.`)}</p>`,
+            `        <p class="contributor-project-meta">${escapeHtml(`${project.contributionLabel} on ${project.title}.`)}<br>Visit the project page for the full system walkthrough and team context.</p>`,
             '        <div class="contributor-project-actions">',
             `            <a class="contributor-profile-cta" href="${escapeHtml(getProjectPath(project.slug))}">View Project</a>`,
             `            <a class="contributor-project-link" href="${escapeHtml(getProjectContributorDirectoryPath(project.slug))}">Project Team</a>`,
