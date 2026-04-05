@@ -9,6 +9,7 @@ const CONTRIBUTORS_PATH = '/projects/shared/data/contributors.json';
 const MAX_PROJECT_CONTRIBUTORS = 6;
 const CONTRIBUTORS_INLINE_COLLAPSE_DELAY_MS = 500;
 const CONTRIBUTORS_INLINE_REVEAL_STAGGER_MS = 90;
+const CONTRIBUTORS_TOOLTIP_VIEWPORT_GUTTER_PX = 8;
 
 function getProjectSlug() {
     const slugNode = document.body;
@@ -229,6 +230,80 @@ function initContributorsInlineHoverPersistence() {
     });
 }
 
+function resetTooltipAlignment(tooltip) {
+    if (!tooltip) {
+        return;
+    }
+
+    tooltip.classList.remove('is-aligned-left', 'is-aligned-right');
+}
+
+function updateTooltipAlignment(link) {
+    if (!link || window.innerWidth > 720) {
+        return;
+    }
+
+    const tooltip = link.querySelector('.contributors-inline-tooltip');
+    if (!tooltip) {
+        return;
+    }
+
+    resetTooltipAlignment(tooltip);
+
+    const viewportWidth = document.documentElement.clientWidth;
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const leftOverflow = CONTRIBUTORS_TOOLTIP_VIEWPORT_GUTTER_PX - tooltipRect.left;
+    const rightOverflow = tooltipRect.right - (viewportWidth - CONTRIBUTORS_TOOLTIP_VIEWPORT_GUTTER_PX);
+
+    if (rightOverflow > 0) {
+        tooltip.classList.add('is-aligned-right');
+        return;
+    }
+
+    if (leftOverflow > 0) {
+        tooltip.classList.add('is-aligned-left');
+    }
+}
+
+function initContributorsInlineTooltipAlignment() {
+    const inlineHost = document.querySelector('[data-contributors-inline]');
+    if (!inlineHost) {
+        return;
+    }
+
+    const links = inlineHost.querySelectorAll('.contributors-inline-link');
+    if (!links.length) {
+        return;
+    }
+
+    links.forEach((link) => {
+        const tooltip = link.querySelector('.contributors-inline-tooltip');
+        if (!tooltip) {
+            return;
+        }
+
+        const updateAlignment = () => updateTooltipAlignment(link);
+        const clearAlignment = () => resetTooltipAlignment(tooltip);
+
+        link.addEventListener('pointerenter', updateAlignment);
+        link.addEventListener('focusin', updateAlignment);
+        link.addEventListener('pointerleave', clearAlignment);
+        link.addEventListener('focusout', clearAlignment);
+    });
+
+    window.addEventListener('resize', () => {
+        links.forEach((link) => {
+            if (link.matches(':hover') || link.contains(document.activeElement)) {
+                updateTooltipAlignment(link);
+                return;
+            }
+
+            const tooltip = link.querySelector('.contributors-inline-tooltip');
+            resetTooltipAlignment(tooltip);
+        });
+    });
+}
+
 async function initContributors() {
     const inlineHost = document.querySelector('[data-contributors-inline]');
     if (!inlineHost) {
@@ -243,6 +318,7 @@ async function initContributors() {
         renderInlineContributors(projectSlug, project, contributors);
         initContributorsInlineReveal();
         initContributorsInlineHoverPersistence();
+        initContributorsInlineTooltipAlignment();
     } catch (error) {
         inlineHost.textContent = 'Contributor profiles are unavailable right now.';
     }

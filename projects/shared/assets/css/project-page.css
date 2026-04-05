@@ -696,6 +696,11 @@ h2 {
 }
 
 @media (max-width: 720px) {
+    html,
+    body {
+        overflow-x: clip;
+    }
+
     .page-bg {
         background:
             radial-gradient(700px 360px at 18% -6%, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 72%),
@@ -778,10 +783,17 @@ h2 {
     .contributors-inline-cluster {
         align-items: flex-end;
         justify-content: flex-end;
+        min-width: 0;
+        width: 100%;
     }
 
     .contributors-inline-label {
         text-align: right;
+    }
+
+    .contributors-inline-list {
+        margin-left: calc(-1 * var(--contributors-inline-hit-padding-x));
+        padding-left: var(--contributors-inline-hit-padding-x);
     }
 
     .contributors-inline-photo,
@@ -800,7 +812,22 @@ h2 {
     }
 
     .contributors-inline-tooltip {
+        left: 50%;
         max-width: 18ch;
+        right: auto;
+        transform: translate(-50%, -6px);
+    }
+
+    .contributors-inline-tooltip.is-aligned-left {
+        left: 0;
+        right: auto;
+        transform: translate(0, -6px);
+    }
+
+    .contributors-inline-tooltip.is-aligned-right {
+        left: auto;
+        right: 0;
+        transform: translate(0, -6px);
     }
 
     .contributors-inline-tooltip-name {
@@ -809,6 +836,18 @@ h2 {
 
     .contributors-inline-tooltip-role {
         font-size: 0.62rem;
+    }
+
+    .contributors-inline-link:hover .contributors-inline-tooltip,
+    .contributors-inline-link:focus-visible .contributors-inline-tooltip {
+        transform: translate(-50%, 0);
+    }
+
+    .contributors-inline-link:hover .contributors-inline-tooltip.is-aligned-left,
+    .contributors-inline-link:focus-visible .contributors-inline-tooltip.is-aligned-left,
+    .contributors-inline-link:hover .contributors-inline-tooltip.is-aligned-right,
+    .contributors-inline-link:focus-visible .contributors-inline-tooltip.is-aligned-right {
+        transform: translate(0, 0);
     }
 
 }
