@@ -256,6 +256,7 @@ h1 {
 
 .contributor-profile-media {
     border-radius: 999px;
+    contain: paint;
     display: flex;
     justify-content: center;
     /* Clip oversized photos inside the circular media frame, including zoomed images. */
@@ -267,14 +268,20 @@ h1 {
 .contributor-profile-photo,
 .contributor-profile-photo.contributor-photo-fallback {
     aspect-ratio: 1;
+    backface-visibility: hidden;
     border: 2px solid color-mix(in srgb, var(--border) 56%, transparent);
     border-radius: 999px;
     box-shadow: 0 14px 24px rgba(20, 30, 38, 0.09);
+    display: block;
     height: 100%;
     /* Fill the frame consistently for mixed source aspect ratios. */
     object-fit: cover;
+    transform: translateZ(0) scale(var(--contributor-profile-photo-zoom, 1));
+    transform-origin:
+        var(--contributor-profile-photo-focus-x, 50%)
+        var(--contributor-profile-photo-focus-y, 50%);
+    will-change: transform;
     width: 100%;
-    height: 100%;
 }
 
 .contributor-photo-fallback {

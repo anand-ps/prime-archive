@@ -479,6 +479,7 @@ h1 {
     box-shadow:
         0 0 0 3px color-mix(in srgb, var(--surface) 96%, transparent),
         0 12px 24px rgba(20, 30, 38, 0.14);
+    contain: paint;
     display: inline-flex;
     height: 100%;
     overflow: hidden;
@@ -565,11 +566,18 @@ h1 {
 .contributors-inline-photo,
 .contributor-photo-fallback {
     aspect-ratio: 1;
+    backface-visibility: hidden;
     border-radius: 999px;
-    display: inline-flex;
+    display: block;
     height: 100%;
     object-fit: cover;
-    transform: scale(var(--contributor-zoom, 1));
+    transform:
+        translateZ(0)
+        scale(var(--contributor-zoom, 1));
+    transform-origin:
+        var(--contributor-focus-x, 50%)
+        var(--contributor-focus-y, 50%);
+    will-change: transform;
     width: 100%;
 }
 
@@ -577,6 +585,7 @@ h1 {
     align-items: center;
     background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 72%, #ffffff 28%), color-mix(in srgb, var(--accent-strong) 78%, #09151b 22%));
     color: #ffffff;
+    display: inline-flex;
     font-family: "Sora", "Segoe UI", sans-serif;
     font-size: 0.95rem;
     font-weight: 700;

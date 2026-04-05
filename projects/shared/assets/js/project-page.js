@@ -43,8 +43,11 @@ function createContributorImage(contributor, className) {
         image.className = className;
         image.src = contributor.photo;
         image.alt = contributor.name ? `${contributor.name} portrait` : 'Contributor portrait';
-        image.loading = 'lazy';
-        image.decoding = 'async';
+        // The inline strip renders only a few visible avatars, so eager loading
+        // avoids delayed paints that can leave portraits blank until a later interaction.
+        image.loading = 'eager';
+        image.fetchPriority = 'high';
+        image.decoding = 'sync';
         // Match contributor page cropping with optional face-focus coordinates from contributor data.
         image.style.objectFit = 'cover';
         const focusX = contributor.focus?.x ?? 50;
@@ -55,7 +58,8 @@ function createContributorImage(contributor, className) {
         image.style.setProperty('--contributor-zoom', String(zoom));
         image.style.setProperty('--contributor-enter-zoom', String(zoom * 0.96));
         // Anchor zoom to the same face-focus point so the subject stays visually stable.
-        image.style.transformOrigin = `${focusX}% ${focusY}%`;
+        image.style.setProperty('--contributor-focus-x', `${focusX}%`);
+        image.style.setProperty('--contributor-focus-y', `${focusY}%`);
         return image;
     }
 
