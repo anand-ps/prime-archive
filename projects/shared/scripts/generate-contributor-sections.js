@@ -7,6 +7,7 @@ const projectContributorsPath = path.join(repoRoot, 'projects', 'shared', 'data'
 const maxInlineContributors = 6;
 const maxContributorPageMembers = 6;
 const revealStaggerMs = 90;
+const siteOrigin = 'https://anandps.in';
 
 function readJson(filePath) {
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -37,6 +38,30 @@ function escapeHtml(value) {
 
 function escapeJsonString(value) {
     return JSON.stringify(String(value ?? ''));
+}
+
+function getProjectPath(projectSlug) {
+    return `/projects/${projectSlug}/`;
+}
+
+function getProjectUrl(projectSlug) {
+    return `${siteOrigin}${getProjectPath(projectSlug)}`;
+}
+
+function getContributorPath(projectSlug) {
+    return `/projects/${projectSlug}/contributors/`;
+}
+
+function getContributorUrl(projectSlug) {
+    return `${siteOrigin}${getContributorPath(projectSlug)}`;
+}
+
+function getPersonPath(contributorId) {
+    return `/contributors/${contributorId}/`;
+}
+
+function getPersonUrl(contributorId) {
+    return `${siteOrigin}${getPersonPath(contributorId)}`;
 }
 
 function formatNumber(value) {
@@ -109,7 +134,7 @@ function buildInlineContributorLink(projectSlug, contributor, index, totalContri
     const reverseIndex = totalContributors - index - 1;
 
     return [
-        `<a class="contributors-inline-link" href="/projects/${projectSlug}/contributers/?member=${escapeHtml(contributor.id)}" aria-label="${escapeHtml(`View ${contributor.name} and project contributors`)}" style="--contributor-enter-delay: calc(${index} * var(--contributors-inline-reveal-stagger-ms)); --contributor-stack-index: ${reverseIndex}; --contributor-z-index: ${totalContributors - index};">`,
+        `<a class="contributors-inline-link" href="${escapeHtml(`${getContributorPath(projectSlug)}?member=${contributor.id}`)}" aria-label="${escapeHtml(`View ${contributor.name} and project contributors`)}" style="--contributor-enter-delay: calc(${index} * var(--contributors-inline-reveal-stagger-ms)); --contributor-stack-index: ${reverseIndex}; --contributor-z-index: ${totalContributors - index};">`,
         indentBlock(buildInlineMedia(contributor), 1),
         '    <span class="contributors-inline-tooltip" aria-hidden="true">',
         `        <span class="contributors-inline-tooltip-name">${escapeHtml(contributor.name || 'Contributor')}</span>`,
@@ -215,33 +240,38 @@ function buildProfileLinks(contributor) {
     }).join('\n');
 
     return [
-        '<div class="contributor-profile-actions">',
-        '    <div class="contributor-profile-links">',
+        '<div class="contributor-profile-links">',
         anchors,
-        '    </div>',
         '</div>'
     ].join('\n');
 }
 
 function buildContributorCard(contributor) {
     const linksMarkup = buildProfileLinks(contributor);
+    const profileHref = getPersonPath(contributor.id);
     const sections = [
         `<article class="contributor-profile-card" id="member-${escapeHtml(contributor.id)}">`,
         '    <div class="contributor-profile-content">',
         '        <div class="contributor-profile-top">',
-        indentBlock(buildProfileMedia(contributor), 3),
+        `            <a class="contributor-profile-primary-link" href="${escapeHtml(profileHref)}" aria-label="${escapeHtml(`View profile for ${contributor.name || 'Contributor'}`)}">`,
+        indentBlock(buildProfileMedia(contributor), 4),
+        '            </a>',
         '            <div class="contributor-profile-identity">',
-        `                <h2>${escapeHtml(contributor.name || 'Contributor')}</h2>`,
+        `                <h2><a class="contributor-profile-heading-link" href="${escapeHtml(profileHref)}">${escapeHtml(contributor.name || 'Contributor')}</a></h2>`,
         `                <p class="contributor-profile-role">${escapeHtml(contributor.designation || 'Project Contributor')}</p>`,
         '            </div>',
         '        </div>',
         `        <p class="contributor-profile-bio">${escapeHtml(contributor.bio || '')}</p>`
     ];
 
+    sections.push('        <div class="contributor-profile-actions">');
+    sections.push(`            <a class="contributor-profile-cta" href="${escapeHtml(profileHref)}">View Profile</a>`);
+
     if (linksMarkup) {
-        sections.push(indentBlock(linksMarkup, 2));
+        sections.push(indentBlock(linksMarkup, 3));
     }
 
+    sections.push('        </div>');
     sections.push('    </div>');
     sections.push('</article>');
 
@@ -284,15 +314,12 @@ function buildProjectSchemaContributors(contributorIds, contributorsById) {
         const parts = [
             '    {',
             '      "@type": "Person",',
-            `      "name": ${escapeJsonString(contributor.name || 'Contributor')}`
+            `      "name": ${escapeJsonString(contributor.name || 'Contributor')},`,
+            `      "url": ${escapeJsonString(getPersonUrl(contributor.id))}`
         ];
 
-        if (contributor.id === 'anand-ps') {
-            parts.push('      ,"url": "https://anandps.in/"');
-        }
-
         parts.push('    }');
-        return parts.join('\n').replace('\n      ,"url"', ',\n      "url"');
+        return parts.join('\n');
     }).join(',\n');
 
     return `  "contributor": [\n${items}\n  ],\n`;
@@ -309,15 +336,12 @@ function buildCollectionItemList(contributorIds, contributorsById) {
             '      {',
             '        "@type": "Person",',
             `        "position": ${index + 1},`,
-            `        "name": ${escapeJsonString(contributor.name || 'Contributor')}`
+            `        "name": ${escapeJsonString(contributor.name || 'Contributor')},`,
+            `        "url": ${escapeJsonString(getPersonUrl(contributor.id))}`
         ];
 
-        if (contributor.id === 'anand-ps') {
-            parts.push('        ,"url": "https://anandps.in/"');
-        }
-
         parts.push('      }');
-        return parts.join('\n').replace('\n        ,"url"', ',\n        "url"');
+        return parts.join('\n');
     }).join(',\n');
 }
 
@@ -365,11 +389,102 @@ function updateProjectPage(filePath, projectSlug, contributorIds, contributorsBy
 }
 
 function updateContributorPage(filePath, projectTitle, contributorIds, contributorsById) {
+    const projectSlug = path.basename(path.dirname(path.dirname(filePath)));
     let content = fs.readFileSync(filePath, 'utf8').replace(/\r?\n/g, '\n');
     const preloadLinks = getContributorPhotoPreloadLinks(contributorIds, contributorsById, maxContributorPageMembers);
     const headBlock = buildGeneratedHeadBlock(preloadLinks);
+    const contributorPageTitle = `Contributors | ${projectTitle}`;
+    const contributorPageDescription = `Meet the contributors behind the ${projectTitle} project.`;
 
     content = upsertGeneratedHeadBlock(content, headBlock, filePath, 'contributor page preload links');
+
+    content = replaceOrThrow(
+        content,
+        /<title>[\s\S]*?<\/title>/,
+        `<title>${escapeHtml(contributorPageTitle)}</title>`,
+        filePath,
+        'contributor page title'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<meta name="description" content="[^"]*" \/>/,
+        `<meta name="description" content="${escapeHtml(`Contributors for the ${projectTitle} project.`)}" />`,
+        filePath,
+        'contributor page description'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<meta name="robots" content="[^"]*" \/>/,
+        '<meta name="robots" content="noindex, follow" />',
+        filePath,
+        'contributor page robots metadata'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<link rel="canonical" href="[^"]*" \/>/,
+        `<link rel="canonical" href="${getContributorUrl(projectSlug)}" />`,
+        filePath,
+        'contributor page canonical metadata'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<meta property="og:type" content="[^"]*" \/>/,
+        '<meta property="og:type" content="website" />',
+        filePath,
+        'contributor page og:type metadata'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<meta property="og:url" content="[^"]*" \/>/,
+        `<meta property="og:url" content="${getContributorUrl(projectSlug)}" />`,
+        filePath,
+        'contributor page og:url metadata'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<meta property="og:title" content="[^"]*" \/>/,
+        `<meta property="og:title" content="${escapeHtml(contributorPageTitle)}" />`,
+        filePath,
+        'contributor page og:title metadata'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<meta property="og:description" content="[^"]*" \/>/,
+        `<meta property="og:description" content="${escapeHtml(contributorPageDescription)}" />`,
+        filePath,
+        'contributor page og:description metadata'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<meta name="twitter:title" content="[^"]*" \/>/,
+        `<meta name="twitter:title" content="${escapeHtml(contributorPageTitle)}" />`,
+        filePath,
+        'contributor page twitter:title metadata'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<meta name="twitter:description" content="[^"]*" \/>/,
+        `<meta name="twitter:description" content="${escapeHtml(contributorPageDescription)}" />`,
+        filePath,
+        'contributor page twitter:description metadata'
+    );
+
+    content = replaceOrThrow(
+        content,
+        /<a class="back-link" href="[^"]*">Back to Project<\/a>/,
+        `<a class="back-link" href="${getProjectPath(projectSlug)}">Back to Project</a>`,
+        filePath,
+        'contributor page back link'
+    );
 
     content = replaceOrThrow(
         content,
@@ -381,6 +496,14 @@ function updateContributorPage(filePath, projectTitle, contributorIds, contribut
 
     content = replaceOrThrow(
         content,
+        /<h1>[\s\S]*?<\/h1>/,
+        `<h1>Contributors for ${escapeHtml(projectTitle)}</h1>`,
+        filePath,
+        'contributor page heading'
+    );
+
+    content = replaceOrThrow(
+        content,
         /<section class="section-card reveal">\s*<div class="contributors-directory" data-contributors-page-list>[\s\S]*?<\/div>\s*<\/section>/,
         buildContributorDirectorySection(contributorIds, contributorsById),
         filePath,
@@ -388,6 +511,14 @@ function updateContributorPage(filePath, projectTitle, contributorIds, contribut
     );
 
     const itemListMarkup = buildCollectionItemList(contributorIds, contributorsById);
+    content = replaceOrThrow(
+        content,
+        /"url": "https:\/\/anandps\.in\/projects\/[^"]+"/,
+        `"url": "${getContributorUrl(projectSlug)}"`,
+        filePath,
+        'contributor page schema url'
+    );
+
     content = replaceOrThrow(
         content,
         /("itemListElement": \[)[\s\S]*?(\n    \])/,
@@ -410,7 +541,7 @@ function main() {
     Object.entries(projects).forEach(([projectSlug, project]) => {
         const contributorIds = Array.isArray(project.contributors) ? project.contributors : [];
         const projectPagePath = path.join(repoRoot, 'projects', projectSlug, 'index.html');
-        const contributorPagePath = path.join(repoRoot, 'projects', projectSlug, 'contributers', 'index.html');
+        const contributorPagePath = path.join(repoRoot, 'projects', projectSlug, 'contributors', 'index.html');
 
         if (fs.existsSync(projectPagePath) && updateProjectPage(projectPagePath, projectSlug, contributorIds, contributorsById)) {
             console.log(`Updated ${path.relative(repoRoot, projectPagePath)}`);

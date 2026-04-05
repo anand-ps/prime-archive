@@ -46,6 +46,7 @@ Contributor page renderer lives in:
 - `projects/shared/assets/js/contributor-page.js`
 - `projects/shared/assets/css/contributor-page.css`
 - `projects/shared/scripts/generate-contributor-sections.js`
+- `projects/shared/scripts/generate-contributor-profiles.js`
 
 Each project page can show a one-line contributors strip by setting `data-project-slug` on the `<body>` and adding:
 
@@ -55,9 +56,13 @@ Each project page can show a one-line contributors strip by setting `data-projec
 
 Each project also has its own route at:
 
-- `projects/<project-slug>/contributers/`
+- `projects/<project-slug>/contributors/`
 
 The route uses shared data but renders only the contributors mapped to that project.
+
+Each contributor also gets an indexable profile route at:
+
+- `contributors/<contributor-id>/`
 
 ## How to refresh contributor HTML
 
@@ -77,8 +82,10 @@ This refreshes:
 
 - contributor inline thumbnails used by project-page avatar strips
 - each project page's inline contributor strip
-- each contributor route's profile cards
+- each project contributor route's profile cards
+- each individual contributor profile page
 - contributor entries inside the page JSON-LD blocks
+- sitemap entries for contributor profiles
 
 ## How to add more photos
 

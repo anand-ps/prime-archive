@@ -44,18 +44,18 @@ Description: Lists downloadable files published from the repository downloads fo
 
 <header class="header">
     <nav class="nav container" aria-label="Primary">
-        <a class="logo" href="../index.html#top">Anand P S</a>
+        <a class="logo" href="/#top">Anand P S</a>
         <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">
             <span></span>
             <span></span>
             <span></span>
         </button>
         <ul id="primary-nav" class="nav-links">
-            <li><a href="../index.html#about">About</a></li>
-            <li><a href="../index.html#domains">Domains</a></li>
-            <li><a href="../index.html#experience">Experience</a></li>
-            <li><a href="../index.html#projects">Projects</a></li>
-            <li><a href="../index.html#contact">Contact</a></li>
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#domains">Domains</a></li>
+            <li><a href="/#experience">Experience</a></li>
+            <li><a href="/#projects">Projects</a></li>
+            <li><a href="/#contact">Contact</a></li>
             <li><a href="/downloads/" aria-current="page">Downloads</a></li>
         </ul>
     </nav>
@@ -64,17 +64,81 @@ Description: Lists downloadable files published from the repository downloads fo
 <main id="top">
 <section class="section container reveal">
     <div class="section-head">
-        <h2>Downloads</h2>
+        <h1>Downloads</h1>
         <p class="section-copy">Download the files I have published from this repository, including resume, bio data, and profile assets.</p>
     </div>
     <div class="hero-actions">
-        <a class="btn btn-ghost" href="../index.html">Back to Home</a>
+        <a class="btn btn-ghost" href="/">Back to Home</a>
     </div>
     <div class="downloads-grid" data-downloads-list>
-        <article class="panel download-card download-card-empty">
-            <p>Loading download entries...</p>
+        <article class="panel download-card">
+            <div class="download-card-header">
+                <div class="download-card-title-group">
+                    <h3>Resume</h3>
+                    <p class="download-description">Latest professional resume and role summary.</p>
+                </div>
+                <span class="download-status download-status-available">Available</span>
+            </div>
+            <ul class="download-meta-list">
+                <li>PDF</li>
+                <li>anand_resume.pdf</li>
+            </ul>
+            <div class="download-actions">
+                <a class="download-link" href="/downloads/anand_resume.pdf" download>Download Resume</a>
+                <a class="download-link-secondary" href="/downloads/anand_resume.pdf">/downloads/anand_resume.pdf</a>
+            </div>
         </article>
+        <article class="panel download-card">
+            <div class="download-card-header">
+                <div class="download-card-title-group">
+                    <h3>Professional Photo</h3>
+                    <p class="download-description">High-resolution professional headshot for profile and media use.</p>
+                </div>
+                <span class="download-status download-status-available">Available</span>
+            </div>
+            <ul class="download-meta-list">
+                <li>PNG</li>
+                <li>anand_photo.png</li>
+            </ul>
+            <div class="download-actions">
+                <a class="download-link" href="/downloads/anand_photo.png" download>Download Professional Photo</a>
+                <a class="download-link-secondary" href="/downloads/anand_photo.png">/downloads/anand_photo.png</a>
+            </div>
+        </article>
+        <noscript>
+            <article class="panel download-card download-card-empty">
+                <p>JavaScript is optional here. The download links above are available directly.</p>
+            </article>
+        </noscript>
     </div>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Downloads | Anand P S",
+      "description": "Download resume, bio data, professional photo, and other published files from Anand P S.",
+      "url": "https://anandps.in/downloads/",
+      "mainEntity": {
+        "@type": "ItemList",
+        "itemListElement": [
+          {
+            "@type": "DigitalDocument",
+            "position": 1,
+            "name": "Resume",
+            "encodingFormat": "application/pdf",
+            "contentUrl": "https://anandps.in/downloads/anand_resume.pdf"
+          },
+          {
+            "@type": "MediaObject",
+            "position": 2,
+            "name": "Professional Photo",
+            "encodingFormat": "image/png",
+            "contentUrl": "https://anandps.in/downloads/anand_photo.png"
+          }
+        ]
+      }
+    }
+    </script>
 </section>
 </main>
 

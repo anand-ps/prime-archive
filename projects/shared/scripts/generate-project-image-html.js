@@ -176,7 +176,7 @@ function buildHomepageProjectImage(slug, title, fileName, homepageAlt) {
 function updateHomepage() {
     let content = readFileNormalized(homepagePath);
 
-    const projectCardPattern = /(<a class="project-card-link" href="projects\/([^/]+)\/index\.html"[^>]*aria-label="([^"]+)"[\s\S]*?<div class="project-media has-project-image">\n)([\s\S]*?)(\n\s*<\/div>\n\s*<div class="project-body">)/g;
+    const projectCardPattern = /(<a class="project-card-link" href="projects\/([^/]+)\/"[^>]*aria-label="([^"]+)"[\s\S]*?<div class="project-media has-project-image">\n)([\s\S]*?)(\n\s*<\/div>\n\s*<div class="project-body">)/g;
 
     let replacedAny = false;
     content = content.replace(projectCardPattern, (fullMatch, start, slug, ariaLabel, inner, end) => {

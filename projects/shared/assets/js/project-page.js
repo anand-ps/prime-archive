@@ -69,7 +69,7 @@ function getInlinePhotoUrl(contributor) {
 }
 
 function createProfileUrl(projectSlug, contributorId) {
-    const url = new URL(`/projects/${projectSlug}/contributers/`, window.location.origin);
+    const url = new URL(`/projects/${projectSlug}/contributors/`, window.location.origin);
     if (contributorId) {
         url.searchParams.set('member', contributorId);
     }

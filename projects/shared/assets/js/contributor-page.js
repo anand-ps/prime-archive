@@ -13,6 +13,10 @@ const CONTRIBUTOR_ICON_CLASSES = {
     GitHub: 'icon-github'
 };
 
+function createContributorProfileUrl(contributorId) {
+    return `/contributors/${contributorId}/`;
+}
+
 function getContributorProjectSlug() {
     const slugNode = document.body;
     return slugNode ? slugNode.getAttribute('data-project-slug') : '';
@@ -82,6 +86,7 @@ function createContributorPageCard(contributor, activeMemberId) {
     const card = document.createElement('article');
     card.className = 'contributor-profile-card';
     card.id = `member-${contributor.id}`;
+    const profileUrl = createContributorProfileUrl(contributor.id);
 
     if (contributor.id === activeMemberId) {
         card.classList.add('is-active');
@@ -90,6 +95,12 @@ function createContributorPageCard(contributor, activeMemberId) {
     const media = document.createElement('div');
     media.className = 'contributor-profile-media';
     media.append(createContributorPageImage(contributor, 'contributor-profile-photo'));
+
+    const mediaLink = document.createElement('a');
+    mediaLink.className = 'contributor-profile-primary-link';
+    mediaLink.href = profileUrl;
+    mediaLink.setAttribute('aria-label', `View profile for ${contributor.name || 'Contributor'}`);
+    mediaLink.append(media);
 
     const content = document.createElement('div');
     content.className = 'contributor-profile-content';
@@ -101,14 +112,18 @@ function createContributorPageCard(contributor, activeMemberId) {
     topRow.className = 'contributor-profile-top';
 
     const name = document.createElement('h2');
-    name.textContent = contributor.name || 'Contributor';
+    const nameLink = document.createElement('a');
+    nameLink.className = 'contributor-profile-heading-link';
+    nameLink.href = profileUrl;
+    nameLink.textContent = contributor.name || 'Contributor';
+    name.append(nameLink);
 
     const designation = document.createElement('p');
     designation.className = 'contributor-profile-role';
     designation.textContent = contributor.designation || 'Project Contributor';
 
     identity.append(name, designation);
-    topRow.append(media, identity);
+    topRow.append(mediaLink, identity);
     content.append(topRow);
 
     if (contributor.bio) {
@@ -155,7 +170,21 @@ function createContributorPageCard(contributor, activeMemberId) {
     if (linksRow.childElementCount > 0) {
         const actions = document.createElement('div');
         actions.className = 'contributor-profile-actions';
+        const profileLink = document.createElement('a');
+        profileLink.className = 'contributor-profile-cta';
+        profileLink.href = profileUrl;
+        profileLink.textContent = 'View Profile';
+        actions.append(profileLink);
         actions.append(linksRow);
+        content.append(actions);
+    } else {
+        const actions = document.createElement('div');
+        actions.className = 'contributor-profile-actions';
+        const profileLink = document.createElement('a');
+        profileLink.className = 'contributor-profile-cta';
+        profileLink.href = profileUrl;
+        profileLink.textContent = 'View Profile';
+        actions.append(profileLink);
         content.append(actions);
     }
 

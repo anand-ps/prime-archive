@@ -265,6 +265,17 @@ h1 {
     width: var(--contributor-profile-avatar-size);
 }
 
+.contributor-profile-primary-link {
+    border-radius: 999px;
+    display: inline-flex;
+    text-decoration: none;
+}
+
+.contributor-profile-primary-link:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+    outline-offset: 4px;
+}
+
 .contributor-profile-photo,
 .contributor-profile-photo.contributor-photo-fallback {
     aspect-ratio: 1;
@@ -282,6 +293,12 @@ h1 {
         var(--contributor-profile-photo-focus-y, 50%);
     will-change: transform;
     width: 100%;
+}
+
+.contributor-profile-page .contributor-profile-photo,
+.contributor-profile-page .contributor-profile-photo.contributor-photo-fallback {
+    border: none;
+    box-shadow: none;
 }
 
 .contributor-photo-fallback {
@@ -325,6 +342,18 @@ h1 {
     margin-bottom: 0;
 }
 
+.contributor-profile-heading-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.contributor-profile-heading-link:hover,
+.contributor-profile-heading-link:focus-visible {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
 .contributor-profile-role {
     color: color-mix(in srgb, var(--muted) 94%, #7f8794);
     font-family: "Manrope", "Segoe UI", sans-serif;
@@ -352,6 +381,34 @@ h1 {
     padding-top: 0.9rem;
 }
 
+.contributor-profile-page .contributor-profile-actions {
+    border-top: none;
+    padding-top: 0;
+}
+
+.contributor-profile-cta {
+    align-items: center;
+    background: linear-gradient(160deg, var(--accent) 0%, var(--accent-strong) 100%);
+    border-radius: 11px;
+    box-shadow: 0 9px 20px rgba(28, 124, 114, 0.25);
+    color: #ffffff;
+    display: inline-flex;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    justify-content: center;
+    letter-spacing: 0.02em;
+    padding: 0.62rem 0.9rem;
+    text-decoration: none;
+    transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.contributor-profile-cta:hover,
+.contributor-profile-cta:focus-visible {
+    box-shadow: 0 13px 22px rgba(28, 124, 114, 0.32);
+    transform: translateY(-1px);
+}
+
 .contributor-profile-links {
     justify-content: center;
     display: flex;
@@ -373,6 +430,21 @@ h1 {
 .contributor-profile-action-link:focus-visible {
     opacity: 0.88;
     transform: translateY(-1px);
+}
+
+.contributor-profile-links-large {
+    gap: 1.15rem;
+    justify-content: flex-start;
+}
+
+.contributor-profile-links-large .contributor-profile-action-link {
+    height: 2.6rem;
+    width: 2.6rem;
+}
+
+.contributor-profile-links-large .contributor-profile-action-icon {
+    height: 1.7rem;
+    width: 1.7rem;
 }
 
 .contributor-profile-action-icon {
@@ -418,6 +490,112 @@ h1 {
     font-family: "Manrope", "Segoe UI", sans-serif;
     font-size: 0.84rem;
     padding: 0.35rem 0 1.4rem;
+}
+
+.contributor-profile-layout {
+    align-items: center;
+    display: grid;
+    gap: 1.1rem;
+    grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+}
+
+.contributor-profile-visual {
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+}
+
+.contributor-profile-page .contributor-profile-visual .contributor-profile-media {
+    height: 240px;
+    width: 240px;
+}
+
+.contributor-profile-summary {
+    display: grid;
+    gap: 1rem;
+}
+
+.contributor-profile-summary .contributor-profile-bio {
+    text-align: left;
+}
+
+.contributor-profile-role-prominent {
+    color: var(--text);
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.contributor-project-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.contributor-project-card {
+    background: color-mix(in srgb, var(--surface) 97%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    border-radius: 18px;
+    box-shadow: 0 14px 28px rgba(20, 30, 38, 0.06);
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.1rem 1rem;
+}
+
+.contributor-project-card h3 {
+    color: var(--text);
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.contributor-profile-page .section-card + .section-card {
+    margin-top: 1.8rem;
+}
+
+.contributor-profile-page .section-card > h2 {
+    color: color-mix(in srgb, var(--muted) 90%, var(--text));
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
+    margin-bottom: 0.9rem;
+    text-transform: uppercase;
+}
+
+.contributor-project-meta {
+    color: color-mix(in srgb, var(--muted) 92%, var(--text));
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.82rem;
+    line-height: 1.55;
+}
+
+.contributor-project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.contributor-project-link {
+    align-items: center;
+    background: color-mix(in srgb, var(--surface) 65%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    color: var(--text);
+    display: inline-flex;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    justify-content: center;
+    padding: 0.62rem 0.9rem;
+    text-decoration: none;
+    transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.contributor-project-link:hover,
+.contributor-project-link:focus-visible {
+    transform: translateY(-1px);
 }
 
 .reveal {
@@ -503,6 +681,28 @@ h1 {
         font-size: 1rem;
         line-height: 1.64;
         padding-inline: 0.35rem;
+    }
+
+    .contributor-profile-layout {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    .contributor-profile-page .contributor-profile-visual .contributor-profile-media {
+        height: 200px;
+        width: 200px;
+    }
+
+    .contributor-profile-summary .contributor-profile-bio {
+        text-align: center;
+    }
+
+    .contributor-profile-role-prominent {
+        text-align: center;
+    }
+
+    .contributor-profile-links-large {
+        justify-content: center;
     }
 
     .contributor-profile-actions {
