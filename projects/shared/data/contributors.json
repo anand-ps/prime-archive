@@ -78,11 +78,11 @@
         "y": 37
       },
       "zoom": 2.5,
-      "bio": "Electrical engineer with experience across industrial manufacturing and power systems. Skilled in CNC machine operations, control panel assembly, diagnostics, and substation operations. Focused on system efficiency, fault resolution, and reliable electrical system performance.",
+      "bio": "Electrical Engineer with maintenance experience across the manufacturing industry, along with experience in control panel assembly, diagnostics, and substation operations. Proven ability to resolve faults, and ensure reliable electrical system performance.",
       "links": {
         "email": "mailto:sahalhameed3322@gmail.com",
         "linkedin": "https://www.linkedin.com/in/muhammed-sahal-m-h-391256194",
-        "github": "https://github.com"
+        "github": "https://github.com/muhammed-sahal-m-h"
       }
     },
     "ananya-ajith": {
@@ -139,14 +139,14 @@
     "gopika-gopikrishnan": {
       "id": "gopika-gopikrishnan",
       "name": "Gopika Gopikrishnan",
-      "designation": "Software Developer",
+      "designation": "Researcher",
       "photo": "/projects/shared/assets/images/contributors/gopika-gopikrishnan.jpeg",
       "focus": {
-        "x": 50,
-        "y": 40
+        "x": 10,
+        "y": 70
       },
-      "zoom": 1,
-      "bio": "Software developer specializing in distributed systems and scalable backend architecture. Experienced in building high-performance applications using React, TypeScript, Node.js, and Go, with expertise in databases like Aerospike and ArangoDB. Focused on performance optimization, system reliability, and designing robust, production-grade solutions.",
+      "zoom": 1.8,
+      "bio": "Specializing in Deep Learning for Signal Processing. Experienced in building frameworks for on-device learning for ultrasound systems. Skilled in Pytorch, Python, MATLAB.",
       "links": {
         "email": "mailto:gopikagopikrishnan@gmail.com",
         "linkedin": "https://www.linkedin.com/in/gopika-g-krishnan",
