@@ -4,12 +4,12 @@
       "id": "anand-ps",
       "name": "Anand P S",
       "designation": "Firmware Systems Developer",
-      "photo": "/projects/shared/assets/images/contributors/anand-ps.jpg",
+      "photo": "/projects/shared/assets/images/contributors/anand-ps.jpeg",
       "focus": {
-        "x": 60,
-        "y": 3
+        "x": 50,
+        "y": 30
       },
-      "zoom": 1,
+      "zoom": 1.4,
       "bio": "Engineer specializing in distributed backend architectures, embedded systems, firmware development, and production-grade software design. Builds efficient, fault-tolerant systems with a focus on scalability and long-term maintainability.",
       "links": {
         "email": "mailto:anandps.dev@gmail.com",
