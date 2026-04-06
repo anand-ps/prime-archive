@@ -59,7 +59,7 @@ Each project also has its own route at:
 
 - `projects/<project-slug>/contributors/`
 
-The route uses shared data but renders only the contributors mapped to that project.
+The route uses shared data, but renders only the contributors mapped to that project.
 
 Each contributor also gets an indexable profile route at:
 
