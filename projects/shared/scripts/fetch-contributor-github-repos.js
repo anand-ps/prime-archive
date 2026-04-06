@@ -135,18 +135,29 @@ async function main() {
             };
         } catch (error) {
             const cachedEntry = existingContributors[contributor.id];
+            const rateLimited = error.status === 403 || error.rateLimitRemaining === '0';
+
+            if (rateLimited && !hasLoggedRateLimitNotice) {
+                const resetMessage = error.rateLimitReset
+                    ? ` GitHub API reset epoch: ${error.rateLimitReset}.`
+                    : '';
+                console.warn(`GitHub API rate limit triggered. Reusing cached repository data where available.${resetMessage}`);
+                hasLoggedRateLimitNotice = true;
+            }
+
             if (cachedEntry) {
                 result.contributors[contributor.id] = cachedEntry;
-                const rateLimited = error.status === 403 || error.rateLimitRemaining === '0';
                 const reason = rateLimited ? 'rate limit hit' : 'request failed';
-                if (rateLimited && !hasLoggedRateLimitNotice) {
-                    const resetMessage = error.rateLimitReset
-                        ? ` GitHub API reset epoch: ${error.rateLimitReset}.`
-                        : '';
-                    console.warn(`GitHub API rate limit triggered. Reusing cached repository data where available.${resetMessage}`);
-                    hasLoggedRateLimitNotice = true;
-                }
                 console.warn(`Using cached GitHub repos for ${contributor.id} because ${reason}.`);
+                continue;
+            }
+
+            if (rateLimited) {
+                result.contributors[contributor.id] = {
+                    username,
+                    repos: []
+                };
+                console.warn(`No cached GitHub repos found for ${contributor.id}; keeping an empty repo list for this refresh.`);
                 continue;
             }
 
