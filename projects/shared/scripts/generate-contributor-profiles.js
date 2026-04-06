@@ -216,7 +216,7 @@ function buildSubjectOf(projects) {
 }
 
 function buildProfilePage(contributor, projects) {
-    const pageTitle = `${contributor.name} | ${contributor.designation || 'Contributor'} | Anand P S`;
+    const pageTitle = `${contributor.name} | ${contributor.designation || 'Contributor'}`;
     const pageDescription = contributor.bio
         ? `${contributor.bio} Explore contributed projects, profile links, and portfolio context for ${contributor.name}.`
         : `${contributor.name} is a contributor featured in Anand P S project portfolio. Explore contributed projects and profile links.`;
