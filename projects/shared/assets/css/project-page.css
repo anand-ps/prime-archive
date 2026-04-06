@@ -1,3 +1,5 @@
+@import url("/assets/css/brand-icons.css");
+
 :root {
     color-scheme: light;
     --bg: #ede8de;
@@ -250,7 +252,11 @@ body {
 }
 
 .project-meta-action-icon {
-    background-color: currentColor;
+    background-color: transparent;
+    background-image: var(--brand-icon-image);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
     display: block;
     flex: 0 0 auto;
     height: 0.92rem;
@@ -264,8 +270,9 @@ body {
 }
 
 .project-meta-action-icon.icon-github {
-    -webkit-mask-image: url("/assets/icons/brand-github.svg");
-    mask-image: url("/assets/icons/brand-github.svg");
+    --brand-icon-image: var(--brand-icon-github);
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 h1,

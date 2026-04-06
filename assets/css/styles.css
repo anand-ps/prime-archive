@@ -4,6 +4,8 @@ Purpose: Global styling for portfolio website.
 Description: Intentional, modern visual system with responsive layout and subtle animation.
 */
 
+@import url("/assets/css/brand-icons.css");
+
 :root {
     color-scheme: light;
     --bg: #f3f1ea;
@@ -1088,7 +1090,11 @@ body::after {
 }
 
 .contact-icon {
-    background-color: currentColor;
+    background-color: transparent;
+    background-image: var(--brand-icon-image);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
     display: inline-flex;
     flex: 0 0 1.05rem;
     height: 1.05rem;
@@ -1102,21 +1108,21 @@ body::after {
 }
 
 .icon-google {
-    color: #ea4335;
-    -webkit-mask-image: url("../icons/brand-google.svg");
-    mask-image: url("../icons/brand-google.svg");
+    --brand-icon-image: var(--brand-icon-google);
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 .icon-linkedin {
-    color: #0a66c2;
-    -webkit-mask-image: url("../icons/brand-linkedin.svg");
-    mask-image: url("../icons/brand-linkedin.svg");
+    --brand-icon-image: var(--brand-icon-linkedin);
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 .icon-github {
-    color: #24292f;
-    -webkit-mask-image: url("../icons/brand-github.svg");
-    mask-image: url("../icons/brand-github.svg");
+    --brand-icon-image: var(--brand-icon-github);
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 .contact-link:hover,
@@ -1130,12 +1136,6 @@ body::after {
 .contact-link:hover .contact-icon,
 .contact-link:focus-visible .contact-icon {
     filter: brightness(1.06);
-}
-
-@media (prefers-color-scheme: dark) {
-    .icon-github {
-        color: #f0f6fc;
-    }
 }
 
 .footer {

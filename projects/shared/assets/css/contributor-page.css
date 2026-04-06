@@ -1,3 +1,5 @@
+@import url("/assets/css/brand-icons.css");
+
 :root {
     color-scheme: light;
     --bg: #ede8de;
@@ -463,7 +465,11 @@ h1 {
 }
 
 .contributor-profile-action-icon {
-    background-color: currentColor;
+    background-color: transparent;
+    background-image: var(--brand-icon-image);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
     display: block;
     height: 1.18rem;
     mask-position: center;
@@ -476,27 +482,21 @@ h1 {
 }
 
 .contributor-profile-action-icon.icon-google {
-    color: #ea4335;
-    -webkit-mask-image: url("/assets/icons/brand-google.svg");
-    mask-image: url("/assets/icons/brand-google.svg");
+    --brand-icon-image: var(--brand-icon-google);
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 .contributor-profile-action-icon.icon-linkedin {
-    color: #0a66c2;
-    -webkit-mask-image: url("/assets/icons/brand-linkedin.svg");
-    mask-image: url("/assets/icons/brand-linkedin.svg");
+    --brand-icon-image: var(--brand-icon-linkedin);
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 .contributor-profile-action-icon.icon-github {
-    color: #24292f;
-    -webkit-mask-image: url("/assets/icons/brand-github.svg");
-    mask-image: url("/assets/icons/brand-github.svg");
-}
-
-@media (prefers-color-scheme: dark) {
-    .contributor-profile-action-icon.icon-github {
-        color: #f0f6fc;
-    }
+    --brand-icon-image: var(--brand-icon-github);
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 .project-footer {
@@ -621,7 +621,11 @@ h1 {
 }
 
 .contributor-project-link-icon {
-    background-color: currentColor;
+    background-color: transparent;
+    background-image: var(--brand-icon-image);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
     display: block;
     height: 0.95rem;
     mask-position: center;
@@ -634,8 +638,9 @@ h1 {
 }
 
 .contributor-project-link-icon.icon-github {
-    -webkit-mask-image: url("/assets/icons/brand-github.svg");
-    mask-image: url("/assets/icons/brand-github.svg");
+    --brand-icon-image: var(--brand-icon-github);
+    -webkit-mask-image: none;
+    mask-image: none;
 }
 
 .reveal {
