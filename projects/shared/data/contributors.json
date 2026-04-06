@@ -72,7 +72,7 @@
       "id": "sahal-mh",
       "name": "Muhammed Sahal M H",
       "designation": "Hardware Developer",
-      "photo": "/projects/shared/assets/images/contributors/sahal-mh.jpg",
+      "photo": "/projects/shared/assets/images/contributors/sahal-mh.jpeg",
       "focus": {
         "x": 45,
         "y": 37
@@ -91,10 +91,10 @@
       "designation": "ML Developer",
       "photo": "/projects/shared/assets/images/contributors/ananya-ajith.jpeg",
       "focus": {
-        "x": 50,
-        "y": 53
+        "x": 41,
+        "y": 49
       },
-      "zoom": 2.5,
+      "zoom": 2.1,
       "bio": "Engineer skilled in machine learning, Python, and data-driven systems, with a background in electrical engineering. Focused on building scalable, efficient solutions while applying analytical models and system-level thinking to solve complex problems.",
       "links": {
         "email": "mailto:ananyakallungal@gmail.com",
