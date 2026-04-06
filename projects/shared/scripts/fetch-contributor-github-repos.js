@@ -10,6 +10,14 @@ function readJson(filePath) {
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
+function readJsonIfExists(filePath, fallback) {
+    if (!fs.existsSync(filePath)) {
+        return fallback;
+    }
+
+    return readJson(filePath);
+}
+
 function writeFileIfChanged(filePath, content) {
     const normalizedNext = `${content.replace(/\r?\n/g, '\n').replace(/\n+$/, '')}\n`;
     const current = fs.existsSync(filePath)
@@ -56,7 +64,13 @@ async function fetchReposForUser(username) {
         });
 
         if (!response.ok) {
-            throw new Error(`GitHub API request failed for ${username}: ${response.status}`);
+            const rateLimitRemaining = response.headers.get('x-ratelimit-remaining');
+            const rateLimitReset = response.headers.get('x-ratelimit-reset');
+            const error = new Error(`GitHub API request failed for ${username}: ${response.status}`);
+            error.status = response.status;
+            error.rateLimitRemaining = rateLimitRemaining;
+            error.rateLimitReset = rateLimitReset;
+            throw error;
         }
 
         const items = await response.json();
@@ -91,8 +105,10 @@ async function fetchReposForUser(username) {
 async function main() {
     const contributorsData = readJson(contributorsPath);
     const projectContributorsData = readJson(projectContributorsPath);
+    const existingCache = readJsonIfExists(outputPath, { generatedAt: '', contributors: {} });
     const contributors = contributorsData.contributors || {};
     const projects = projectContributorsData.projects || {};
+    const existingContributors = existingCache.contributors || {};
     const projectRepoNames = new Set(
         Object.values(projects)
             .map((project) => getRepoNameFromUrl(project.repoUrl))
@@ -103,6 +119,7 @@ async function main() {
         generatedAt: new Date().toISOString(),
         contributors: {}
     };
+    let hasLoggedRateLimitNotice = false;
 
     for (const contributor of Object.values(contributors)) {
         const username = getGitHubUsername(contributor.links?.github);
@@ -110,11 +127,31 @@ async function main() {
             continue;
         }
 
-        const repos = await fetchReposForUser(username);
-        result.contributors[contributor.id] = {
-            username,
-            repos: repos.filter((repo) => !projectRepoNames.has(String(repo.name || '').toLowerCase()))
-        };
+        try {
+            const repos = await fetchReposForUser(username);
+            result.contributors[contributor.id] = {
+                username,
+                repos: repos.filter((repo) => !projectRepoNames.has(String(repo.name || '').toLowerCase()))
+            };
+        } catch (error) {
+            const cachedEntry = existingContributors[contributor.id];
+            if (cachedEntry) {
+                result.contributors[contributor.id] = cachedEntry;
+                const rateLimited = error.status === 403 || error.rateLimitRemaining === '0';
+                const reason = rateLimited ? 'rate limit hit' : 'request failed';
+                if (rateLimited && !hasLoggedRateLimitNotice) {
+                    const resetMessage = error.rateLimitReset
+                        ? ` GitHub API reset epoch: ${error.rateLimitReset}.`
+                        : '';
+                    console.warn(`GitHub API rate limit triggered. Reusing cached repository data where available.${resetMessage}`);
+                    hasLoggedRateLimitNotice = true;
+                }
+                console.warn(`Using cached GitHub repos for ${contributor.id} because ${reason}.`);
+                continue;
+            }
+
+            throw error;
+        }
     }
 
     if (writeFileIfChanged(outputPath, JSON.stringify(result, null, 2))) {
