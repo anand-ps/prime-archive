@@ -138,9 +138,9 @@ function createContributorPageCard(contributor, activeMemberId) {
     linksRow.className = 'contributor-profile-links';
 
     [
-        ['Email', links.email],
         ['LinkedIn', links.linkedin],
-        ['GitHub', links.github]
+        ['GitHub', links.github],
+        ['Email', links.email]
     ].forEach(([label, href]) => {
         if (!href) {
             return;

@@ -224,9 +224,9 @@ function buildProfileMedia(contributor) {
 
 function buildProfileLinks(contributor) {
     const links = [
-        ['Email', contributor.links?.email, contributor.links?.emailIcon || 'icon-google'],
         ['LinkedIn', contributor.links?.linkedin, 'icon-linkedin'],
-        ['GitHub', contributor.links?.github, 'icon-github']
+        ['GitHub', contributor.links?.github, 'icon-github'],
+        ['Email', contributor.links?.email, contributor.links?.emailIcon || 'icon-google']
     ].filter(([, href]) => href);
 
     if (links.length === 0) {
