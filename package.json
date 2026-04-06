@@ -10,7 +10,8 @@
     "generate:contributors": "node projects/shared/scripts/generate-contributor-sections.js",
     "generate:github-repos": "node projects/shared/scripts/fetch-contributor-github-repos.js",
     "generate:contributor-profiles": "node projects/shared/scripts/generate-contributor-profiles.js",
-    "prestart": "npm run generate:contributor-thumbs && npm run generate:carousels && npm run generate:project-html && npm run generate:contributors && npm run generate:github-repos && npm run generate:contributor-profiles",
+    "generate:refresh-site": "npm run generate:contributor-thumbs && npm run generate:carousels && npm run generate:project-html && npm run generate:contributors && npm run generate:github-repos && npm run generate:contributor-profiles",
+    "prestart": "npm run generate:refresh-site",
     "start": "serve ."
   },
   "repository": {

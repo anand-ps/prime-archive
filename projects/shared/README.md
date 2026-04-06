@@ -81,6 +81,12 @@ node projects/shared/scripts/fetch-contributor-github-repos.js
 node projects/shared/scripts/generate-contributor-profiles.js
 ```
 
+Or run the combined refresh script:
+
+```powershell
+npm run generate:refresh-site
+```
+
 This refreshes:
 
 - contributor inline thumbnails used by project-page avatar strips
@@ -133,3 +139,4 @@ It also prints a warning so missing metadata is easy to catch during generation.
 - You do not need to rename images to any fixed pattern.
 - Supported image types: `.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.avif`
 - `npm start` already runs the manifest generator first through the `prestart` script.
+- `.github/workflows/refresh-generated-site.yml` can refresh GitHub repo cache and generated HTML automatically on a schedule or manual dispatch.
