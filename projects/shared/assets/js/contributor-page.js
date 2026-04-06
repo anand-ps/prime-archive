@@ -7,12 +7,6 @@ if (contributorYearNode) {
 const CONTRIBUTOR_PROJECTS_PATH = '/projects/shared/data/project-contributors.json';
 const CONTRIBUTOR_DIRECTORY_PATH = '/projects/shared/data/contributors.json';
 const MAX_CONTRIBUTOR_PAGE_MEMBERS = 6;
-const CONTRIBUTOR_ICON_CLASSES = {
-    Email: 'icon-google',
-    LinkedIn: 'icon-linkedin',
-    GitHub: 'icon-github'
-};
-
 function createContributorProfileUrl(contributorId) {
     return `/contributors/${contributorId}/`;
 }
@@ -70,8 +64,14 @@ function createContributorPageImage(contributor, className) {
     return fallback;
 }
 
-function createContributorPageActionIcon(label) {
-    const iconClassName = CONTRIBUTOR_ICON_CLASSES[label];
+function createContributorPageActionIcon(label, contributor) {
+    const iconClassName = label === 'Email'
+        ? contributor?.links?.emailIcon || 'icon-google'
+        : label === 'LinkedIn'
+            ? 'icon-linkedin'
+            : label === 'GitHub'
+                ? 'icon-github'
+                : '';
     if (!iconClassName) {
         return null;
     }
@@ -152,7 +152,7 @@ function createContributorPageCard(contributor, activeMemberId) {
         anchor.setAttribute('aria-label', `${contributor.name || 'Contributor'} ${label}`);
         anchor.title = '';
 
-        const icon = createContributorPageActionIcon(label);
+        const icon = createContributorPageActionIcon(label, contributor);
         if (icon) {
             anchor.append(icon);
         } else {

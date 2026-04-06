@@ -131,7 +131,7 @@ function buildProjectCardDescription(project) {
 function buildMetaLinks(contributor) {
     const links = contributor.links || {};
     const items = [
-        ['Email', links.email, 'icon-google'],
+        ['Email', links.email, links.emailIcon || 'icon-google'],
         ['LinkedIn', links.linkedin, 'icon-linkedin'],
         ['GitHub', links.github, 'icon-github']
     ].filter(([, href]) => href);

@@ -12,7 +12,8 @@
       "zoom": 1.4,
       "bio": "Engineer specializing in distributed backend architectures, embedded systems, firmware development, and production-grade software design. Builds efficient, fault-tolerant systems with a focus on scalability and long-term maintainability.",
       "links": {
-        "email": "mailto:anandps.dev@gmail.com",
+        "email": "mailto:anandps.in@outlook.com",
+        "emailIcon": "icon-outlook",
         "linkedin": "https://www.linkedin.com/in/anand-ps",
         "github": "https://github.com/anand-ps"
       }

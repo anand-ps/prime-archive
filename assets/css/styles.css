@@ -1113,6 +1113,12 @@ body::after {
     mask-image: none;
 }
 
+.icon-outlook {
+    --brand-icon-image: var(--brand-icon-outlook);
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
 .icon-linkedin {
     --brand-icon-image: var(--brand-icon-linkedin);
     -webkit-mask-image: none;

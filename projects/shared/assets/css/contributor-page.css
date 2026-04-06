@@ -487,6 +487,12 @@ h1 {
     mask-image: none;
 }
 
+.contributor-profile-action-icon.icon-outlook {
+    --brand-icon-image: var(--brand-icon-outlook);
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
 .contributor-profile-action-icon.icon-linkedin {
     --brand-icon-image: var(--brand-icon-linkedin);
     -webkit-mask-image: none;
