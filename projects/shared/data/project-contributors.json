@@ -2,21 +2,25 @@
   "projects": {
     "finance-management-system": {
       "title": "Personal Finance Management System",
+      "summary": "A real-time team-based expense management system for tracking shared expenses, settlements, and personal financial flow.",
       "repoUrl": "https://github.com/anand-ps/finance-management-system",
       "contributors": ["anand-ps"]
     },
     "unified-assistive-communication-system": {
       "title": "OneDialect - Assistive Communication System",
+      "summary": "A production-ready assistive communication system combining embedded systems, signal processing, and real-time interaction design.",
       "repoUrl": "https://github.com/anand-ps/unified-assistive-communication-system",
       "contributors": ["anagha-s","ameer-ts","ananya-ajith","sahal-mh","anand-ps","sidharth-s"]
     },
     "dc-machine-protection-system": {
       "title": "Integrated DC Machine Protection and Advanced Health Monitoring System",
+      "summary": "A fully implemented DC motor protection system with real-time monitoring, threshold-based control, and embedded firmware-driven fault handling.",
       "repoUrl": "https://github.com/anand-ps/dc-machine-protection-system",
       "contributors": ["reva-pradeep","nesrin-anwer","anand-ps"]
     },
     "hot-swappable-smartphone-power-unit": {
       "title": "Modular Hot-Swappable Smartphone Power Unit",
+      "summary": "A modular smartphone battery enclosure with hot-swappable card batteries, intelligent charging, and embedded power management.",
       "repoUrl": "https://github.com/anand-ps/hot-swappable-smartphone-power-unit",
       "contributors": ["gopika-gopikrishnan","anand-ps"]
     }

@@ -79,6 +79,55 @@ function getRepoNameFromUrl(url) {
     return match ? match[1].toLowerCase() : '';
 }
 
+function trimSentence(value) {
+    return String(value || '').trim().replace(/\s+/g, ' ').replace(/[. ]+$/, '');
+}
+
+function humanizeRepoName(value) {
+    const normalized = String(value || '')
+        .trim()
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ');
+
+    if (!normalized) {
+        return 'repository';
+    }
+
+    return normalized.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function buildGithubRepoDescription(project) {
+    const explicitDescription = trimSentence(project.description);
+    if (explicitDescription) {
+        return `${explicitDescription}.`;
+    }
+
+    const repoLabel = humanizeRepoName(project.title || project.name);
+    const language = trimSentence(project.language);
+
+    if (language) {
+        return `Public GitHub repository for ${repoLabel}, with ${language} as the primary language.`;
+    }
+
+    return `Public GitHub repository for ${repoLabel}.`;
+}
+
+function buildPortfolioProjectDescription(project) {
+    const explicitSummary = trimSentence(project.summary);
+    if (explicitSummary) {
+        return `${explicitSummary}.`;
+    }
+
+    const title = trimSentence(project.title || project.name || 'this project');
+    return `Project contribution featured in ${title}.`;
+}
+
+function buildProjectCardDescription(project) {
+    return project.type === 'github-repo'
+        ? buildGithubRepoDescription(project)
+        : buildPortfolioProjectDescription(project);
+}
+
 function buildMetaLinks(contributor) {
     const links = contributor.links || {};
     const items = [
@@ -148,9 +197,7 @@ function buildProjectCards(projects) {
     const cards = projects.map((project) => {
         const isGithubRepo = project.type === 'github-repo';
         const title = project.title || project.name || 'Repository';
-        const detailLine = isGithubRepo
-            ? (project.description || 'Public GitHub repository.')
-            : `${project.contributionLabel} on ${title}.`;
+        const detailLine = buildProjectCardDescription(project);
         const secondaryAction = isGithubRepo
             ? `            <button class="contributor-project-link contributor-project-link-copy" type="button" data-copy-url="${escapeHtml(project.repoUrl || '')}" aria-label="${escapeHtml(`Copy GitHub URL for ${title}`)}"><span class="contributor-project-link-icon icon-github" aria-hidden="true"></span><span>Copy URL</span></button>`
             : `            <a class="contributor-project-link" href="${escapeHtml(getProjectContributorDirectoryPath(project.slug))}">Project Team</a>`;
@@ -391,6 +438,7 @@ function buildContributorProjectMap(projects) {
                 type: 'portfolio-project',
                 slug: projectSlug,
                 title: project.title || projectSlug.replace(/-/g, ' '),
+                summary: project.summary || '',
                 repoUrl: project.repoUrl || '',
                 contributionLabel: 'Contributor'
             });
@@ -420,7 +468,9 @@ function mergeContributorProjects(portfolioProjects, githubReposByContributor, c
             name: repo.name || repo.full_name || 'Repository',
             title: repo.name || repo.full_name || 'Repository',
             repoUrl: repo.html_url || '',
-            description: repo.description || `${repo.full_name || repo.name || 'Repository'} public GitHub repository.`
+            description: repo.description || '',
+            language: repo.language || '',
+            stargazersCount: repo.stargazers_count || 0
         });
     });
 
