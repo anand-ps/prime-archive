@@ -8,6 +8,8 @@ const projectLinkLabelPrefix = 'View project: ';
 const manifestFileName = 'carousel-manifest.json';
 const imageMetadataFileName = 'image-metadata.json';
 const warningPrefix = '[warn]';
+const homepageProjectPreloadStart = '<!-- Generated project image preloads -->';
+const homepageProjectPreloadEnd = '<!-- /Generated project image preloads -->';
 
 function getProjectDirectories() {
     return fs.readdirSync(projectsRoot, { withFileTypes: true })
@@ -170,7 +172,28 @@ function updateProjectPage(projectSlug) {
 function buildHomepageProjectImage(slug, title, fileName, homepageAlt) {
     const imagePath = toWebPath('projects', slug, 'assets', 'images', fileName);
     const alt = homepageAlt || `Project preview for ${title}`;
-    return `                    <img class="project-media-image" src="${imagePath}" alt="${escapeHtml(alt)}" width="1200" height="675" loading="lazy" decoding="async" />`;
+    return `                    <img class="project-media-image" src="${imagePath}" alt="${escapeHtml(alt)}" width="1200" height="675" loading="eager" fetchpriority="high" decoding="sync" />`;
+}
+
+function buildHomepageProjectPreloads(projectSlugs) {
+    const preloadLines = projectSlugs
+        .map((slug) => {
+            const images = getManifestImages(slug);
+            const firstImage = images[0];
+            if (!firstImage) {
+                return '';
+            }
+
+            const imagePath = toWebPath('projects', slug, 'assets', 'images', firstImage);
+            return `    <link rel="preload" href="${imagePath}" as="image" fetchpriority="high" />`;
+        })
+        .filter(Boolean);
+
+    return [
+        `    ${homepageProjectPreloadStart}`,
+        ...preloadLines,
+        `    ${homepageProjectPreloadEnd}`
+    ].join('\n');
 }
 
 function updateHomepage() {
@@ -199,7 +222,21 @@ function updateHomepage() {
         return `${start}${buildHomepageProjectImage(slug, title, images[0], metadata.homepage.alt)}\n${existingWithoutImage}${end}`;
     });
 
-    return replacedAny ? writeFileIfChanged(homepagePath, content) : false;
+    const preloadBlock = buildHomepageProjectPreloads(getProjectDirectories());
+    const preloadPattern = new RegExp(`\\n\\s*${escapeRegExp(homepageProjectPreloadStart)}[\\s\\S]*?${escapeRegExp(homepageProjectPreloadEnd)}\\n`);
+
+    if (preloadPattern.test(content)) {
+        content = content.replace(preloadPattern, `\n${preloadBlock}\n`);
+    } else {
+        const shortcutIconTag = '    <link rel="shortcut icon" href="/assets/icons/favicon.ico?v=20260330" type="image/x-icon" />\n';
+        if (content.includes(shortcutIconTag)) {
+            content = content.replace(shortcutIconTag, `${shortcutIconTag}\n${preloadBlock}\n`);
+        }
+    }
+
+    return (replacedAny || preloadPattern.test(content) || content.includes(homepageProjectPreloadStart))
+        ? writeFileIfChanged(homepagePath, content)
+        : false;
 }
 
 function main() {
