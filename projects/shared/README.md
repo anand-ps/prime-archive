@@ -107,7 +107,10 @@ node projects/shared/scripts/generate-project-image-manifests.js
 node projects/shared/scripts/generate-project-image-html.js
 ```
 
-3. Refresh the project page.
+3. If the project uses `assets/images/image-metadata.json`, update it manually so each `images` key exactly matches the current image filename.
+4. Add or update the `alt` text entries for any new or renamed images in that file.
+5. Run `node projects/shared/scripts/generate-project-image-html.js` again if you changed `image-metadata.json`.
+6. Refresh the project page.
 
 The manifest generator creates `carousel-manifest.json` inside each project's `assets/images/` folder.
 The HTML generator then refreshes:
@@ -131,8 +134,12 @@ To customize SEO alt text per slide, add an `image-metadata.json` file inside th
 }
 ```
 
-If a file is missing from `image-metadata.json`, the generator falls back to the page's `data-carousel-alt-prefix`.
-It also prints a warning so missing metadata is easy to catch during generation.
+Important:
+
+- The keys inside `image-metadata.json` are exact filenames, including extension.
+- If you rename or replace images, you must update those keys manually to match.
+- If a file is missing from `image-metadata.json`, the generator falls back to the page's `data-carousel-alt-prefix`.
+- The generator prints a warning for each missing filename so missing metadata is easy to catch during generation.
 
 ## Notes
 

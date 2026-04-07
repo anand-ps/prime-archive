@@ -1,31 +1,31 @@
 {
   "images": {
-    "1_event_dashboard_mac.webp": {
+    "1_dashboard_in_mac_pro.png": {
       "alt": "Mac dashboard view of the personal finance management system"
     },
-    "2_event_dashboard.webp": {
+    "2_dashboard.png": {
       "alt": "Shared expense dashboard in the finance management system"
     },
-    "3_create_Events.webp": {
+    "3_empty-event.png": {
+      "alt": "Empty-state screen for a newly created finance event"
+    },
+    "4_create-event.png": {
       "alt": "Create event flow in the finance management system"
     },
-    "4_add_participants.webp": {
+    "5_add-participants.png": {
       "alt": "Participant onboarding screen in the finance management system"
     },
-    "5_events_name.webp": {
-      "alt": "Event naming interface for shared finance tracking"
-    },
-    "6_events-expense-claim.webp": {
-      "alt": "Expense claim workflow in the finance management system"
-    },
-    "7_events_with data.webp": {
-      "alt": "Expense event populated with financial transaction data"
-    },
-    "8_events_overview.webp": {
+    "6_events-fresh-no-data.png": {
       "alt": "Overview screen showing grouped event balances and expense summaries"
     },
-    "9_events-fresh-nodata.webp": {
-      "alt": "Empty-state screen for a newly created finance event"
+    "7_claim-expense.png": {
+      "alt": "Expense claim workflow in the finance management system"
+    },
+    "8_events-with-data.png": {
+      "alt": "Expense event populated with financial transaction data"
+    },
+    "9_events-full-data.png": {
+      "alt": "Detailed event view showing balances, participants, and expense data"
     }
   },
   "homepage": {
