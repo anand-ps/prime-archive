@@ -523,7 +523,7 @@ body::after {
 }
 
 .highlight-list li::before {
-    color: var(--highlight);
+    color: var(--accent);
     content: "";
     background: currentColor;
     border-radius: 999px;
@@ -538,128 +538,98 @@ body::after {
     gap: 1rem;
 }
 
-.skills-shell {
-    background:
-        radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 36%),
-        linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent) 0%, color-mix(in srgb, var(--surface) 82%, transparent) 100%);
-    border: 1px solid color-mix(in srgb, var(--border) 74%, var(--accent) 26%);
-    border-radius: calc(var(--radius-lg) + 2px);
-    box-shadow: var(--shadow);
+.skills-matrix {
     display: grid;
-    gap: 1.1rem;
-    overflow: hidden;
-    padding: 1.35rem;
-    position: relative;
+    gap: 1rem;
 }
 
-.skills-shell::after {
-    background:
-        linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--highlight) 16%, transparent) 32%, transparent 68%),
-        linear-gradient(0deg, transparent 0%, color-mix(in srgb, var(--accent) 12%, transparent) 100%);
-    content: "";
-    inset: auto 0 0;
-    height: 1px;
-    opacity: 0.8;
-    pointer-events: none;
-    position: absolute;
-}
-
-.skills-shell-intro {
+.skills-matrix-intro {
     display: grid;
-    gap: 0.55rem;
-    max-width: 62ch;
+    gap: 0.8rem;
 }
 
-.skills-kicker {
-    color: var(--accent-strong);
-    font-family: "Sora", "Segoe UI", sans-serif;
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-}
-
-.skills-shell-intro h3 {
-    font-family: "Sora", "Segoe UI", sans-serif;
-    font-size: clamp(1.15rem, 2vw, 1.5rem);
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-}
-
-.skills-shell-intro p:last-child {
+.skills-matrix-lead {
     color: var(--muted);
-    max-width: 58ch;
+    font-size: 1rem;
+    max-width: none;
+    width: 100%;
 }
 
-.skills-spotlight {
+.skills-matrix-featured {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.62rem;
+    gap: 0.5rem;
     list-style: none;
+    margin-bottom: 0.4rem;
 }
 
-.skills-spotlight-item {
-    background:
-        linear-gradient(160deg, color-mix(in srgb, var(--surface-soft) 90%, transparent) 0%, color-mix(in srgb, var(--surface) 90%, transparent) 100%);
-    border: 1px solid color-mix(in srgb, var(--border) 72%, var(--accent) 28%);
-    border-radius: 999px;
-    box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 24%, transparent);
+.skills-matrix-featured li {
+    align-items: center;
+    background: linear-gradient(160deg, var(--accent) 0%, var(--accent-strong) 100%);
+    border: 1px solid transparent;
+    border-radius: 14px;
+    color: #fbfaf6;
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 700;
+    height: 1.85rem;
+    justify-content: center;
+    line-height: 1;
+    padding: 0 0.75rem;
+    box-shadow:
+        0 8px 18px rgba(22, 103, 93, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+    transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+    white-space: nowrap;
+}
+
+.skills-matrix-featured li::after {
+    content: none;
+}
+
+.skills-matrix-featured li:hover,
+.skills-matrix-featured li:focus-visible {
+    box-shadow:
+        0 10px 22px rgba(22, 103, 93, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    filter: saturate(1.04) brightness(1.02);
+    transform: translateY(-1px);
+}
+
+.skill-matrix-row {
+    align-items: start;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(190px, 220px) 1fr;
+}
+
+.skill-matrix-row + .skill-matrix-row {
+    border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+    padding-top: 1rem;
+}
+
+.skill-matrix-meta {
+    display: grid;
+    gap: 0.42rem;
+}
+
+.skill-matrix-note {
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.5;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.skills-matrix .skill-group-label {
     color: var(--text);
     font-family: "Sora", "Segoe UI", sans-serif;
-    font-size: 0.8rem;
+    font-size: 1.05rem;
     font-weight: 700;
-    letter-spacing: 0.02em;
+    letter-spacing: 0;
     line-height: 1;
-    padding: 0.62rem 0.9rem;
-}
-
-.skills-spotlight-item:nth-child(4n + 1) {
-    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
-}
-
-.skills-spotlight-item:nth-child(4n + 2) {
-    border-color: color-mix(in srgb, var(--highlight) 42%, var(--border));
-}
-
-.skills-spotlight-item:nth-child(4n + 3) {
-    border-color: color-mix(in srgb, #6ca7e6 36%, var(--border));
-}
-
-.skills-grid {
-    gap: 0.85rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.skill-group {
-    background: color-mix(in srgb, var(--surface) 72%, transparent);
-    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
-    border-radius: 18px;
-    display: grid;
-    gap: 0.72rem;
-    padding: 1rem 1.05rem 1.05rem;
-    transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
-}
-
-.skill-group:hover {
-    background: color-mix(in srgb, var(--surface) 82%, transparent);
-    border-color: color-mix(in srgb, var(--accent) 44%, var(--border));
-    transform: translateY(-2px);
-}
-
-.skill-group-label {
-    color: var(--accent-strong);
-    font-family: "Sora", "Segoe UI", sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    line-height: 1;
-    text-transform: uppercase;
-}
-
-.skill-group h3 {
-    font-family: "Sora", "Segoe UI", sans-serif;
-    font-size: 1rem;
-    line-height: 1.2;
+    text-transform: none;
 }
 
 .skill-tag-list {
@@ -670,15 +640,47 @@ body::after {
 }
 
 .skill-tag-list li {
-    background: color-mix(in srgb, var(--surface-soft) 62%, transparent);
-    border: 1px solid color-mix(in srgb, var(--border) 76%, var(--accent) 24%);
+    align-items: center;
+    background: color-mix(in srgb, var(--surface-soft) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
     border-radius: 999px;
     color: color-mix(in srgb, var(--text) 82%, var(--muted));
+    display: inline-flex;
     font-size: 0.75rem;
     font-weight: 700;
+    height: 1.85rem;
+    justify-content: center;
     letter-spacing: 0.015em;
     line-height: 1;
-    padding: 0.4rem 0.62rem;
+    padding: 0 0.75rem;
+    white-space: nowrap;
+}
+
+.skills-matrix .skill-tag-list li {
+    background: color-mix(in srgb, var(--surface-soft) 84%, var(--surface) 16%);
+    border-color: color-mix(in srgb, var(--accent) 18%, var(--border));
+    box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 18%, transparent);
+    color: color-mix(in srgb, var(--text) 92%, var(--muted));
+    margin-bottom: 0;
+    padding-left: 0.8rem;
+    position: static;
+    text-align: center;
+    transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
+}
+
+.skills-matrix .skill-tag-list li::before {
+    content: none;
+}
+
+.skills-matrix .skill-tag-list li:hover,
+.skills-matrix .skill-tag-list li:focus-visible {
+    background: color-mix(in srgb, var(--surface-soft) 74%, var(--accent) 10%);
+    border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #ffffff 24%, transparent),
+        0 6px 14px rgba(23, 32, 38, 0.08);
+    color: var(--text);
+    transform: translateY(-1px);
 }
 
 .domain-grid {
@@ -1495,6 +1497,15 @@ body::after {
         width: 100%;
     }
 
+    .skill-matrix-row {
+        grid-template-columns: 1fr;
+        gap: 0.7rem;
+    }
+
+    .skill-matrix-note {
+        max-width: 44ch;
+    }
+
     .domain-grid {
         display: grid;
         gap: 0.85rem;
@@ -1507,18 +1518,6 @@ body::after {
         padding-bottom: 0.35rem;
         scroll-snap-type: x proximity;
         scrollbar-width: none;
-    }
-
-    .skills-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .skills-shell {
-        padding: 1.05rem;
-    }
-
-    .skills-shell-intro h3 {
-        max-width: 18ch;
     }
 
     .domain-grid::-webkit-scrollbar {
