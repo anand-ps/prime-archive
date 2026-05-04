@@ -561,10 +561,10 @@ body::after {
 
 .skills-matrix-intro {
     align-items: end;
-    background:
-        linear-gradient(145deg, color-mix(in srgb, var(--surface) 78%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 92%, transparent) 100%);
-    border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
-    border-radius: calc(var(--radius-md) + 2px);
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow);
     display: grid;
     gap: 1rem;
     grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.9fr);
@@ -646,10 +646,10 @@ body::after {
 }
 
 .skill-matrix-row {
-    background:
-        linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 72%, transparent) 100%);
-    border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
-    border-radius: 18px;
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow);
     display: grid;
     gap: 1rem;
     grid-template-columns: 1fr;
@@ -659,21 +659,11 @@ body::after {
     transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
 }
 
-.skill-matrix-row::before {
-    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 72%, transparent), color-mix(in srgb, var(--highlight) 44%, transparent));
-    border-radius: 999px;
-    content: "";
-    height: 3px;
-    left: 1.15rem;
-    position: absolute;
-    right: 1.15rem;
-    top: 0;
-}
+
 
 .skill-matrix-row:hover {
-    background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 80%, transparent) 100%);
-    border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
-    box-shadow: 0 16px 30px rgba(23, 32, 38, 0.12);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    box-shadow: 0 14px 30px rgba(23, 32, 38, 0.16);
     transform: translateY(-3px);
 }
 
