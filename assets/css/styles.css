@@ -343,8 +343,24 @@ body::after {
 .metric {
     background: color-mix(in srgb, var(--surface) 85%, transparent);
     border-radius: 10px;
+    color: inherit;
+    display: block;
     padding: 0.75rem;
     text-align: center;
+    text-decoration: none;
+    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.metric:hover,
+.metric:focus-visible {
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 16%, transparent);
+    transform: translateY(-2px);
+}
+
+.metric:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
 }
 
 .metric span {
