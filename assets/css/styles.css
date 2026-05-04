@@ -556,27 +556,71 @@ body::after {
 
 .skills-matrix {
     display: grid;
-    gap: 1rem;
+    gap: 1.2rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.skills-matrix::before {
+    background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 18%, transparent) 0%, transparent 60%),
+        radial-gradient(circle at left center, color-mix(in srgb, var(--highlight) 12%, transparent) 0%, transparent 58%);
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
 }
 
 .skills-matrix-intro {
+    align-items: end;
+    background:
+        linear-gradient(145deg, color-mix(in srgb, var(--surface) 78%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 92%, transparent) 100%);
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+    border-radius: calc(var(--radius-md) + 2px);
     display: grid;
-    gap: 0.8rem;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1.4fr) minmax(240px, 0.9fr);
+    padding: 1.2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.skills-matrix-copy {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.skills-matrix-kicker {
+    color: var(--accent-strong);
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
 }
 
 .skills-matrix-lead {
     color: var(--muted);
-    font-size: 1rem;
-    max-width: none;
-    width: 100%;
+    font-size: clamp(1rem, 1.2vw, 1.08rem);
+    line-height: 1.72;
+    max-width: 60ch;
+}
+
+.skill-matrix-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    position: relative;
+    z-index: 1;
 }
 
 .skills-matrix-featured {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    justify-content: flex-start;
     list-style: none;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0;
 }
 
 .skills-matrix-featured li {
@@ -614,44 +658,80 @@ body::after {
 }
 
 .skill-matrix-row {
-    align-items: start;
+    background:
+        linear-gradient(180deg, color-mix(in srgb, var(--surface) 88%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 72%, transparent) 100%);
+    border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
+    border-radius: 18px;
     display: grid;
     gap: 1rem;
-    grid-template-columns: minmax(190px, 220px) 1fr;
+    grid-template-columns: 1fr;
+    min-height: 100%;
+    padding: 1.15rem;
+    position: relative;
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
 }
 
-.skill-matrix-row + .skill-matrix-row {
-    border-top: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
-    padding-top: 1rem;
+.skill-matrix-row::before {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 72%, transparent), color-mix(in srgb, var(--highlight) 44%, transparent));
+    border-radius: 999px;
+    content: "";
+    height: 3px;
+    left: 1.15rem;
+    position: absolute;
+    right: 1.15rem;
+    top: 0;
+}
+
+.skill-matrix-row:hover {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, transparent) 0%, color-mix(in srgb, var(--surface-soft) 80%, transparent) 100%);
+    border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
+    box-shadow: 0 16px 30px rgba(23, 32, 38, 0.12);
+    transform: translateY(-3px);
 }
 
 .skill-matrix-meta {
     display: grid;
-    gap: 0.42rem;
+    gap: 0.48rem;
+}
+
+.skill-group-index {
+    align-items: center;
+    background: color-mix(in srgb, var(--surface-soft) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--border));
+    border-radius: 999px;
+    color: var(--accent-strong);
+    display: inline-flex;
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    justify-content: center;
+    line-height: 1;
+    padding: 0.34rem 0.56rem;
+    width: fit-content;
 }
 
 .skill-matrix-note {
     color: var(--muted);
-    font-size: 0.84rem;
-    line-height: 1.5;
-    text-align: justify;
-    text-justify: inter-word;
+    font-size: 0.88rem;
+    line-height: 1.62;
+    max-width: 40ch;
+    text-align: left;
 }
 
 .skills-matrix .skill-group-label {
     color: var(--text);
     font-family: "Sora", "Segoe UI", sans-serif;
-    font-size: 1.05rem;
+    font-size: 1.12rem;
     font-weight: 700;
     letter-spacing: 0;
-    line-height: 1;
+    line-height: 1.12;
     text-transform: none;
 }
 
 .skill-tag-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.48rem;
+    gap: 0.52rem;
     list-style: none;
 }
 
@@ -673,12 +753,15 @@ body::after {
 }
 
 .skills-matrix .skill-tag-list li {
-    background: color-mix(in srgb, var(--surface-soft) 84%, var(--surface) 16%);
-    border-color: color-mix(in srgb, var(--accent) 18%, var(--border));
-    box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 18%, transparent);
+    background: color-mix(in srgb, var(--surface) 76%, var(--surface-soft) 24%);
+    border-color: color-mix(in srgb, var(--accent) 24%, var(--border));
+    box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #ffffff 18%, transparent),
+        0 1px 0 color-mix(in srgb, var(--accent) 6%, transparent);
     color: color-mix(in srgb, var(--text) 92%, var(--muted));
     margin-bottom: 0;
-    padding-left: 0.8rem;
+    padding-left: 0.82rem;
+    padding-right: 0.82rem;
     position: static;
     text-align: center;
     transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease;
@@ -690,11 +773,11 @@ body::after {
 
 .skills-matrix .skill-tag-list li:hover,
 .skills-matrix .skill-tag-list li:focus-visible {
-    background: color-mix(in srgb, var(--surface-soft) 74%, var(--accent) 10%);
-    border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+    background: color-mix(in srgb, var(--surface-soft) 66%, var(--accent) 16%);
+    border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
     box-shadow:
         inset 0 1px 0 color-mix(in srgb, #ffffff 24%, transparent),
-        0 6px 14px rgba(23, 32, 38, 0.08);
+        0 8px 16px rgba(23, 32, 38, 0.1);
     color: var(--text);
     transform: translateY(-1px);
 }
@@ -1511,6 +1594,14 @@ body::after {
     .hero-social-links {
         margin-top: 0.35rem;
         width: 100%;
+    }
+
+    .skills-matrix-intro {
+        grid-template-columns: 1fr;
+    }
+
+    .skill-matrix-grid {
+        grid-template-columns: 1fr;
     }
 
     .skill-matrix-row {
