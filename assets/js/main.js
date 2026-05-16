@@ -406,3 +406,13 @@ async function loadDownloads() {
 
 loadProjectThumbnails();
 loadDownloads();
+
+// Section: Backend-backed page utilities.
+(async () => {
+    try {
+        const backendModule = await import('./backend/bootstrap.js');
+        await backendModule.initBackend();
+    } catch (error) {
+        console.error('Unable to initialize shared backend features.', error);
+    }
+})();

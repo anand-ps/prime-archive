@@ -1,4 +1,10 @@
+/*
+File: /projects/shared/assets/css/contributor-page.css
+Purpose: Shared visual styling for contributor pages, including the backend-powered floating utilities.
+*/
+
 @import url("/assets/css/brand-icons.css");
+@import url("/assets/css/backend-ui.css");
 
 :root {
     color-scheme: light;
