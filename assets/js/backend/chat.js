@@ -540,7 +540,7 @@ function showConfirmationBotMessage(name, elements) {
         chatState.messages.push({
             id: 'temp_msg_4_' + Date.now(),
             senderType: SENDER_TYPES.SYSTEM,
-            messageText: `Hi ${name}, ${timeGreeting}! I have forwarded your message to Anand. He'll get back to this chat shortly.`,
+            messageText: `Hi ${name}, ${timeGreeting}! I have forwarded your message to Anand. \nHe'll get back to this chat shortly.`,
             createdAt: new Date().toISOString()
         });
         renderMessages(elements);
@@ -549,7 +549,7 @@ function showConfirmationBotMessage(name, elements) {
             chatState.messages.push({
                 id: 'temp_msg_5_' + Date.now(),
                 senderType: SENDER_TYPES.SYSTEM,
-                messageText: `Need a quick callback? Share your contact number below.`,
+                messageText: `Need a quick callback? Drop your contact number below.`,
                 createdAt: new Date().toISOString()
             });
             renderMessages(elements);
@@ -690,4 +690,14 @@ export async function initChatWidget() {
     } else {
         elements.shell.classList.add('hero-photo-visible');
     }
+
+    const contactLinks = document.querySelectorAll('.open-chat-btn');
+    contactLinks.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!chatState.isPanelOpen) {
+                elements.toggle.click();
+            }
+        });
+    });
 }
