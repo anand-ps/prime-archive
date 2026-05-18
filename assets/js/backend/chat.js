@@ -553,7 +553,7 @@ function showConfirmationBotMessage(name, elements) {
                 createdAt: new Date().toISOString()
             });
             renderMessages(elements);
-        }, 2500);
+        }, 5000);
     }, 1000);
 }
 

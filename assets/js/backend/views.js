@@ -10,34 +10,42 @@ const PAGE_VIEW_BADGE_ID = 'portfolio-page-view-badge';
 
 // Section: View badge UI.
 function ensureViewBadge() {
-    const existingBadge = document.getElementById(PAGE_VIEW_BADGE_ID);
-    if (existingBadge) {
-        return existingBadge;
+    const metaContainer = document.querySelector('.post-meta');
+    
+    if (!metaContainer) {
+        return null;
     }
 
-    const badge = document.createElement('aside');
-    badge.id = PAGE_VIEW_BADGE_ID;
-    badge.className = 'portfolio-view-badge';
-    badge.setAttribute('aria-live', 'polite');
-    badge.innerHTML = `
-        <span class="portfolio-view-badge-label">Views</span>
-        <strong class="portfolio-view-badge-value">Loading...</strong>
-    `;
-
-    document.body.appendChild(badge);
-    return badge;
+    let inlineNode = document.getElementById(PAGE_VIEW_BADGE_ID);
+    if (!inlineNode) {
+        const dot = document.createElement('span');
+        dot.className = 'meta-dot';
+        dot.textContent = '|';
+        
+        inlineNode = document.createElement('span');
+        inlineNode.className = 'meta-text';
+        inlineNode.id = PAGE_VIEW_BADGE_ID;
+        inlineNode.textContent = 'Loading...';
+        
+        metaContainer.appendChild(dot);
+        metaContainer.appendChild(inlineNode);
+    }
+    
+    return inlineNode;
 }
 
 function updateViewBadge({ value, isError = false }) {
-    const badge = ensureViewBadge();
-    const valueNode = badge.querySelector('.portfolio-view-badge-value');
-
+    const valueNode = ensureViewBadge();
+    
     if (!valueNode) {
         return;
     }
 
-    badge.classList.toggle('is-error', isError);
-    valueNode.textContent = value;
+    if (isError) {
+        valueNode.textContent = 'Views Unavailable';
+    } else {
+        valueNode.textContent = `${value} VIEWS`;
+    }
 }
 
 function formatViewCount(value) {
