@@ -674,4 +674,20 @@ export async function initChatWidget() {
             return chatState.isPanelOpen;
         }
     });
+
+    const heroVisual = document.querySelector('.hero-visual');
+    if (heroVisual && window.IntersectionObserver) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
+                    elements.shell.classList.add('hero-photo-visible');
+                } else {
+                    elements.shell.classList.remove('hero-photo-visible');
+                }
+            });
+        }, { threshold: 0.9 });
+        observer.observe(heroVisual);
+    } else {
+        elements.shell.classList.add('hero-photo-visible');
+    }
 }

@@ -562,6 +562,17 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     .portfolio-chat-shell {
         bottom: 1rem;
         right: 1rem;
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.9);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .portfolio-chat-shell.hero-photo-visible,
+    .portfolio-chat-shell.is-open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: scale(1);
     }
 
     .portfolio-chat-shell.is-open {
