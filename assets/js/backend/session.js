@@ -206,6 +206,27 @@ export function syncSessionSnapshot(snapshot) {
     return applySessionSnapshot(snapshot);
 }
 
+export function resetSession() {
+    sessionState.clientId = '';
+    sessionState.internalClientDbId = '';
+    sessionState.sessionId = '';
+    sessionState.conversationId = '';
+    sessionState.initialized = false;
+    sessionState.initPromise = null;
+    
+    if (sessionState.heartbeatTimerId) {
+        window.clearInterval(sessionState.heartbeatTimerId);
+        sessionState.heartbeatTimerId = 0;
+    }
+    
+    // Wipe local cache so new IDs generate
+    window.localStorage.removeItem('client_id');
+    window.localStorage.removeItem('client_name');
+    clearActiveSession();
+    clearConversationId();
+    clearCachedMessages();
+}
+
 export async function initSession() {
     if (sessionState.initialized) {
         return getSessionContext();

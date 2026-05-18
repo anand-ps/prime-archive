@@ -68,7 +68,9 @@ export function ensureClientId() {
         return existingClientId;
     }
 
-    const clientId = window.crypto.randomUUID();
+    const clientId = (window.crypto && window.crypto.randomUUID) 
+        ? window.crypto.randomUUID() 
+        : 'client_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
     window.localStorage.setItem(STORAGE_KEYS.CLIENT_ID, clientId);
     return clientId;
 }
@@ -100,6 +102,30 @@ export function clearActiveSession() {
 }
 
 // Section: Persistent chat identity.
+export function getProfiles() {
+    const legacyClientId = getClientId();
+    const legacyName = getClientName();
+    let profiles = parseJson(window.localStorage.getItem('portfolio_chat_profiles'), []);
+    
+    if (profiles.length === 0 && legacyClientId && legacyName) {
+        profiles = [{ id: legacyClientId, name: legacyName }];
+        window.localStorage.setItem('portfolio_chat_profiles', stringifyJson(profiles));
+    }
+    return profiles;
+}
+
+export function saveProfile(clientId, name) {
+    const profiles = getProfiles();
+    const existing = profiles.find(p => p.id === clientId);
+    if (!existing) {
+        profiles.push({ id: clientId, name });
+        window.localStorage.setItem('portfolio_chat_profiles', stringifyJson(profiles));
+    } else if (existing.name !== name) {
+        existing.name = name;
+        window.localStorage.setItem('portfolio_chat_profiles', stringifyJson(profiles));
+    }
+}
+
 export function getClientName() {
     return normalizeText(window.localStorage.getItem(STORAGE_KEYS.CLIENT_NAME));
 }
