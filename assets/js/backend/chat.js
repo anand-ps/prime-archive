@@ -15,7 +15,9 @@ const chatState = {
     isPanelOpen: false,
     nextAllowedSubmitAt: 0,
     messages: getCachedMessages(),
-    syncController: null
+    syncController: null,
+    onboardingState: 'none',
+    pendingMessage: ''
 };
 
 // Section: Widget rendering.
@@ -167,7 +169,7 @@ async function switchChatProfile(profileId, elements) {
     await chatState.syncController?.syncNow();
 }
 
-async function createChatProfile(name, elements) {
+async function createChatProfile(name, elements, keepMessages = false) {
     resetSession();
     const newId = (window.crypto && window.crypto.randomUUID) 
         ? window.crypto.randomUUID() 
@@ -176,12 +178,16 @@ async function createChatProfile(name, elements) {
     setClientName(name);
     saveProfile(newId, name);
     
-    chatState.messages = [];
-    renderMessages(elements);
+    if (!keepMessages) {
+        chatState.messages = [];
+        renderMessages(elements);
+    }
     renderIdentity(elements);
     
     await initSession();
-    await chatState.syncController?.syncNow();
+    if (!keepMessages) {
+        await chatState.syncController?.syncNow();
+    }
 }
 
 function renderIdentity(elements) {
@@ -197,7 +203,7 @@ function renderIdentity(elements) {
         } else {
             elements.identity.textContent = '';
             elements.identityDisplay.style.display = 'none';
-            elements.nameField.style.display = 'block';
+            elements.nameField.style.display = 'none';
         }
         
         const profiles = getProfiles();
@@ -232,22 +238,32 @@ function formatChatTime(isoString) {
     return `${hours}:${minutes} ${ampm}`;
 }
 
-function createMessageBubble(message) {
+function createMessageBubble(message, hideLabel = false) {
     const article = document.createElement('article');
     const isClientMessage = message.senderType === SENDER_TYPES.CLIENT;
+    const isSystemMessage = message.senderType === SENDER_TYPES.SYSTEM;
 
     article.className = `portfolio-chat-bubble ${isClientMessage ? 'portfolio-chat-bubble-visitor' : 'portfolio-chat-bubble-admin'}`;
     if (message.id) article.dataset.messageId = message.id;
 
-    const label = document.createElement('p');
-    label.className = 'portfolio-chat-bubble-label';
-    label.textContent = isClientMessage ? 'You' : 'Admin Reply';
+    if (!hideLabel) {
+        const label = document.createElement('p');
+        label.className = 'portfolio-chat-bubble-label';
+        if (isClientMessage) {
+            label.textContent = 'You';
+        } else if (isSystemMessage) {
+            label.textContent = 'System';
+        } else {
+            label.textContent = 'Admin Reply';
+        }
+        article.appendChild(label);
+    }
 
     const text = document.createElement('p');
     text.className = 'portfolio-chat-bubble-text';
     text.textContent = message.messageText;
 
-    article.append(label, text);
+    article.appendChild(text);
     
     if (message.createdAt) {
         const time = document.createElement('time');
@@ -325,11 +341,14 @@ function renderMessages(elements) {
     if (empty) empty.remove();
 
     let appended = false;
-    chatState.messages.forEach((message) => {
+    chatState.messages.forEach((message, index) => {
         if (!message.id) return;
+        
         const existing = elements.thread.querySelector(`[data-message-id="${message.id}"]`);
         if (!existing) {
-            elements.thread.appendChild(createMessageBubble(message));
+            const previousMessage = index > 0 ? chatState.messages[index - 1] : null;
+            const isConsecutive = previousMessage && previousMessage.senderType === message.senderType;
+            elements.thread.appendChild(createMessageBubble(message, isConsecutive));
             appended = true;
         }
     });
@@ -419,6 +438,15 @@ function attachPanelEvents(elements) {
         }
     });
 
+    let scrollTimeout;
+    elements.thread.addEventListener('scroll', () => {
+        elements.thread.classList.add('is-scrolling');
+        window.clearTimeout(scrollTimeout);
+        scrollTimeout = window.setTimeout(() => {
+            elements.thread.classList.remove('is-scrolling');
+        }, 1000);
+    });
+
     elements.messageInput.addEventListener('input', () => {
         elements.messageInput.style.height = 'auto';
         elements.messageInput.style.height = Math.min(elements.messageInput.scrollHeight, 120) + 'px';
@@ -443,6 +471,92 @@ function attachPanelEvents(elements) {
     });
 }
 
+async function executeMessageSend(messageText, clientName, elements, options = {}) {
+    try {
+        chatState.isSubmitting = true;
+        setFormBusy(elements, true);
+        updateChatStatus(elements, 'Sending your message...', 'default');
+
+        const storedClientName = setClientName(clientName);
+        renderIdentity(elements);
+
+        await ensureSession();
+        const context = getSessionContext();
+        const response = await sendBackendMessage({
+            clientId: context.clientId,
+            sessionId: context.sessionId,
+            conversationId: context.conversationId,
+            senderType: SENDER_TYPES.CLIENT,
+            messageType: MESSAGE_TYPES.TEXT,
+            messageText,
+            clientName: storedClientName
+        });
+
+        syncSessionSnapshot(response);
+
+        const sentMessage = normalizeMessage(response?.message || {});
+        
+        if (options.tempMessageId) {
+            const tempMsg = chatState.messages.find(m => m.id === options.tempMessageId);
+            if (tempMsg) {
+                tempMsg.id = sentMessage.id;
+                const domNode = elements.thread.querySelector(`[data-message-id="${options.tempMessageId}"]`);
+                if (domNode) {
+                    domNode.dataset.messageId = sentMessage.id;
+                }
+            } else {
+                chatState.messages.push(sentMessage);
+            }
+        } else if (!options.silentRender) {
+            chatState.messages = mergeCachedMessages(chatState.messages, [sentMessage]);
+        }
+        
+        renderMessages(elements);
+
+        elements.form.reset();
+        elements.messageInput.style.height = 'auto';
+        elements.nameInput.value = storedClientName;
+        updateChatStatus(elements, 'Message sent. Syncing replies...', 'success');
+        chatState.nextAllowedSubmitAt = Date.now() + CHAT_CONFIG.SEND_COOLDOWN_MS;
+
+        await trackMessageSend(messageText);
+        await chatState.syncController?.syncNow();
+    } catch (error) {
+        console.error('Unable to send chat message.', error);
+        updateChatStatus(elements, error.message || 'Unable to send your message right now.', 'error');
+    } finally {
+        chatState.isSubmitting = false;
+        setFormBusy(elements, false);
+    }
+}
+
+function showConfirmationBotMessage(name, elements) {
+    setTimeout(() => {
+        const hours = new Date().getHours();
+        let timeGreeting = "good morning";
+        if (hours >= 12 && hours < 17) timeGreeting = "good afternoon";
+        else if (hours >= 17) timeGreeting = "good evening";
+
+        chatState.messages.push({
+            id: 'temp_msg_4_' + Date.now(),
+            senderType: SENDER_TYPES.SYSTEM,
+            messageText: `Hi ${name}, ${timeGreeting}! I have forwarded your message to Anand. He'll get back to this chat shortly.`,
+            createdAt: new Date().toISOString()
+        });
+        renderMessages(elements);
+
+        setTimeout(() => {
+            chatState.messages.push({
+                id: 'temp_msg_5_' + Date.now(),
+                senderType: SENDER_TYPES.SYSTEM,
+                messageText: `Need a quick callback? Share your contact number below.`,
+                createdAt: new Date().toISOString()
+            });
+            renderMessages(elements);
+        }, 2500);
+    }, 1000);
+}
+
 function attachSubmitHandler(elements) {
     elements.form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -453,61 +567,83 @@ function attachSubmitHandler(elements) {
         }
 
         const messageText = sanitizeMessage(elements.messageInput.value);
-        const existingClientName = getClientName();
-        const nextClientName = existingClientName || sanitizeName(elements.nameInput.value);
+        if (!messageText) return;
 
+        const existingClientName = getClientName();
+
+        if (!existingClientName) {
+            if (chatState.onboardingState === 'none') {
+                chatState.onboardingState = 'awaiting_name';
+                chatState.pendingMessage = messageText;
+                
+                elements.messageInput.value = '';
+                elements.messageInput.style.height = 'auto';
+                
+                chatState.messages.push({
+                    id: 'temp_msg_1',
+                    senderType: SENDER_TYPES.CLIENT,
+                    messageText: messageText,
+                    createdAt: new Date().toISOString()
+                });
+                renderMessages(elements);
+                
+                setTimeout(() => {
+                    chatState.messages.push({
+                        id: 'temp_msg_2',
+                        senderType: SENDER_TYPES.SYSTEM,
+                        messageText: "Thanks for reaching out! Before I forward this to Anand, may I get your name?",
+                        createdAt: new Date().toISOString()
+                    });
+                    renderMessages(elements);
+                    elements.messageInput.placeholder = "Type your name...";
+                    elements.messageInput.focus();
+                }, 1500);
+                
+                return;
+            } else if (chatState.onboardingState === 'awaiting_name') {
+                chatState.onboardingState = 'none';
+                const extractedName = sanitizeName(messageText);
+                
+                if (!extractedName) return;
+                
+                elements.messageInput.value = '';
+                elements.messageInput.style.height = 'auto';
+                elements.messageInput.placeholder = "Message...";
+                
+                chatState.messages.push({
+                    id: 'temp_msg_3',
+                    senderType: SENDER_TYPES.CLIENT,
+                    messageText: extractedName,
+                    createdAt: new Date().toISOString()
+                });
+                renderMessages(elements);
+                
+                await createChatProfile(extractedName, elements, true);
+                
+                const originalMessage = chatState.pendingMessage;
+                chatState.pendingMessage = '';
+                
+                await executeMessageSend(originalMessage, extractedName, elements, { tempMessageId: 'temp_msg_1', silentRender: true });
+                
+                showConfirmationBotMessage(extractedName, elements);
+                
+                return;
+            }
+        }
+
+        const nextClientName = existingClientName || sanitizeName(elements.nameInput.value);
         if (!nextClientName) {
             updateChatStatus(elements, 'Please enter your name before sending.', 'error');
             elements.nameInput.focus();
             return;
         }
 
-        if (!messageText) {
-            updateChatStatus(elements, 'Please enter a message before sending.', 'error');
-            elements.messageInput.focus();
-            return;
-        }
+        const isFirstMessage = chatState.messages.filter(m => m.senderType === SENDER_TYPES.CLIENT).length === 0;
 
-        try {
-            chatState.isSubmitting = true;
-            setFormBusy(elements, true);
-            updateChatStatus(elements, 'Sending your message...', 'default');
-
-            const storedClientName = setClientName(nextClientName);
-            renderIdentity(elements);
-
-            await ensureSession();
-            const context = getSessionContext();
-            const response = await sendBackendMessage({
-                clientId: context.clientId,
-                sessionId: context.sessionId,
-                conversationId: context.conversationId,
-                senderType: SENDER_TYPES.CLIENT,
-                messageType: MESSAGE_TYPES.TEXT,
-                messageText,
-                clientName: storedClientName
-            });
-
-            syncSessionSnapshot(response);
-
-            const sentMessage = normalizeMessage(response?.message || {});
-            chatState.messages = mergeCachedMessages(chatState.messages, [sentMessage]);
-            renderMessages(elements);
-
-            elements.form.reset();
-            elements.messageInput.style.height = 'auto';
-            elements.nameInput.value = storedClientName;
-            updateChatStatus(elements, 'Message sent. Syncing replies...', 'success');
-            chatState.nextAllowedSubmitAt = now + CHAT_CONFIG.SEND_COOLDOWN_MS;
-
-            await trackMessageSend(messageText);
-            await chatState.syncController?.syncNow();
-        } catch (error) {
-            console.error('Unable to send chat message.', error);
-            updateChatStatus(elements, error.message || 'Unable to send your message right now.', 'error');
-        } finally {
-            chatState.isSubmitting = false;
-            setFormBusy(elements, false);
+        await executeMessageSend(messageText, nextClientName, elements);
+        
+        if (isFirstMessage) {
+            showConfirmationBotMessage(nextClientName, elements);
         }
     });
 }

@@ -65,5 +65,6 @@ export const MESSAGE_TYPES = Object.freeze({
 
 export const SENDER_TYPES = Object.freeze({
     CLIENT: 'client',
-    ADMIN: 'admin'
+    ADMIN: 'admin',
+    SYSTEM: 'system'
 });

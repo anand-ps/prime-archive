@@ -402,8 +402,12 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     background: transparent;
 }
 .portfolio-chat-thread::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--border) 50%, transparent);
+    background-color: transparent;
     border-radius: 4px;
+}
+
+.portfolio-chat-thread.is-scrolling::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--border) 50%, transparent);
 }
 
 .portfolio-chat-empty-state {
