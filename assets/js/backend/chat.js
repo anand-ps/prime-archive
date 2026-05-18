@@ -591,7 +591,7 @@ function attachSubmitHandler(elements) {
                     chatState.messages.push({
                         id: 'temp_msg_2',
                         senderType: SENDER_TYPES.SYSTEM,
-                        messageText: "Thanks for reaching out! Before I forward this to Anand, may I get your name?",
+                        messageText: "Thanks for reaching out!\nBefore I forward this to Anand, may I get your name?",
                         createdAt: new Date().toISOString()
                     });
                     renderMessages(elements);
