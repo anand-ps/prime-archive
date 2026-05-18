@@ -260,19 +260,68 @@ function createMessageBubble(message) {
     return article;
 }
 
+const CHAT_SUGGESTIONS = [
+    "Are you available for freelance work?",
+    "What technologies do you specialize in?",
+    "I have a project idea for you.",
+    "Just stopping by to say hi! 👋",
+    "Can we schedule a quick call?",
+    "Loved your recent projects!",
+    "Are you open to full-time roles?"
+];
+
+function getDynamicGreeting() {
+    const hours = new Date().getHours();
+    const name = getClientName();
+    const namePart = name ? `, ${name}` : '';
+    if (hours < 12) return `Good morning${namePart}! 👋`;
+    if (hours < 17) return `Good afternoon${namePart}! ☀️`;
+    return `Good evening${namePart}! 🌙`;
+}
+
+function getRandomSuggestions(count) {
+    const shuffled = [...CHAT_SUGGESTIONS].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
 function renderMessages(elements) {
     if (!chatState.messages.length) {
-        if (!elements.thread.querySelector('.portfolio-chat-thread-empty')) {
+        if (!elements.thread.querySelector('.portfolio-chat-empty-state')) {
             elements.thread.replaceChildren();
-            const emptyState = document.createElement('p');
-            emptyState.className = 'portfolio-chat-thread-empty';
-            emptyState.textContent = 'Messages will appear here once the conversation starts.';
-            elements.thread.appendChild(emptyState);
+            
+            const container = document.createElement('div');
+            container.className = 'portfolio-chat-empty-state';
+            
+            const greeting = document.createElement('h3');
+            greeting.className = 'portfolio-chat-empty-greeting';
+            greeting.textContent = getDynamicGreeting();
+            
+            const chipContainer = document.createElement('div');
+            chipContainer.className = 'portfolio-chat-empty-chips';
+            
+            getRandomSuggestions(3).forEach(suggestion => {
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = 'portfolio-chat-chip';
+                chip.textContent = suggestion;
+                chip.addEventListener('click', () => {
+                    elements.messageInput.value = suggestion;
+                    if (typeof elements.form.requestSubmit === 'function') {
+                        elements.form.requestSubmit();
+                    } else {
+                        elements.submitButton.click();
+                    }
+                });
+                chipContainer.appendChild(chip);
+            });
+            
+            container.append(greeting, chipContainer);
+            elements.thread.appendChild(container);
         }
         return;
     }
 
-    const empty = elements.thread.querySelector('.portfolio-chat-thread-empty');
+    const empty = elements.thread.querySelector('.portfolio-chat-empty-state');
     if (empty) empty.remove();
 
     let appended = false;
