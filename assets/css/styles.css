@@ -299,6 +299,7 @@ body::after {
 }
 
 .btn {
+    cursor: pointer;
     border-radius: 11px;
     font-size: 0.92rem;
     font-weight: 700;
