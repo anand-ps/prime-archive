@@ -1,0 +1,521 @@
+/*
+File: /supabase/functions/_shared/backend.ts
+Purpose: Encapsulate anonymous client, session, analytics, conversation, and message workflows for Edge Functions.
+*/
+
+import { getAdminClient } from './db.ts';
+import { MESSAGE_COOLDOWN_MS, MESSAGE_WINDOW_LIMIT, MESSAGE_WINDOW_MS, SESSION_TIMEOUT_MS } from './env.ts';
+import { HttpError } from './http.ts';
+
+// Section: Shared row selectors.
+const CLIENT_SELECT = 'id, public_client_id, client_name, last_seen_at, last_seen_page';
+const SESSION_SELECT = 'id, client_id, entry_page, last_page, started_at, last_activity_at, ended_at';
+const CONVERSATION_SELECT = 'id, client_id, active_session_id, status, created_at, updated_at, closed_at';
+const MESSAGE_SELECT = 'id, conversation_id, client_id, session_id, sender_type, message_type, message_text, created_at';
+
+// Section: Utility helpers.
+function nowIso() {
+    return new Date().toISOString();
+}
+
+function isSessionExpired(lastActivityAt: string) {
+    const lastActivityTimestamp = Date.parse(String(lastActivityAt || ''));
+
+    if (!Number.isFinite(lastActivityTimestamp)) {
+        return true;
+    }
+
+    return (Date.now() - lastActivityTimestamp) > SESSION_TIMEOUT_MS;
+}
+
+function throwIfQueryError(error: { message?: string } | null, fallbackMessage: string) {
+    if (error) {
+        throw new HttpError(500, 'DATABASE_ERROR', error.message || fallbackMessage);
+    }
+}
+
+function serializeSessionSnapshot(clientRow: Record<string, unknown>, sessionRow: Record<string, unknown>, conversationRow: Record<string, unknown>) {
+    return {
+        internalClientDbId: clientRow.id,
+        sessionId: sessionRow.id,
+        conversationId: conversationRow.id,
+        lastActivityAt: sessionRow.last_activity_at,
+        clientName: clientRow.client_name || ''
+    };
+}
+
+function serializeMessage(row: Record<string, unknown>) {
+    return {
+        id: row.id,
+        conversationId: row.conversation_id,
+        clientId: row.client_id,
+        sessionId: row.session_id,
+        senderType: row.sender_type,
+        messageType: row.message_type,
+        messageText: row.message_text,
+        createdAt: row.created_at
+    };
+}
+
+// Section: Client helpers.
+async function getClientByPublicId(publicClientId: string) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('clients')
+        .select(CLIENT_SELECT)
+        .eq('public_client_id', publicClientId)
+        .maybeSingle();
+
+    throwIfQueryError(error, 'Unable to load client.');
+    return data;
+}
+
+async function upsertClientRecord(payload: Record<string, unknown>) {
+    const admin = getAdminClient();
+    const timestamp = nowIso();
+    const { data, error } = await admin
+        .from('clients')
+        .upsert({
+            public_client_id: payload.clientId,
+            browser: payload.browser,
+            device_type: payload.deviceType,
+            timezone: payload.timezone,
+            screen_width: payload.screenWidth,
+            screen_height: payload.screenHeight,
+            referrer: payload.referrer,
+            last_seen_page: payload.currentPage,
+            last_seen_at: timestamp
+        }, {
+            onConflict: 'public_client_id'
+        })
+        .select(CLIENT_SELECT)
+        .single();
+
+    throwIfQueryError(error, 'Unable to create or update client.');
+    return data;
+}
+
+async function touchClientPresence(clientDbId: number, currentPage: string) {
+    const admin = getAdminClient();
+    const { error } = await admin
+        .from('clients')
+        .update({
+            last_seen_at: nowIso(),
+            last_seen_page: currentPage || '/'
+        })
+        .eq('id', clientDbId);
+
+    throwIfQueryError(error, 'Unable to update client presence.');
+}
+
+async function updateClientName(clientDbId: number, clientName: string) {
+    if (!clientName) {
+        return;
+    }
+
+    const admin = getAdminClient();
+    const { error } = await admin
+        .from('clients')
+        .update({
+            client_name: clientName,
+            last_seen_at: nowIso()
+        })
+        .eq('id', clientDbId);
+
+    throwIfQueryError(error, 'Unable to update client name.');
+}
+
+// Section: Session helpers.
+async function endSession(sessionId: string) {
+    const admin = getAdminClient();
+    const { error } = await admin
+        .from('client_sessions')
+        .update({
+            ended_at: nowIso()
+        })
+        .eq('id', sessionId)
+        .is('ended_at', null);
+
+    throwIfQueryError(error, 'Unable to close expired session.');
+}
+
+async function getSessionById(clientDbId: number, sessionId: string) {
+    if (!sessionId) {
+        return null;
+    }
+
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('client_sessions')
+        .select(SESSION_SELECT)
+        .eq('id', sessionId)
+        .eq('client_id', clientDbId)
+        .maybeSingle();
+
+    throwIfQueryError(error, 'Unable to load session.');
+    return data;
+}
+
+async function getLatestSession(clientDbId: number) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('client_sessions')
+        .select(SESSION_SELECT)
+        .eq('client_id', clientDbId)
+        .is('ended_at', null)
+        .order('last_activity_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+    throwIfQueryError(error, 'Unable to load the latest session.');
+    return data;
+}
+
+async function createSession(clientDbId: number, currentPage: string) {
+    const admin = getAdminClient();
+    const timestamp = nowIso();
+    const { data, error } = await admin
+        .from('client_sessions')
+        .insert({
+            client_id: clientDbId,
+            entry_page: currentPage || '/',
+            last_page: currentPage || '/',
+            started_at: timestamp,
+            last_activity_at: timestamp
+        })
+        .select(SESSION_SELECT)
+        .single();
+
+    throwIfQueryError(error, 'Unable to create a session.');
+    return data;
+}
+
+async function touchSession(sessionId: string, currentPage: string) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('client_sessions')
+        .update({
+            last_activity_at: nowIso(),
+            last_page: currentPage || '/'
+        })
+        .eq('id', sessionId)
+        .select(SESSION_SELECT)
+        .single();
+
+    throwIfQueryError(error, 'Unable to update session activity.');
+    return data;
+}
+
+async function resolveActiveSession(clientDbId: number, requestedSessionId: string, currentPage: string) {
+    const candidateSessions = [];
+
+    if (requestedSessionId) {
+        const requestedSession = await getSessionById(clientDbId, requestedSessionId);
+        if (requestedSession) {
+            candidateSessions.push(requestedSession);
+        }
+    }
+
+    const latestSession = await getLatestSession(clientDbId);
+    if (latestSession && !candidateSessions.find((session) => session.id === latestSession.id)) {
+        candidateSessions.push(latestSession);
+    }
+
+    for (const session of candidateSessions) {
+        if (session.ended_at || isSessionExpired(String(session.last_activity_at || ''))) {
+            await endSession(String(session.id));
+            continue;
+        }
+
+        return touchSession(String(session.id), currentPage);
+    }
+
+    return createSession(clientDbId, currentPage);
+}
+
+// Section: Conversation helpers.
+async function getConversationById(clientDbId: number, conversationId: string) {
+    if (!conversationId) {
+        return null;
+    }
+
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('conversations')
+        .select(CONVERSATION_SELECT)
+        .eq('id', conversationId)
+        .eq('client_id', clientDbId)
+        .maybeSingle();
+
+    throwIfQueryError(error, 'Unable to load conversation.');
+    return data;
+}
+
+async function getLatestOpenConversation(clientDbId: number) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('conversations')
+        .select(CONVERSATION_SELECT)
+        .eq('client_id', clientDbId)
+        .eq('status', 'open')
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+    throwIfQueryError(error, 'Unable to load the latest conversation.');
+    return data;
+}
+
+async function createConversation(clientDbId: number, sessionId: string) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('conversations')
+        .insert({
+            client_id: clientDbId,
+            active_session_id: sessionId,
+            status: 'open'
+        })
+        .select(CONVERSATION_SELECT)
+        .single();
+
+    throwIfQueryError(error, 'Unable to create a conversation.');
+    return data;
+}
+
+async function touchConversation(conversationId: string, sessionId: string) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('conversations')
+        .update({
+            active_session_id: sessionId
+        })
+        .eq('id', conversationId)
+        .select(CONVERSATION_SELECT)
+        .single();
+
+    throwIfQueryError(error, 'Unable to update conversation state.');
+    return data;
+}
+
+async function resolveConversation(clientDbId: number, requestedConversationId: string, sessionId: string) {
+    const requestedConversation = await getConversationById(clientDbId, requestedConversationId);
+
+    if (requestedConversation?.status === 'open') {
+        return touchConversation(String(requestedConversation.id), sessionId);
+    }
+
+    const latestConversation = await getLatestOpenConversation(clientDbId);
+    if (latestConversation) {
+        return touchConversation(String(latestConversation.id), sessionId);
+    }
+
+    return createConversation(clientDbId, sessionId);
+}
+
+// Section: Shared context resolution.
+async function requireExistingClient(publicClientId: string) {
+    const clientRow = await getClientByPublicId(publicClientId);
+
+    if (!clientRow) {
+        throw new HttpError(404, 'CLIENT_NOT_FOUND', 'Client context could not be found. Reinitialize the browser client.');
+    }
+
+    return clientRow;
+}
+
+async function resolveClientState(publicClientId: string, sessionId: string, currentPage: string, conversationId = '') {
+    const clientRow = await requireExistingClient(publicClientId);
+    const sessionRow = await resolveActiveSession(Number(clientRow.id), sessionId, currentPage);
+    const conversationRow = await resolveConversation(Number(clientRow.id), conversationId, String(sessionRow.id));
+
+    await touchClientPresence(Number(clientRow.id), currentPage);
+
+    return {
+        clientRow,
+        sessionRow,
+        conversationRow
+    };
+}
+
+// Section: Public workflows.
+export async function initializeAnonymousClient(payload: Record<string, unknown>) {
+    const clientRow = await upsertClientRecord(payload);
+    const sessionRow = await resolveActiveSession(Number(clientRow.id), '', String(payload.currentPage || '/'));
+    const conversationRow = await resolveConversation(Number(clientRow.id), '', String(sessionRow.id));
+
+    return serializeSessionSnapshot(clientRow, sessionRow, conversationRow);
+}
+
+export async function refreshAnonymousSession(payload: Record<string, unknown>) {
+    const { clientRow, sessionRow, conversationRow } = await resolveClientState(
+        String(payload.clientId || ''),
+        String(payload.sessionId || ''),
+        String(payload.currentPage || '/')
+    );
+
+    return serializeSessionSnapshot(clientRow, sessionRow, conversationRow);
+}
+
+export async function createEventRecord(payload: Record<string, unknown>) {
+    const { clientRow, sessionRow, conversationRow } = await resolveClientState(
+        String(payload.clientId || ''),
+        String(payload.sessionId || ''),
+        String(payload.pagePath || '/')
+    );
+
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('page_events')
+        .insert({
+            client_id: clientRow.id,
+            session_id: sessionRow.id,
+            event_type: payload.eventType,
+            page_path: payload.pagePath,
+            page_title: payload.pageTitle,
+            metadata: payload.metadata || {}
+        })
+        .select('id')
+        .single();
+
+    throwIfQueryError(error, 'Unable to track the requested event.');
+
+    let pageViewCount = null;
+
+    if (payload.eventType === 'page_view') {
+        const { count, error: countError } = await admin
+            .from('page_events')
+            .select('id', {
+                count: 'exact',
+                head: true
+            })
+            .eq('event_type', 'page_view')
+            .eq('page_path', payload.pagePath);
+
+        throwIfQueryError(countError, 'Unable to calculate the page view count.');
+        pageViewCount = count ?? 0;
+    }
+
+    return {
+        ...serializeSessionSnapshot(clientRow, sessionRow, conversationRow),
+        eventId: data.id,
+        pageViewCount
+    };
+}
+
+async function enforceMessageRateLimit(clientDbId: number, conversationId: string) {
+    const admin = getAdminClient();
+    const recentWindowStart = new Date(Date.now() - MESSAGE_WINDOW_MS).toISOString();
+    const { data, error } = await admin
+        .from('messages')
+        .select('id, created_at')
+        .eq('client_id', clientDbId)
+        .eq('conversation_id', conversationId)
+        .eq('sender_type', 'client')
+        .gte('created_at', recentWindowStart)
+        .order('created_at', { ascending: false })
+        .limit(MESSAGE_WINDOW_LIMIT);
+
+    throwIfQueryError(error, 'Unable to evaluate chat rate limits.');
+
+    if (!Array.isArray(data)) {
+        return;
+    }
+
+    const latestMessage = data[0];
+    if (latestMessage?.created_at) {
+        const millisecondsSinceLatestMessage = Date.now() - Date.parse(String(latestMessage.created_at));
+
+        if (Number.isFinite(millisecondsSinceLatestMessage) && millisecondsSinceLatestMessage < MESSAGE_COOLDOWN_MS) {
+            throw new HttpError(429, 'MESSAGE_COOLDOWN', 'Please wait a few seconds before sending another message.');
+        }
+    }
+
+    if (data.length >= MESSAGE_WINDOW_LIMIT) {
+        throw new HttpError(429, 'MESSAGE_RATE_LIMIT', 'Too many messages were sent in a short time. Please try again later.');
+    }
+}
+
+export async function createClientMessage(payload: Record<string, unknown>) {
+    const { clientRow, sessionRow, conversationRow } = await resolveClientState(
+        String(payload.clientId || ''),
+        String(payload.sessionId || ''),
+        '/chat',
+        String(payload.conversationId || '')
+    );
+
+    await enforceMessageRateLimit(Number(clientRow.id), String(conversationRow.id));
+    await updateClientName(Number(clientRow.id), String(payload.clientName || ''));
+
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('messages')
+        .insert({
+            conversation_id: conversationRow.id,
+            client_id: clientRow.id,
+            session_id: sessionRow.id,
+            sender_type: payload.senderType,
+            message_type: payload.messageType,
+            message_text: payload.messageText,
+            metadata: {}
+        })
+        .select(MESSAGE_SELECT)
+        .single();
+
+    throwIfQueryError(error, 'Unable to store the outgoing message.');
+
+    await touchConversation(String(conversationRow.id), String(sessionRow.id));
+
+    // Fire and forget Telegram notification
+    sendToTelegram(String(payload.clientName || 'Anonymous'), String(payload.messageText), String(conversationRow.id)).catch((err) => {
+        console.error('Failed to send Telegram notification:', err);
+    });
+
+    return {
+        ...serializeSessionSnapshot(clientRow, sessionRow, conversationRow),
+        message: serializeMessage(data)
+    };
+}
+
+// Section: Telegram Integration
+async function sendToTelegram(clientName: string, text: string, conversationId: string) {
+    const token = Deno.env.get('TELEGRAM_BOT_TOKEN');
+    const chatId = Deno.env.get('TELEGRAM_CHAT_ID');
+    if (!token || !chatId) return;
+
+    // We include the conversationId so we can extract it later when you reply
+    const message = `👤 <b>${clientName}</b>\n\n${text}\n\nID: ${conversationId}`;
+    
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: 'HTML'
+        })
+    });
+}
+
+export async function listConversationMessages(payload: Record<string, unknown>) {
+    const { clientRow, sessionRow, conversationRow } = await resolveClientState(
+        String(payload.clientId || ''),
+        String(payload.sessionId || ''),
+        '/chat',
+        String(payload.conversationId || '')
+    );
+
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('messages')
+        .select(MESSAGE_SELECT)
+        .eq('conversation_id', conversationRow.id)
+        .order('created_at', { ascending: true })
+        .order('id', { ascending: true });
+
+    throwIfQueryError(error, 'Unable to load conversation messages.');
+
+    return {
+        ...serializeSessionSnapshot(clientRow, sessionRow, conversationRow),
+        messages: Array.isArray(data) ? data.map((row) => serializeMessage(row)) : []
+    };
+}

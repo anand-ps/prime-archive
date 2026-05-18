@@ -1,9 +1,15 @@
-// Keep shared contributor pages in sync with the current year.
+/*
+File: /projects/shared/assets/js/contributor-page.js
+Purpose: Shared interactivity for project contributor pages, including directory rendering and backend-powered visitor features.
+*/
+
+// Section: Shared footer year sync.
 const contributorYearNode = document.querySelector('[data-year]');
 if (contributorYearNode) {
     contributorYearNode.textContent = String(new Date().getFullYear());
 }
 
+// Section: Contributor directory configuration.
 const CONTRIBUTOR_PROJECTS_PATH = '/projects/shared/data/project-contributors.json';
 const CONTRIBUTOR_DIRECTORY_PATH = '/projects/shared/data/contributors.json';
 const MAX_CONTRIBUTOR_PAGE_MEMBERS = 6;
@@ -291,3 +297,13 @@ async function initContributorPage() {
 }
 
 initContributorPage();
+
+// Section: Backend-backed page utilities.
+(async () => {
+    try {
+        const backendModule = await import('/assets/js/backend/bootstrap.js');
+        await backendModule.initBackend();
+    } catch (error) {
+        console.error('Unable to initialize shared backend features on contributor pages.', error);
+    }
+})();

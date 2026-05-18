@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/anand-ps/prime-archive#readme",
   "devDependencies": {
-    "serve": "^14.2.6"
+    "serve": "^14.2.6",
+    "supabase": "^2.98.2"
   }
 }
