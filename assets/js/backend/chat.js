@@ -45,8 +45,8 @@ function createChatWidgetMarkup() {
             <div class="portfolio-chat-panel-header">
                 <div>
                     <p class="portfolio-chat-kicker">
-                        <span class="portfolio-chat-online-dot"></span>
                         Live Chat
+                        <span class="portfolio-chat-online-dot"></span>
                     </p>
                     <h2>Say Hello</h2>
                 </div>
@@ -71,7 +71,7 @@ function createChatWidgetMarkup() {
                             placeholder="Tell us your name"
                             autocomplete="name"
                         />
-                        <button type="button" class="portfolio-chat-new-user-btn" data-chat-add-btn>Add</button>
+                        <button type="button" class="portfolio-chat-new-user-btn" data-chat-add-btn>Save</button>
                     </div>
                 </div>
             </div>
@@ -185,33 +185,37 @@ async function createChatProfile(name, elements) {
 }
 
 function renderIdentity(elements) {
-    const clientName = getClientName();
-    const clientId = getClientId();
+    try {
+        const clientName = getClientName();
+        const clientId = getClientId();
 
-    if (clientName) {
-        elements.identity.textContent = `Connected as ${clientName}`;
-        elements.identityDisplay.classList.add('is-visible');
-        elements.nameField.classList.remove('is-visible');
-        elements.nameInput.value = '';
-    } else {
-        elements.identity.textContent = '';
-        elements.identityDisplay.classList.remove('is-visible');
-        elements.nameField.classList.add('is-visible');
-    }
-    
-    const profiles = getProfiles();
-    elements.profilesList.replaceChildren();
-    
-    if (profiles.length > 0) {
-        profiles.forEach(p => {
-            if (p.id === clientId) return;
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'portfolio-chat-profile-btn';
-            btn.textContent = `Switch to ${p.name}`;
-            btn.onclick = () => switchChatProfile(p.id, elements);
-            elements.profilesList.appendChild(btn);
-        });
+        if (clientName) {
+            elements.identity.textContent = `Connected as ${clientName}`;
+            elements.identityDisplay.style.display = 'flex';
+            elements.nameField.style.display = 'none';
+            elements.nameInput.value = '';
+        } else {
+            elements.identity.textContent = '';
+            elements.identityDisplay.style.display = 'none';
+            elements.nameField.style.display = 'block';
+        }
+        
+        const profiles = getProfiles();
+        elements.profilesList.replaceChildren();
+        
+        if (profiles.length > 0) {
+            profiles.forEach(p => {
+                if (p.id === clientId) return;
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'portfolio-chat-profile-btn';
+                btn.textContent = `Switch to ${p.name}`;
+                btn.onclick = () => switchChatProfile(p.id, elements);
+                elements.profilesList.appendChild(btn);
+            });
+        }
+    } catch (err) {
+        console.error("renderIdentity error:", err);
     }
 }
 
@@ -347,8 +351,8 @@ function attachPanelEvents(elements) {
     });
 
     elements.editNameBtn.addEventListener('click', () => {
-        elements.identityDisplay.classList.remove('is-visible');
-        elements.nameField.classList.add('is-visible');
+        elements.identityDisplay.style.display = 'none';
+        elements.nameField.style.display = 'block';
         elements.nameInput.focus();
     });
 

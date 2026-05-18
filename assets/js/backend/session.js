@@ -5,7 +5,7 @@ Purpose: Initialize anonymous client context, manage active sessions, and keep a
 
 import { initializeClient, sendHeartbeat } from './client.js';
 import { SESSION_CONFIG } from './config.js';
-import { clearActiveSession, clearCachedMessages, ensureClientId, getActiveSession, getConversationId, setActiveSession, setConversationId } from './storage.js';
+import { clearActiveSession, clearCachedMessages, clearConversationId, ensureClientId, getActiveSession, getConversationId, setActiveSession, setConversationId } from './storage.js';
 
 const sessionState = {
     clientId: '',
