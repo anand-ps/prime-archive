@@ -549,7 +549,7 @@ function showConfirmationBotMessage(name, elements) {
             chatState.messages.push({
                 id: 'temp_msg_5_' + Date.now(),
                 senderType: SENDER_TYPES.SYSTEM,
-                messageText: `Need a quick callback? Drop your contact number below.`,
+                messageText: `Need a quick callback?\nDrop your contact number below.`,
                 createdAt: new Date().toISOString()
             });
             renderMessages(elements);
