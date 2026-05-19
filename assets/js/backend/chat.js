@@ -5,7 +5,7 @@ Purpose: Manage the anonymous chat widget, local cache rendering, and Edge Funct
 
 import { trackChatOpen, trackMessageSend } from './analytics.js';
 import { sendBackendMessage, getBackendMessages } from './client.js';
-import { BACKEND_BREAKPOINTS, CHAT_CONFIG, MESSAGE_TYPES, SENDER_TYPES, STORAGE_KEYS } from './config.js';
+import { BACKEND_BREAKPOINTS, CHAT_CONFIG, CHAT_DISPLAY, MESSAGE_TYPES, SENDER_TYPES, STORAGE_KEYS } from './config.js';
 import { startMessageSync } from './realtime.js';
 import { ensureSession, getSessionContext, syncSessionSnapshot, resetSession, initSession } from './session.js';
 import { getCachedMessages, getClientName, mergeCachedMessages, setCachedMessages, setClientName, getProfiles, saveProfile, getClientId } from './storage.js';
@@ -278,7 +278,7 @@ function createMessageBubble(message, hideLabel = false) {
         } else if (isSystemMessage) {
             label.textContent = 'System';
         } else {
-            label.textContent = 'Admin Reply';
+            label.textContent = CHAT_DISPLAY.ADMIN_NAME;
         }
         article.appendChild(label);
     }
@@ -576,9 +576,11 @@ async function executeMessageSend(messageText, clientName, elements, options = {
 
         await trackMessageSend(messageText);
         await chatState.syncController?.syncNow();
+        return response;
     } catch (error) {
         console.error('Unable to send chat message.', error);
         updateChatStatus(elements, error.message || 'Unable to send your message right now.', 'error');
+        return null;
     } finally {
         chatState.isSubmitting = false;
         setFormBusy(elements, false);
@@ -595,7 +597,7 @@ function showConfirmationBotMessage(name, elements) {
         chatState.messages.push({
             id: 'temp_msg_4_' + Date.now(),
             senderType: SENDER_TYPES.SYSTEM,
-            messageText: `Hi ${name}, ${timeGreeting}! I have forwarded your message to Anand. \nHe'll get back to this chat shortly.`,
+            messageText: `Hi ${name}👋\nYour message has been shared with Anand. He’ll reply here soon`,
             createdAt: new Date().toISOString()
         });
         renderMessages(elements);
@@ -604,12 +606,22 @@ function showConfirmationBotMessage(name, elements) {
             chatState.messages.push({
                 id: 'temp_msg_5_' + Date.now(),
                 senderType: SENDER_TYPES.SYSTEM,
-                messageText: `Need a quick callback?\nDrop your contact number below.`,
+                messageText: `Prefer a callback over chat?\nDrop your contact below.`,
                 createdAt: new Date().toISOString()
             });
             renderMessages(elements);
         }, 5000);
     }, 10);
+}
+
+function showMobileAcceptedBotMessage(name, elements) {
+    chatState.messages.push({
+        id: 'temp_msg_mobile_' + Date.now(),
+        senderType: SENDER_TYPES.SYSTEM,
+        messageText: `Done👍 \nYour contact has been noted`,
+        createdAt: new Date().toISOString()
+    });
+    renderMessages(elements);
 }
 
 function attachSubmitHandler(elements) {
@@ -678,9 +690,13 @@ function attachSubmitHandler(elements) {
                 const originalMessage = chatState.pendingMessage;
                 chatState.pendingMessage = '';
                 
-                await executeMessageSend(originalMessage, extractedName, elements, { tempMessageId: 'temp_msg_1', silentRender: true });
+                const response = await executeMessageSend(originalMessage, extractedName, elements, { tempMessageId: 'temp_msg_1', silentRender: true });
                 
                 showConfirmationBotMessage(extractedName, elements);
+
+                if (response?.mobileNumberAccepted) {
+                    showMobileAcceptedBotMessage(extractedName, elements);
+                }
                 
                 return;
             }
@@ -695,10 +711,14 @@ function attachSubmitHandler(elements) {
 
         const isFirstMessage = chatState.messages.filter(m => m.senderType === SENDER_TYPES.CLIENT).length === 0;
 
-        await executeMessageSend(messageText, nextClientName, elements);
+        const response = await executeMessageSend(messageText, nextClientName, elements);
         
         if (isFirstMessage) {
             showConfirmationBotMessage(nextClientName, elements);
+        }
+
+        if (response?.mobileNumberAccepted) {
+            showMobileAcceptedBotMessage(nextClientName, elements);
         }
     });
 }

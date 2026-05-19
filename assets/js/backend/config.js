@@ -46,6 +46,10 @@ export const CHAT_CONFIG = Object.freeze({
     MAX_CACHED_MESSAGES: 100
 });
 
+export const CHAT_DISPLAY = Object.freeze({
+    ADMIN_NAME: 'Anand'
+});
+
 export const SYNC_CONFIG = Object.freeze({
     OPEN_INTERVAL_MS: 6000,
     IDLE_INTERVAL_MS: 15000

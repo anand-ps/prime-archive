@@ -536,7 +536,8 @@ export async function createClientMessage(payload: Record<string, unknown>) {
 
     return {
         ...serializeSessionSnapshot(clientRow, sessionRow, conversationRow),
-        message: serializeMessage(data)
+        message: serializeMessage(data),
+        mobileNumberAccepted: Boolean(detectedMobileNumber)
     };
 }
 
