@@ -49,6 +49,8 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 
 /* Section: Chat shell and toggle. */
 .portfolio-chat-shell {
+    --chat-mobile-keyboard-offset: 0px;
+    --chat-mobile-viewport-height: 100dvh;
     bottom: 1rem;
     position: fixed;
     right: 1rem;
@@ -608,7 +610,8 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
         left: 0;
         top: 0;
         width: auto;
-        height: auto;
+        height: var(--chat-mobile-viewport-height, 100dvh);
+        max-height: var(--chat-mobile-viewport-height, 100dvh);
         margin: 0;
         padding: 0;
         z-index: 9999;
@@ -620,17 +623,26 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 
     .portfolio-chat-shell.is-open .portfolio-chat-panel {
         width: auto;
-        height: auto;
+        height: var(--chat-mobile-viewport-height, 100dvh);
         max-width: none;
-        max-height: none;
-        bottom: 0;
+        max-height: var(--chat-mobile-viewport-height, 100dvh);
+        bottom: auto;
         right: 0;
         left: 0;
         top: 0;
         border-radius: 0;
         border: none;
         box-shadow: none;
-        padding: 1.2rem 0.8rem 0.8rem;
+        padding: 1.2rem 0.8rem calc(0.8rem + env(safe-area-inset-bottom, 0px));
         background: var(--surface);
+    }
+
+    .portfolio-chat-shell.is-open .portfolio-chat-form {
+        padding-bottom: max(var(--chat-mobile-keyboard-offset, 0px), env(safe-area-inset-bottom, 0px));
+    }
+
+    .portfolio-chat-shell.is-open .portfolio-chat-thread {
+        overscroll-behavior: contain;
+        padding-bottom: 0.6rem;
     }
 }

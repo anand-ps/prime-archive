@@ -25,6 +25,52 @@ function isDesktopChatViewport() {
     return window.matchMedia(`(min-width: ${BACKEND_BREAKPOINTS.CHAT_MOBILE + 1}px)`).matches;
 }
 
+function isMobileChatViewport() {
+    return !isDesktopChatViewport();
+}
+
+function updateMobileViewportMetrics(elements) {
+    if (!elements?.shell) {
+        return;
+    }
+
+    if (isDesktopChatViewport()) {
+        elements.shell.style.setProperty('--chat-mobile-viewport-height', '100dvh');
+        elements.shell.style.setProperty('--chat-mobile-keyboard-offset', '0px');
+        return;
+    }
+
+    const visualViewport = window.visualViewport;
+    if (!visualViewport) {
+        elements.shell.style.setProperty('--chat-mobile-viewport-height', '100dvh');
+        elements.shell.style.setProperty('--chat-mobile-keyboard-offset', '0px');
+        return;
+    }
+
+    const viewportHeight = Math.round(visualViewport.height);
+    const keyboardOffset = Math.max(
+        0,
+        Math.round(window.innerHeight - visualViewport.height - visualViewport.offsetTop)
+    );
+
+    elements.shell.style.setProperty('--chat-mobile-viewport-height', `${viewportHeight}px`);
+    elements.shell.style.setProperty('--chat-mobile-keyboard-offset', `${keyboardOffset}px`);
+}
+
+function scrollComposerIntoView(elements) {
+    if (!elements?.messageInput || !chatState.isPanelOpen || !isMobileChatViewport()) {
+        return;
+    }
+
+    window.setTimeout(() => {
+        updateMobileViewportMetrics(elements);
+        elements.messageInput.scrollIntoView({
+            block: 'nearest',
+            inline: 'nearest'
+        });
+    }, 120);
+}
+
 // Section: Widget rendering.
 function createChatWidgetMarkup() {
     const shell = document.createElement('section');
@@ -140,6 +186,7 @@ function setPanelOpen(elements, isOpen) {
     elements.shell.classList.toggle('is-desktop-open', isOpen && isDesktopChatViewport());
     elements.toggle.setAttribute('aria-expanded', String(isOpen));
     elements.panel.setAttribute('aria-hidden', String(!isOpen));
+    updateMobileViewportMetrics(elements);
 }
 
 function updateChatStatus(elements, message, tone = 'default') {
@@ -501,6 +548,15 @@ function attachPanelEvents(elements) {
     elements.messageInput.addEventListener('input', () => {
         elements.messageInput.style.height = 'auto';
         elements.messageInput.style.height = Math.min(elements.messageInput.scrollHeight, 120) + 'px';
+        updateMobileViewportMetrics(elements);
+    });
+
+    elements.messageInput.addEventListener('focus', () => {
+        scrollComposerIntoView(elements);
+    });
+
+    elements.messageInput.addEventListener('click', () => {
+        scrollComposerIntoView(elements);
     });
 
     elements.messageInput.addEventListener('keydown', (event) => {
@@ -523,7 +579,20 @@ function attachPanelEvents(elements) {
 
     window.addEventListener('resize', () => {
         elements.shell.classList.toggle('is-desktop-open', chatState.isPanelOpen && isDesktopChatViewport());
+        updateMobileViewportMetrics(elements);
     });
+
+    if (window.visualViewport) {
+        const handleViewportChange = () => {
+            updateMobileViewportMetrics(elements);
+            if (chatState.isPanelOpen && isMobileChatViewport()) {
+                elements.thread.scrollTop = elements.thread.scrollHeight;
+            }
+        };
+
+        window.visualViewport.addEventListener('resize', handleViewportChange);
+        window.visualViewport.addEventListener('scroll', handleViewportChange);
+    }
 }
 
 async function executeMessageSend(messageText, clientName, elements, options = {}) {
@@ -727,6 +796,7 @@ function attachSubmitHandler(elements) {
 export async function initChatWidget() {
     const elements = ensureChatWidget();
 
+    updateMobileViewportMetrics(elements);
     renderIdentity(elements);
     chatState.messages = setCachedMessages(chatState.messages);
     renderMessages(elements);
