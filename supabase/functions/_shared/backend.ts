@@ -11,7 +11,7 @@ import { HttpError } from './http.ts';
 const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page';
 const SESSION_SELECT = 'id, client_id, entry_page, last_page, started_at, last_activity_at, ended_at';
 const CONVERSATION_SELECT = 'id, client_id, active_session_id, status, created_at, updated_at, closed_at';
-const MESSAGE_SELECT = 'id, conversation_id, client_id, session_id, sender_type, message_type, message_text, created_at';
+const MESSAGE_SELECT = 'id, conversation_id, client_id, session_id, sender_type, message_type, message_text, metadata, created_at';
 
 // Section: Utility helpers.
 function nowIso() {
@@ -45,12 +45,20 @@ function serializeSessionSnapshot(clientRow: Record<string, unknown>, sessionRow
 }
 
 function serializeMessage(row: Record<string, unknown>) {
+    const metadata = (row.metadata && typeof row.metadata === 'object' && !Array.isArray(row.metadata))
+        ? row.metadata as Record<string, unknown>
+        : {};
+    const displayVariant = String(metadata.displayVariant || '').trim().toLowerCase();
+    const senderType = displayVariant === 'system'
+        ? 'system'
+        : row.sender_type;
+
     return {
         id: row.id,
         conversationId: row.conversation_id,
         clientId: row.client_id,
         sessionId: row.session_id,
-        senderType: row.sender_type,
+        senderType,
         messageType: row.message_type,
         messageText: row.message_text,
         createdAt: row.created_at
@@ -490,6 +498,138 @@ async function enforceMessageRateLimit(clientDbId: number, conversationId: strin
     }
 }
 
+async function countClientMessages(conversationId: string) {
+    const admin = getAdminClient();
+    const { count, error } = await admin
+        .from('messages')
+        .select('id', {
+            count: 'exact',
+            head: true
+        })
+        .eq('conversation_id', conversationId)
+        .eq('sender_type', 'client');
+
+    throwIfQueryError(error, 'Unable to count existing client messages.');
+    return Number(count ?? 0);
+}
+
+async function insertSystemConversationMessages({
+    clientId,
+    conversationId,
+    sessionId,
+    clientName,
+    detectedMobileNumber,
+    persistOnboardingFlow
+}: {
+    clientId: number,
+    conversationId: string,
+    sessionId: string,
+    clientName: string,
+    detectedMobileNumber: string,
+    persistOnboardingFlow: boolean
+}) {
+    const admin = getAdminClient();
+    const messageRows: Array<Record<string, unknown>> = [];
+
+    if (persistOnboardingFlow && clientName) {
+        messageRows.push(
+            {
+                conversation_id: conversationId,
+                client_id: clientId,
+                session_id: sessionId,
+                sender_type: 'admin',
+                message_type: 'text',
+                message_text: 'Thanks for reaching out!\nBefore I forward this to Anand, may I get your name?',
+                metadata: {
+                    displayVariant: 'system',
+                    automationKey: 'collect_name_prompt'
+                }
+            },
+            {
+                conversation_id: conversationId,
+                client_id: clientId,
+                session_id: sessionId,
+                sender_type: 'client',
+                message_type: 'text',
+                message_text: clientName,
+                metadata: {
+                    automationKey: 'collected_name_reply',
+                    captureType: 'client_name'
+                }
+            }
+        );
+    }
+
+    if (clientName) {
+        messageRows.push(
+            {
+                conversation_id: conversationId,
+                client_id: clientId,
+                session_id: sessionId,
+                sender_type: 'admin',
+                message_type: 'text',
+                message_text: `Hi ${clientName}!\nYour message has been shared with Anand. He'll reply here soon.`,
+                metadata: {
+                    displayVariant: 'system',
+                    automationKey: 'message_forwarded_confirmation'
+                }
+            },
+            {
+                conversation_id: conversationId,
+                client_id: clientId,
+                session_id: sessionId,
+                sender_type: 'admin',
+                message_type: 'text',
+                message_text: 'Prefer a callback over chat?\nDrop your contact below.',
+                metadata: {
+                    displayVariant: 'system',
+                    automationKey: 'callback_prompt'
+                }
+            }
+        );
+    }
+
+    if (detectedMobileNumber) {
+        messageRows.push({
+            conversation_id: conversationId,
+            client_id: clientId,
+            session_id: sessionId,
+            sender_type: 'admin',
+            message_type: 'text',
+            message_text: 'Done.\nYour contact has been noted.',
+            metadata: {
+                displayVariant: 'system',
+                automationKey: 'mobile_number_captured'
+            }
+        });
+    }
+
+    if (!messageRows.length) {
+        return [];
+    }
+
+    const { data, error } = await admin
+        .from('messages')
+        .insert(messageRows)
+        .select(MESSAGE_SELECT);
+
+    throwIfQueryError(error, 'Unable to store automated conversation messages.');
+    return Array.isArray(data) ? data : [];
+}
+
+async function getConversationMessages(conversationId: string) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('messages')
+        .select(MESSAGE_SELECT)
+        .eq('conversation_id', conversationId)
+        .order('created_at', { ascending: true })
+        .order('id', { ascending: true });
+
+    throwIfQueryError(error, 'Unable to load conversation messages.');
+    return Array.isArray(data) ? data : [];
+}
+
 export async function createClientMessage(payload: Record<string, unknown>) {
     const { clientRow, sessionRow, conversationRow } = await resolveClientState(
         String(payload.clientId || ''),
@@ -511,6 +651,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     }
 
     const admin = getAdminClient();
+    const existingClientMessageCount = await countClientMessages(String(conversationRow.id));
     const { data, error } = await admin
         .from('messages')
         .insert({
@@ -527,7 +668,32 @@ export async function createClientMessage(payload: Record<string, unknown>) {
 
     throwIfQueryError(error, 'Unable to store the outgoing message.');
 
+    const persistOnboardingFlow = Boolean(payload.persistOnboardingFlow);
+    let automatedRows: Record<string, unknown>[] = [];
+
+    if (existingClientMessageCount === 0) {
+        automatedRows = await insertSystemConversationMessages({
+            clientId: Number(clientRow.id),
+            conversationId: String(conversationRow.id),
+            sessionId: String(sessionRow.id),
+            clientName: String(payload.clientName || '').trim(),
+            detectedMobileNumber,
+            persistOnboardingFlow
+        });
+    } else if (detectedMobileNumber) {
+        automatedRows = await insertSystemConversationMessages({
+            clientId: Number(clientRow.id),
+            conversationId: String(conversationRow.id),
+            sessionId: String(sessionRow.id),
+            clientName: '',
+            detectedMobileNumber,
+            persistOnboardingFlow: false
+        });
+    }
+
     await touchConversation(String(conversationRow.id), String(sessionRow.id));
+
+    const conversationMessages = await getConversationMessages(String(conversationRow.id));
 
     // Fire and forget Telegram notification
     sendToTelegram(String(payload.clientName || 'Anonymous'), String(payload.messageText), String(conversationRow.id)).catch((err) => {
@@ -537,6 +703,8 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     return {
         ...serializeSessionSnapshot(clientRow, sessionRow, conversationRow),
         message: serializeMessage(data),
+        automatedMessages: automatedRows.map((row) => serializeMessage(row)),
+        messages: conversationMessages.map((row) => serializeMessage(row)),
         mobileNumberAccepted: Boolean(detectedMobileNumber)
     };
 }
@@ -569,15 +737,7 @@ export async function listConversationMessages(payload: Record<string, unknown>)
         String(payload.conversationId || '')
     );
 
-    const admin = getAdminClient();
-    const { data, error } = await admin
-        .from('messages')
-        .select(MESSAGE_SELECT)
-        .eq('conversation_id', conversationRow.id)
-        .order('created_at', { ascending: true })
-        .order('id', { ascending: true });
-
-    throwIfQueryError(error, 'Unable to load conversation messages.');
+    const data = await getConversationMessages(String(conversationRow.id));
 
     return {
         ...serializeSessionSnapshot(clientRow, sessionRow, conversationRow),

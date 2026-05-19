@@ -638,7 +638,7 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     }
 
     .portfolio-chat-shell.is-open .portfolio-chat-form {
-        padding-bottom: max(var(--chat-mobile-keyboard-offset, 0px), env(safe-area-inset-bottom, 0px));
+        padding-bottom: 0;
     }
 
     .portfolio-chat-shell.is-open .portfolio-chat-thread {

@@ -189,7 +189,8 @@ export function parseSendMessagePayload(body: unknown) {
         senderType: validateSenderType(payload.senderType),
         messageType: validateMessageType(payload.messageType),
         messageText: requireText(payload.messageText, 'messageText', 1000),
-        clientName: normalizeText(payload.clientName, 80)
+        clientName: normalizeText(payload.clientName, 80),
+        persistOnboardingFlow: payload.persistOnboardingFlow === true
     };
 }
 

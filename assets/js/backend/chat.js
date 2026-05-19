@@ -371,6 +371,29 @@ function getRandomSuggestions(count) {
     return shuffled.slice(0, count);
 }
 
+function hasTemporaryMessageId(value) {
+    return String(value || '').startsWith('temp_msg_');
+}
+
+function shouldRebuildThread(elements) {
+    const renderedBubbles = Array.from(elements.thread.querySelectorAll('[data-message-id]'));
+
+    if (!renderedBubbles.length) {
+        return false;
+    }
+
+    const renderedIds = new Set(renderedBubbles.map((node) => String(node.dataset.messageId || '')));
+    const desiredIds = new Set(chatState.messages.map((message) => String(message.id || '')));
+
+    for (const renderedId of renderedIds) {
+        if (hasTemporaryMessageId(renderedId) || !desiredIds.has(renderedId)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function renderMessages(elements) {
     if (!chatState.messages.length) {
         if (!elements.thread.querySelector('.portfolio-chat-empty-state')) {
@@ -411,35 +434,37 @@ function renderMessages(elements) {
     const empty = elements.thread.querySelector('.portfolio-chat-empty-state');
     if (empty) empty.remove();
 
-    let appended = false;
+    const rebuildThread = shouldRebuildThread(elements);
+    if (rebuildThread) {
+        elements.thread.replaceChildren();
+    }
+
     chatState.messages.forEach((message, index) => {
         if (!message.id) return;
-        
-        const existing = elements.thread.querySelector(`[data-message-id="${message.id}"]`);
-        if (!existing) {
-            const previousMessage = index > 0 ? chatState.messages[index - 1] : null;
-            
-            const currentDateString = formatChatDate(message.createdAt);
-            const previousDateString = previousMessage ? formatChatDate(previousMessage.createdAt) : null;
-            
-            if (currentDateString !== previousDateString && currentDateString) {
-                const existingDivider = elements.thread.querySelector(`[data-date-divider="${currentDateString}"]`);
-                if (!existingDivider) {
-                    const divider = document.createElement('div');
-                    divider.className = 'portfolio-chat-date-divider';
-                    divider.dataset.dateDivider = currentDateString;
-                    divider.textContent = currentDateString;
-                    elements.thread.appendChild(divider);
-                }
-            }
 
-            const isConsecutive = previousMessage && previousMessage.senderType === message.senderType && (currentDateString === previousDateString);
+        const previousMessage = index > 0 ? chatState.messages[index - 1] : null;
+        const currentDateString = formatChatDate(message.createdAt);
+        const previousDateString = previousMessage ? formatChatDate(previousMessage.createdAt) : null;
+
+        if (currentDateString !== previousDateString && currentDateString) {
+            const existingDivider = elements.thread.querySelector(`[data-date-divider="${currentDateString}"]`);
+            if (!existingDivider) {
+                const divider = document.createElement('div');
+                divider.className = 'portfolio-chat-date-divider';
+                divider.dataset.dateDivider = currentDateString;
+                divider.textContent = currentDateString;
+                elements.thread.appendChild(divider);
+            }
+        }
+
+        const isConsecutive = previousMessage && previousMessage.senderType === message.senderType && (currentDateString === previousDateString);
+        const existingBubble = elements.thread.querySelector(`[data-message-id="${message.id}"]`);
+        if (!existingBubble) {
             elements.thread.appendChild(createMessageBubble(message, isConsecutive));
-            appended = true;
         }
     });
 
-    if (appended) {
+    if (chatState.messages.length) {
         elements.thread.scrollTop = elements.thread.scrollHeight;
     }
 }
@@ -613,14 +638,20 @@ async function executeMessageSend(messageText, clientName, elements, options = {
             senderType: SENDER_TYPES.CLIENT,
             messageType: MESSAGE_TYPES.TEXT,
             messageText,
-            clientName: storedClientName
+            clientName: storedClientName,
+            persistOnboardingFlow: options.persistOnboardingFlow === true
         });
 
         syncSessionSnapshot(response);
 
+        const conversationMessages = Array.isArray(response?.messages)
+            ? response.messages.map(normalizeMessage)
+            : [];
         const sentMessage = normalizeMessage(response?.message || {});
         
-        if (options.tempMessageId) {
+        if (conversationMessages.length) {
+            chatState.messages = setCachedMessages(conversationMessages);
+        } else if (options.tempMessageId) {
             const tempMsg = chatState.messages.find(m => m.id === options.tempMessageId);
             if (tempMsg) {
                 tempMsg.id = sentMessage.id;
@@ -759,13 +790,11 @@ function attachSubmitHandler(elements) {
                 const originalMessage = chatState.pendingMessage;
                 chatState.pendingMessage = '';
                 
-                const response = await executeMessageSend(originalMessage, extractedName, elements, { tempMessageId: 'temp_msg_1', silentRender: true });
-                
-                showConfirmationBotMessage(extractedName, elements);
-
-                if (response?.mobileNumberAccepted) {
-                    showMobileAcceptedBotMessage(extractedName, elements);
-                }
+                await executeMessageSend(originalMessage, extractedName, elements, {
+                    tempMessageId: 'temp_msg_1',
+                    silentRender: true,
+                    persistOnboardingFlow: true
+                });
                 
                 return;
             }
@@ -778,17 +807,9 @@ function attachSubmitHandler(elements) {
             return;
         }
 
-        const isFirstMessage = chatState.messages.filter(m => m.senderType === SENDER_TYPES.CLIENT).length === 0;
-
-        const response = await executeMessageSend(messageText, nextClientName, elements);
-        
-        if (isFirstMessage) {
-            showConfirmationBotMessage(nextClientName, elements);
-        }
-
-        if (response?.mobileNumberAccepted) {
-            showMobileAcceptedBotMessage(nextClientName, elements);
-        }
+        await executeMessageSend(messageText, nextClientName, elements, {
+            persistOnboardingFlow: false
+        });
     });
 }
 
