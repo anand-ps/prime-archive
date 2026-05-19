@@ -36,6 +36,8 @@ create table if not exists public.clients (
 
     client_name text,
 
+    mobile_number VARCHAR(20),
+
     browser text not null default '',
 
     device_type text not null default '',
@@ -295,7 +297,17 @@ force row level security;
 -- DIRECT PUBLIC TABLE ACCESS LOCKDOWN
 ------------------------------------------------------------
 
-grant usage on schema public to anon, authenticated;
+grant usage on schema public to anon, authenticated, service_role;
+
+grant all on table public.clients to service_role;
+grant all on table public.client_sessions to service_role;
+grant all on table public.page_events to service_role;
+grant all on table public.conversations to service_role;
+grant all on table public.messages to service_role;
+
+grant usage, select on sequence public.clients_id_seq to service_role;
+grant usage, select on sequence public.page_events_id_seq to service_role;
+grant usage, select on sequence public.messages_id_seq to service_role;
 
 revoke all on public.clients from anon, authenticated;
 revoke all on public.client_sessions from anon, authenticated;
@@ -306,6 +318,18 @@ revoke all on public.messages from anon, authenticated;
 revoke all on sequence public.clients_id_seq from anon, authenticated;
 revoke all on sequence public.page_events_id_seq from anon, authenticated;
 revoke all on sequence public.messages_id_seq from anon, authenticated;
+
+alter default privileges for role postgres in schema public
+grant all on tables to service_role;
+
+alter default privileges for role postgres in schema public
+grant usage, select on sequences to service_role;
+
+alter default privileges for role postgres in schema public
+revoke select, insert, update, delete on tables from anon, authenticated;
+
+alter default privileges for role postgres in schema public
+revoke usage, select on sequences from anon, authenticated;
 
 drop policy if exists deny_clients_select on public.clients;
 create policy deny_clients_select

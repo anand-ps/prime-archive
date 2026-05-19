@@ -26,6 +26,11 @@ export const FUNCTION_REQUEST_CONFIG = Object.freeze({
     TIMEOUT_MS: 12000
 });
 
+// Section: Shared responsive breakpoints.
+export const BACKEND_BREAKPOINTS = Object.freeze({
+    CHAT_MOBILE: 720
+});
+
 // Section: Session timing configuration.
 export const SESSION_CONFIG = Object.freeze({
     TIMEOUT_MS: 60 * 60 * 1000,
@@ -39,6 +44,10 @@ export const CHAT_CONFIG = Object.freeze({
     MAX_MESSAGE_LENGTH: 1000,
     SEND_COOLDOWN_MS: 2500,
     MAX_CACHED_MESSAGES: 100
+});
+
+export const CHAT_DISPLAY = Object.freeze({
+    ADMIN_NAME: 'Anand'
 });
 
 export const SYNC_CONFIG = Object.freeze({

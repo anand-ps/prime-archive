@@ -117,6 +117,16 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     visibility: visible;
 }
 
+.portfolio-chat-shell.is-desktop-open .portfolio-chat-toggle {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.9);
+}
+
+.portfolio-chat-shell.is-desktop-open .portfolio-chat-panel {
+    bottom: 0;
+}
+
 .portfolio-chat-panel-header {
     align-items: start;
     display: flex;
@@ -454,6 +464,22 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     background: color-mix(in srgb, var(--accent) 15%, transparent);
     border-color: var(--accent);
     color: var(--accent);
+}
+
+.portfolio-chat-date-divider {
+    align-self: center;
+    background: color-mix(in srgb, var(--surface-soft) 80%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--muted);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    padding: 0.2rem 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    animation: bubbleSlideIn 0.3s ease-out forwards;
 }
 
 .portfolio-chat-bubble {

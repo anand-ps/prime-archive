@@ -5,7 +5,7 @@ Purpose: Manage the anonymous chat widget, local cache rendering, and Edge Funct
 
 import { trackChatOpen, trackMessageSend } from './analytics.js';
 import { sendBackendMessage, getBackendMessages } from './client.js';
-import { CHAT_CONFIG, MESSAGE_TYPES, SENDER_TYPES, STORAGE_KEYS } from './config.js';
+import { BACKEND_BREAKPOINTS, CHAT_CONFIG, CHAT_DISPLAY, MESSAGE_TYPES, SENDER_TYPES, STORAGE_KEYS } from './config.js';
 import { startMessageSync } from './realtime.js';
 import { ensureSession, getSessionContext, syncSessionSnapshot, resetSession, initSession } from './session.js';
 import { getCachedMessages, getClientName, mergeCachedMessages, setCachedMessages, setClientName, getProfiles, saveProfile, getClientId } from './storage.js';
@@ -19,6 +19,11 @@ const chatState = {
     onboardingState: 'none',
     pendingMessage: ''
 };
+
+// Section: Viewport behavior helpers.
+function isDesktopChatViewport() {
+    return window.matchMedia(`(min-width: ${BACKEND_BREAKPOINTS.CHAT_MOBILE + 1}px)`).matches;
+}
 
 // Section: Widget rendering.
 function createChatWidgetMarkup() {
@@ -132,6 +137,7 @@ function ensureChatWidget() {
 function setPanelOpen(elements, isOpen) {
     chatState.isPanelOpen = isOpen;
     elements.shell.classList.toggle('is-open', isOpen);
+    elements.shell.classList.toggle('is-desktop-open', isOpen && isDesktopChatViewport());
     elements.toggle.setAttribute('aria-expanded', String(isOpen));
     elements.panel.setAttribute('aria-hidden', String(!isOpen));
 }
@@ -238,6 +244,24 @@ function formatChatTime(isoString) {
     return `${hours}:${minutes} ${ampm}`;
 }
 
+function formatChatDate(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return '';
+    
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === today.toDateString()) {
+        return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        return 'Yesterday';
+    } else {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+}
+
 function createMessageBubble(message, hideLabel = false) {
     const article = document.createElement('article');
     const isClientMessage = message.senderType === SENDER_TYPES.CLIENT;
@@ -254,7 +278,7 @@ function createMessageBubble(message, hideLabel = false) {
         } else if (isSystemMessage) {
             label.textContent = 'System';
         } else {
-            label.textContent = 'Admin Reply';
+            label.textContent = CHAT_DISPLAY.ADMIN_NAME;
         }
         article.appendChild(label);
     }
@@ -347,7 +371,22 @@ function renderMessages(elements) {
         const existing = elements.thread.querySelector(`[data-message-id="${message.id}"]`);
         if (!existing) {
             const previousMessage = index > 0 ? chatState.messages[index - 1] : null;
-            const isConsecutive = previousMessage && previousMessage.senderType === message.senderType;
+            
+            const currentDateString = formatChatDate(message.createdAt);
+            const previousDateString = previousMessage ? formatChatDate(previousMessage.createdAt) : null;
+            
+            if (currentDateString !== previousDateString && currentDateString) {
+                const existingDivider = elements.thread.querySelector(`[data-date-divider="${currentDateString}"]`);
+                if (!existingDivider) {
+                    const divider = document.createElement('div');
+                    divider.className = 'portfolio-chat-date-divider';
+                    divider.dataset.dateDivider = currentDateString;
+                    divider.textContent = currentDateString;
+                    elements.thread.appendChild(divider);
+                }
+            }
+
+            const isConsecutive = previousMessage && previousMessage.senderType === message.senderType && (currentDateString === previousDateString);
             elements.thread.appendChild(createMessageBubble(message, isConsecutive));
             appended = true;
         }
@@ -418,6 +457,18 @@ function attachPanelEvents(elements) {
         setPanelOpen(elements, false);
     });
 
+    document.addEventListener('pointerdown', (event) => {
+        if (!chatState.isPanelOpen) {
+            return;
+        }
+
+        if (elements.shell.contains(event.target)) {
+            return;
+        }
+
+        setPanelOpen(elements, false);
+    });
+
     elements.editNameBtn.addEventListener('click', () => {
         elements.identityDisplay.style.display = 'none';
         elements.nameField.style.display = 'block';
@@ -468,6 +519,10 @@ function attachPanelEvents(elements) {
         if (event.key === 'Escape') {
             setPanelOpen(elements, false);
         }
+    });
+
+    window.addEventListener('resize', () => {
+        elements.shell.classList.toggle('is-desktop-open', chatState.isPanelOpen && isDesktopChatViewport());
     });
 }
 
@@ -521,9 +576,11 @@ async function executeMessageSend(messageText, clientName, elements, options = {
 
         await trackMessageSend(messageText);
         await chatState.syncController?.syncNow();
+        return response;
     } catch (error) {
         console.error('Unable to send chat message.', error);
         updateChatStatus(elements, error.message || 'Unable to send your message right now.', 'error');
+        return null;
     } finally {
         chatState.isSubmitting = false;
         setFormBusy(elements, false);
@@ -540,7 +597,7 @@ function showConfirmationBotMessage(name, elements) {
         chatState.messages.push({
             id: 'temp_msg_4_' + Date.now(),
             senderType: SENDER_TYPES.SYSTEM,
-            messageText: `Hi ${name}, ${timeGreeting}! I have forwarded your message to Anand. \nHe'll get back to this chat shortly.`,
+            messageText: `Hi ${name}👋\nYour message has been shared with Anand. He’ll reply here soon`,
             createdAt: new Date().toISOString()
         });
         renderMessages(elements);
@@ -549,12 +606,22 @@ function showConfirmationBotMessage(name, elements) {
             chatState.messages.push({
                 id: 'temp_msg_5_' + Date.now(),
                 senderType: SENDER_TYPES.SYSTEM,
-                messageText: `Need a quick callback?\nDrop your contact number below.`,
+                messageText: `Prefer a callback over chat?\nDrop your contact below.`,
                 createdAt: new Date().toISOString()
             });
             renderMessages(elements);
         }, 5000);
-    }, 1000);
+    }, 10);
+}
+
+function showMobileAcceptedBotMessage(name, elements) {
+    chatState.messages.push({
+        id: 'temp_msg_mobile_' + Date.now(),
+        senderType: SENDER_TYPES.SYSTEM,
+        messageText: `Done👍 \nYour contact has been noted`,
+        createdAt: new Date().toISOString()
+    });
+    renderMessages(elements);
 }
 
 function attachSubmitHandler(elements) {
@@ -623,9 +690,13 @@ function attachSubmitHandler(elements) {
                 const originalMessage = chatState.pendingMessage;
                 chatState.pendingMessage = '';
                 
-                await executeMessageSend(originalMessage, extractedName, elements, { tempMessageId: 'temp_msg_1', silentRender: true });
+                const response = await executeMessageSend(originalMessage, extractedName, elements, { tempMessageId: 'temp_msg_1', silentRender: true });
                 
                 showConfirmationBotMessage(extractedName, elements);
+
+                if (response?.mobileNumberAccepted) {
+                    showMobileAcceptedBotMessage(extractedName, elements);
+                }
                 
                 return;
             }
@@ -640,10 +711,14 @@ function attachSubmitHandler(elements) {
 
         const isFirstMessage = chatState.messages.filter(m => m.senderType === SENDER_TYPES.CLIENT).length === 0;
 
-        await executeMessageSend(messageText, nextClientName, elements);
+        const response = await executeMessageSend(messageText, nextClientName, elements);
         
         if (isFirstMessage) {
             showConfirmationBotMessage(nextClientName, elements);
+        }
+
+        if (response?.mobileNumberAccepted) {
+            showMobileAcceptedBotMessage(nextClientName, elements);
         }
     });
 }
