@@ -587,7 +587,7 @@ function showConfirmationBotMessage(name, elements) {
             });
             renderMessages(elements);
         }, 5000);
-    }, 1000);
+    }, 10);
 }
 
 function attachSubmitHandler(elements) {

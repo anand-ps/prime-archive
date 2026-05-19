@@ -8,7 +8,7 @@ import { MESSAGE_COOLDOWN_MS, MESSAGE_WINDOW_LIMIT, MESSAGE_WINDOW_MS, SESSION_T
 import { HttpError } from './http.ts';
 
 // Section: Shared row selectors.
-const CLIENT_SELECT = 'id, public_client_id, client_name, last_seen_at, last_seen_page';
+const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page';
 const SESSION_SELECT = 'id, client_id, entry_page, last_page, started_at, last_activity_at, ended_at';
 const CONVERSATION_SELECT = 'id, client_id, active_session_id, status, created_at, updated_at, closed_at';
 const MESSAGE_SELECT = 'id, conversation_id, client_id, session_id, sender_type, message_type, message_text, created_at';
@@ -55,6 +55,44 @@ function serializeMessage(row: Record<string, unknown>) {
         messageText: row.message_text,
         createdAt: row.created_at
     };
+}
+
+function normalizeStoredMobileNumber(rawValue: string) {
+    const compactValue = String(rawValue || '').trim().replace(/[^\d+]/g, '');
+
+    if (!compactValue) {
+        return '';
+    }
+
+    if (compactValue.startsWith('+')) {
+        const digitsOnly = compactValue.slice(1).replace(/\D/g, '');
+        return digitsOnly ? `+${digitsOnly}` : '';
+    }
+
+    if (compactValue.startsWith('00')) {
+        const digitsOnly = compactValue.slice(2).replace(/\D/g, '');
+        return digitsOnly ? `+${digitsOnly}` : '';
+    }
+
+    const digitsOnly = compactValue.replace(/\D/g, '');
+    return digitsOnly;
+}
+
+function extractMobileNumber(messageText: string) {
+    const mobileMatch = String(messageText || '').match(/(?:^|[^\d+])((?:\+|00)?\d[\d\s().-]{8,20}\d)(?!\d)/);
+
+    if (!mobileMatch?.[1]) {
+        return '';
+    }
+
+    const normalizedMobileNumber = normalizeStoredMobileNumber(mobileMatch[1]);
+    const digitCount = normalizedMobileNumber.replace(/\D/g, '').length;
+
+    if (digitCount < 10 || digitCount > 15) {
+        return '';
+    }
+
+    return normalizedMobileNumber;
 }
 
 // Section: Client helpers.
@@ -123,6 +161,23 @@ async function updateClientName(clientDbId: number, clientName: string) {
         .eq('id', clientDbId);
 
     throwIfQueryError(error, 'Unable to update client name.');
+}
+
+async function updateClientMobile(clientDbId: number, mobileNumber: string) {
+    if (!mobileNumber) {
+        return;
+    }
+
+    const admin = getAdminClient();
+    const { error } = await admin
+        .from('clients')
+        .update({
+            mobile_number: mobileNumber,
+            last_seen_at: nowIso()
+        })
+        .eq('id', clientDbId);
+
+    throwIfQueryError(error, 'Unable to update client mobile number.');
 }
 
 // Section: Session helpers.
@@ -445,6 +500,15 @@ export async function createClientMessage(payload: Record<string, unknown>) {
 
     await enforceMessageRateLimit(Number(clientRow.id), String(conversationRow.id));
     await updateClientName(Number(clientRow.id), String(payload.clientName || ''));
+
+    const existingMobileNumber = String(clientRow.mobile_number || '').trim();
+    const detectedMobileNumber = existingMobileNumber
+        ? ''
+        : extractMobileNumber(String(payload.messageText || ''));
+
+    if (detectedMobileNumber) {
+        await updateClientMobile(Number(clientRow.id), detectedMobileNumber);
+    }
 
     const admin = getAdminClient();
     const { data, error } = await admin
