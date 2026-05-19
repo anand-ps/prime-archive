@@ -26,6 +26,11 @@ export const FUNCTION_REQUEST_CONFIG = Object.freeze({
     TIMEOUT_MS: 12000
 });
 
+// Section: Shared responsive breakpoints.
+export const BACKEND_BREAKPOINTS = Object.freeze({
+    CHAT_MOBILE: 720
+});
+
 // Section: Session timing configuration.
 export const SESSION_CONFIG = Object.freeze({
     TIMEOUT_MS: 60 * 60 * 1000,

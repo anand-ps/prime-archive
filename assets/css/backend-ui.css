@@ -117,6 +117,16 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     visibility: visible;
 }
 
+.portfolio-chat-shell.is-desktop-open .portfolio-chat-toggle {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.9);
+}
+
+.portfolio-chat-shell.is-desktop-open .portfolio-chat-panel {
+    bottom: 0;
+}
+
 .portfolio-chat-panel-header {
     align-items: start;
     display: flex;

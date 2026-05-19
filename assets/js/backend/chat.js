@@ -5,7 +5,7 @@ Purpose: Manage the anonymous chat widget, local cache rendering, and Edge Funct
 
 import { trackChatOpen, trackMessageSend } from './analytics.js';
 import { sendBackendMessage, getBackendMessages } from './client.js';
-import { CHAT_CONFIG, MESSAGE_TYPES, SENDER_TYPES, STORAGE_KEYS } from './config.js';
+import { BACKEND_BREAKPOINTS, CHAT_CONFIG, MESSAGE_TYPES, SENDER_TYPES, STORAGE_KEYS } from './config.js';
 import { startMessageSync } from './realtime.js';
 import { ensureSession, getSessionContext, syncSessionSnapshot, resetSession, initSession } from './session.js';
 import { getCachedMessages, getClientName, mergeCachedMessages, setCachedMessages, setClientName, getProfiles, saveProfile, getClientId } from './storage.js';
@@ -19,6 +19,11 @@ const chatState = {
     onboardingState: 'none',
     pendingMessage: ''
 };
+
+// Section: Viewport behavior helpers.
+function isDesktopChatViewport() {
+    return window.matchMedia(`(min-width: ${BACKEND_BREAKPOINTS.CHAT_MOBILE + 1}px)`).matches;
+}
 
 // Section: Widget rendering.
 function createChatWidgetMarkup() {
@@ -132,6 +137,7 @@ function ensureChatWidget() {
 function setPanelOpen(elements, isOpen) {
     chatState.isPanelOpen = isOpen;
     elements.shell.classList.toggle('is-open', isOpen);
+    elements.shell.classList.toggle('is-desktop-open', isOpen && isDesktopChatViewport());
     elements.toggle.setAttribute('aria-expanded', String(isOpen));
     elements.panel.setAttribute('aria-hidden', String(!isOpen));
 }
@@ -451,6 +457,18 @@ function attachPanelEvents(elements) {
         setPanelOpen(elements, false);
     });
 
+    document.addEventListener('pointerdown', (event) => {
+        if (!chatState.isPanelOpen) {
+            return;
+        }
+
+        if (elements.shell.contains(event.target)) {
+            return;
+        }
+
+        setPanelOpen(elements, false);
+    });
+
     elements.editNameBtn.addEventListener('click', () => {
         elements.identityDisplay.style.display = 'none';
         elements.nameField.style.display = 'block';
@@ -501,6 +519,10 @@ function attachPanelEvents(elements) {
         if (event.key === 'Escape') {
             setPanelOpen(elements, false);
         }
+    });
+
+    window.addEventListener('resize', () => {
+        elements.shell.classList.toggle('is-desktop-open', chatState.isPanelOpen && isDesktopChatViewport());
     });
 }
 
