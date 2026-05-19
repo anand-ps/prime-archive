@@ -238,6 +238,24 @@ function formatChatTime(isoString) {
     return `${hours}:${minutes} ${ampm}`;
 }
 
+function formatChatDate(isoString) {
+    if (!isoString) return '';
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return '';
+    
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (date.toDateString() === today.toDateString()) {
+        return 'Today';
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        return 'Yesterday';
+    } else {
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+}
+
 function createMessageBubble(message, hideLabel = false) {
     const article = document.createElement('article');
     const isClientMessage = message.senderType === SENDER_TYPES.CLIENT;
@@ -347,7 +365,22 @@ function renderMessages(elements) {
         const existing = elements.thread.querySelector(`[data-message-id="${message.id}"]`);
         if (!existing) {
             const previousMessage = index > 0 ? chatState.messages[index - 1] : null;
-            const isConsecutive = previousMessage && previousMessage.senderType === message.senderType;
+            
+            const currentDateString = formatChatDate(message.createdAt);
+            const previousDateString = previousMessage ? formatChatDate(previousMessage.createdAt) : null;
+            
+            if (currentDateString !== previousDateString && currentDateString) {
+                const existingDivider = elements.thread.querySelector(`[data-date-divider="${currentDateString}"]`);
+                if (!existingDivider) {
+                    const divider = document.createElement('div');
+                    divider.className = 'portfolio-chat-date-divider';
+                    divider.dataset.dateDivider = currentDateString;
+                    divider.textContent = currentDateString;
+                    elements.thread.appendChild(divider);
+                }
+            }
+
+            const isConsecutive = previousMessage && previousMessage.senderType === message.senderType && (currentDateString === previousDateString);
             elements.thread.appendChild(createMessageBubble(message, isConsecutive));
             appended = true;
         }

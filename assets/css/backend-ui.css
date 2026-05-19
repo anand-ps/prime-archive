@@ -456,6 +456,22 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     color: var(--accent);
 }
 
+.portfolio-chat-date-divider {
+    align-self: center;
+    background: color-mix(in srgb, var(--surface-soft) 80%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--muted);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    padding: 0.2rem 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    animation: bubbleSlideIn 0.3s ease-out forwards;
+}
+
 .portfolio-chat-bubble {
     display: flex;
     flex-direction: column;
