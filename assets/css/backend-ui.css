@@ -73,6 +73,64 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
 }
 
+.portfolio-chat-tooltip {
+    position: absolute;
+    right: 28px;
+    bottom: calc(100% + 12px);
+    transform: translateY(10px);
+    backdrop-filter: blur(12px);
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+    color: var(--text);
+    padding: 0.6rem 1rem;
+    border-radius: 14px;
+    border-bottom-right-radius: 6px;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1), transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    animation: tooltip-float 3.5s ease-in-out infinite;
+}
+
+.portfolio-chat-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 12px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid color-mix(in srgb, var(--border) 50%, transparent);
+    border-left: 8px solid transparent;
+}
+
+.portfolio-chat-tooltip::before {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    right: 13px;
+    width: 0;
+    height: 0;
+    border-top: 7px solid var(--surface);
+    border-left: 7px solid transparent;
+    z-index: 1;
+}
+
+/* Show the tooltip automatically after page load, but hide it if panel is open */
+.portfolio-chat-shell:not(.is-open) .portfolio-chat-tooltip.is-visible {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+}
+
+@keyframes tooltip-float {
+    0%, 100% { margin-bottom: 0; }
+    50% { margin-bottom: 5px; }
+}
+
 .portfolio-chat-toggle:hover,
 .portfolio-chat-toggle:focus-visible {
     box-shadow: 0 20px 38px rgba(20, 30, 38, 0.22);

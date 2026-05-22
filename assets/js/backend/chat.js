@@ -78,6 +78,9 @@ function createChatWidgetMarkup() {
     shell.setAttribute('aria-label', 'Say Hello chat');
 
     shell.innerHTML = `
+        <div class="portfolio-chat-tooltip" aria-hidden="true">
+            Let's connect
+        </div>
         <button
             class="portfolio-chat-toggle"
             type="button"
@@ -857,6 +860,19 @@ export async function initChatWidget() {
     renderIdentity(elements);
     chatState.messages = setCachedMessages(chatState.messages);
     renderMessages(elements);
+
+    // Show tooltip after a brief delay if they haven't opened chat yet
+    setTimeout(() => {
+        const tooltip = elements.shell.querySelector('.portfolio-chat-tooltip');
+        if (tooltip && !chatState.isPanelOpen) {
+            tooltip.classList.add('is-visible');
+            
+            // Hide it again after 10 seconds to not be permanently distracting
+            setTimeout(() => {
+                tooltip.classList.remove('is-visible');
+            }, 10000);
+        }
+    }, 3500);
 
     attachPanelEvents(elements);
     attachSubmitHandler(elements);
