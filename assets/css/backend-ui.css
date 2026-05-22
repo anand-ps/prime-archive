@@ -130,12 +130,15 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 }
 
 .portfolio-chat-panel-header {
-    align-items: start;
+    align-items: center;
     display: flex;
     gap: 1rem;
-    justify-content: space-between;
     flex-shrink: 0;
     margin-bottom: 0.8rem;
+}
+
+.portfolio-chat-header-content {
+    flex: 1;
 }
 
 .portfolio-chat-panel-header h2 {
@@ -193,6 +196,16 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     height: 2rem;
     line-height: 1;
     width: 2rem;
+}
+
+.portfolio-chat-back {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    cursor: pointer;
+    display: none;
+    padding: 0;
+    margin-right: 0.2rem;
 }
 
 /* Section: Identity fields. */
@@ -638,7 +651,15 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     }
 
     .portfolio-chat-shell.is-open .portfolio-chat-form {
-        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+
+    .portfolio-chat-shell.is-open .portfolio-chat-close {
+        display: none;
+    }
+
+    .portfolio-chat-shell.is-open .portfolio-chat-back {
+        display: block;
     }
 
     .portfolio-chat-shell.is-open .portfolio-chat-thread {
