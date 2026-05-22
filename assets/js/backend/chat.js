@@ -211,11 +211,11 @@ function updateChatStatus(elements, message, tone = 'default') {
 }
 
 function setFormBusy(elements, isBusy) {
-    [elements.nameInput, elements.messageInput, elements.submitButton].forEach((node) => {
-        if (node) {
-            node.disabled = isBusy;
-        }
-    });
+    if (elements.submitButton) {
+        elements.submitButton.disabled = isBusy;
+    }
+    // We intentionally avoid disabling text inputs (like messageInput) 
+    // because doing so forces mobile browsers to instantly hide the keyboard.
 }
 
 async function switchChatProfile(profileId, elements) {
