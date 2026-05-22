@@ -127,8 +127,8 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 }
 
 @keyframes tooltip-float {
-    0%, 100% { margin-bottom: 0; }
-    50% { margin-bottom: 5px; }
+    0%, 100% { translate: 0 0px; }
+    50% { translate: 0 -6px; }
 }
 
 .portfolio-chat-toggle:hover,

@@ -79,7 +79,7 @@ function createChatWidgetMarkup() {
 
     shell.innerHTML = `
         <div class="portfolio-chat-tooltip" aria-hidden="true">
-            Let's connect
+            Let's connect 👋
         </div>
         <button
             class="portfolio-chat-toggle"
