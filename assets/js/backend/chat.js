@@ -435,10 +435,14 @@ function renderMessages(elements) {
     if (empty) empty.remove();
 
     const rebuildThread = shouldRebuildThread(elements);
+    
+    const isNearBottom = elements.thread.scrollHeight - elements.thread.scrollTop - elements.thread.clientHeight < 50;
+
     if (rebuildThread) {
         elements.thread.replaceChildren();
     }
 
+    let appended = false;
     chatState.messages.forEach((message, index) => {
         if (!message.id) return;
 
@@ -461,10 +465,11 @@ function renderMessages(elements) {
         const existingBubble = elements.thread.querySelector(`[data-message-id="${message.id}"]`);
         if (!existingBubble) {
             elements.thread.appendChild(createMessageBubble(message, isConsecutive));
+            appended = true;
         }
     });
 
-    if (chatState.messages.length) {
+    if (appended || (rebuildThread && (isNearBottom || elements.thread.scrollHeight === 0))) {
         elements.thread.scrollTop = elements.thread.scrollHeight;
     }
 }
@@ -594,6 +599,10 @@ function attachPanelEvents(elements) {
                 elements.submitButton.click();
             }
         }
+    });
+
+    elements.submitButton.addEventListener('pointerdown', (event) => {
+        event.preventDefault(); // Prevent focus shift to keep the mobile keyboard open
     });
 
     document.addEventListener('keydown', (event) => {
