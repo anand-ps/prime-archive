@@ -648,6 +648,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
 
     if (detectedMobileNumber) {
         await updateClientMobile(Number(clientRow.id), detectedMobileNumber);
+        clientRow.mobile_number = detectedMobileNumber;
     }
 
     const admin = getAdminClient();
@@ -696,7 +697,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     const conversationMessages = await getConversationMessages(String(conversationRow.id));
 
     // Fire and forget Telegram notification
-    sendToTelegram(String(payload.clientName || 'Anonymous'), String(payload.messageText), String(conversationRow.id), clientRow).catch((err) => {
+    sendToTelegram(String(payload.clientName || 'Anonymous'), String(payload.messageText), String(conversationRow.id), clientRow, conversationMessages, Number(data.id)).catch((err) => {
         console.error('Failed to send Telegram notification:', err);
     });
 
@@ -710,7 +711,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
 }
 
 // Section: Telegram Integration
-async function sendToTelegram(clientName: string, text: string, conversationId: string, clientRow?: any) {
+async function sendToTelegram(clientName: string, text: string, conversationId: string, clientRow?: any, conversationMessages: any[] = [], currentMessageId?: number) {
     const token = Deno.env.get('TELEGRAM_BOT_TOKEN');
     const chatId = Deno.env.get('TELEGRAM_CHAT_ID');
     if (!token || !chatId) return;
@@ -729,8 +730,33 @@ async function sendToTelegram(clientName: string, text: string, conversationId: 
                       `🔗 <b>Referrer:</b> ${clientRow.referrer || 'Direct'}\n`;
     }
 
+    let historyStr = '';
+    
+    const currentIndex = conversationMessages.findIndex(m => m.id === currentMessageId);
+    const historyMessages = (currentIndex !== -1 
+        ? conversationMessages.slice(0, currentIndex) 
+        : conversationMessages)
+        .slice(-10);
+
+    if (historyMessages.length > 0) {
+        historyStr = '\n\n📝 <b>Recent History:</b>\n';
+        for (const msg of historyMessages) {
+            const metadata = msg.metadata || {};
+            const isSystem = metadata.displayVariant === 'system' || msg.sender_type === 'system';
+            
+            let senderName = clientName;
+            if (isSystem) {
+                senderName = 'Bot';
+            } else if (msg.sender_type === 'admin') {
+                senderName = 'You';
+            }
+            
+            historyStr += `<b>${senderName}:</b> ${msg.message_text}\n`;
+        }
+    }
+
     // We include the conversationId so we can extract it later when you reply
-    const message = `💬 <b>Message from ${clientName}</b>\n${metaDetails}\n<b>Message:</b>\n${text}\n\nID: ${conversationId}`;
+    const message = `💬 <b>Message from ${clientName}</b>\n${metaDetails}${historyStr}\n\n<b>Current Message:</b>\n${text}\n\nID: ${conversationId}`;
     
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
