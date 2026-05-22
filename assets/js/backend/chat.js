@@ -96,12 +96,15 @@ function createChatWidgetMarkup() {
             aria-hidden="true"
         >
             <div class="portfolio-chat-panel-header">
-                <div>
+                <button class="portfolio-chat-back" type="button" aria-label="Back">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                </button>
+                <div class="portfolio-chat-header-content">
                     <p class="portfolio-chat-kicker">
                         Live Chat
                         <span class="portfolio-chat-online-dot"></span>
                     </p>
-                    <h2>Say Hello</h2>
+                    <h2>Let's Talk</h2>
                 </div>
                 <button class="portfolio-chat-close" type="button" aria-label="Close chat">&times;</button>
             </div>
@@ -180,13 +183,23 @@ function ensureChatWidget() {
 }
 
 // Section: UI helpers.
-function setPanelOpen(elements, isOpen) {
+function setPanelOpen(elements, isOpen, skipHistory = false) {
+    if (chatState.isPanelOpen === isOpen) return;
+
     chatState.isPanelOpen = isOpen;
     elements.shell.classList.toggle('is-open', isOpen);
     elements.shell.classList.toggle('is-desktop-open', isOpen && isDesktopChatViewport());
     elements.toggle.setAttribute('aria-expanded', String(isOpen));
     elements.panel.setAttribute('aria-hidden', String(!isOpen));
     updateMobileViewportMetrics(elements);
+
+    if (!skipHistory) {
+        if (isOpen) {
+            history.pushState({ chatOpen: true }, '', '');
+        } else if (history.state?.chatOpen) {
+            history.back();
+        }
+    }
 }
 
 function updateChatStatus(elements, message, tone = 'default') {
@@ -546,6 +559,12 @@ function attachPanelEvents(elements) {
         setPanelOpen(elements, false);
     });
 
+    window.addEventListener('popstate', (event) => {
+        if (chatState.isPanelOpen && !event.state?.chatOpen) {
+            setPanelOpen(elements, false, true);
+        }
+    });
+
     elements.editNameBtn.addEventListener('click', () => {
         elements.identityDisplay.style.display = 'none';
         elements.nameField.style.display = 'block';
@@ -580,6 +599,14 @@ function attachPanelEvents(elements) {
         elements.messageInput.style.height = Math.min(elements.messageInput.scrollHeight, 120) + 'px';
         updateMobileViewportMetrics(elements);
     });
+
+
+    const backBtn = elements.panel.querySelector('.portfolio-chat-back');
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            setPanelOpen(elements, false);
+        });
+    }
 
     elements.messageInput.addEventListener('focus', () => {
         scrollComposerIntoView(elements);
