@@ -399,7 +399,7 @@ function shouldRebuildThread(elements) {
     const desiredIds = new Set(chatState.messages.map((message) => String(message.id || '')));
 
     for (const renderedId of renderedIds) {
-        if (hasTemporaryMessageId(renderedId) || !desiredIds.has(renderedId)) {
+        if (!desiredIds.has(renderedId)) {
             return true;
         }
     }

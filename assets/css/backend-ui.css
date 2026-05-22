@@ -618,13 +618,13 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     }
 
     .portfolio-chat-shell.is-open {
-        bottom: 0;
+        bottom: var(--chat-mobile-keyboard-offset, 0px);
         right: 0;
         left: 0;
         top: 0;
         width: auto;
-        height: var(--chat-mobile-viewport-height, 100dvh);
-        max-height: var(--chat-mobile-viewport-height, 100dvh);
+        height: auto;
+        max-height: none;
         margin: 0;
         padding: 0;
         z-index: 9999;
@@ -636,9 +636,9 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 
     .portfolio-chat-shell.is-open .portfolio-chat-panel {
         width: auto;
-        height: var(--chat-mobile-viewport-height, 100dvh);
+        height: 100%;
         max-width: none;
-        max-height: var(--chat-mobile-viewport-height, 100dvh);
+        max-height: none;
         bottom: auto;
         right: 0;
         left: 0;
