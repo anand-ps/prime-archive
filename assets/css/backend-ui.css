@@ -149,12 +149,12 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 
 /* Section: Chat panel layout. */
 .portfolio-chat-panel {
-    backdrop-filter: blur(16px);
-    background: color-mix(in srgb, var(--surface) 92%, transparent);
-    border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+    backdrop-filter: blur(24px);
+    background: color-mix(in srgb, var(--surface) 75%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 100%, transparent);
     border-radius: 22px;
     bottom: calc(100% + 0.8rem);
-    box-shadow: 0 24px 48px rgba(20, 30, 38, 0.18);
+    box-shadow: 0 32px 84px rgba(0, 0, 0, 0.45), 0 8px 32px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - 120px);
