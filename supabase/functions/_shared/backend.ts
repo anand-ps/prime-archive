@@ -696,7 +696,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     const conversationMessages = await getConversationMessages(String(conversationRow.id));
 
     // Fire and forget Telegram notification
-    sendToTelegram(String(payload.clientName || 'Anonymous'), String(payload.messageText), String(conversationRow.id)).catch((err) => {
+    sendToTelegram(String(payload.clientName || 'Anonymous'), String(payload.messageText), String(conversationRow.id), clientRow).catch((err) => {
         console.error('Failed to send Telegram notification:', err);
     });
 
@@ -710,13 +710,26 @@ export async function createClientMessage(payload: Record<string, unknown>) {
 }
 
 // Section: Telegram Integration
-async function sendToTelegram(clientName: string, text: string, conversationId: string) {
+async function sendToTelegram(clientName: string, text: string, conversationId: string, clientRow?: any) {
     const token = Deno.env.get('TELEGRAM_BOT_TOKEN');
     const chatId = Deno.env.get('TELEGRAM_CHAT_ID');
     if (!token || !chatId) return;
 
+    let metaDetails = '';
+    if (clientRow) {
+        const isNewVisitor = Date.now() - new Date(clientRow.created_at).getTime() < 1000 * 60 * 60 * 24;
+        const visitorType = isNewVisitor ? '🆕 New Visitor' : '🔙 Returning';
+        const location = clientRow.timezone ? clientRow.timezone.split('/')[1]?.replace('_', ' ') || clientRow.timezone : 'Unknown';
+        
+        metaDetails = `\n` +
+                      `👤 <b>Visitor:</b> ${visitorType}\n` +
+                      `🌍 <b>Location:</b> ${location}\n` +
+                      `📱 <b>Device:</b> ${clientRow.device_type || 'Unknown'} (${clientRow.browser || 'Unknown'})\n` +
+                      `🔗 <b>Referrer:</b> ${clientRow.referrer || 'Direct'}\n`;
+    }
+
     // We include the conversationId so we can extract it later when you reply
-    const message = `👤 <b>${clientName}</b>\n\n${text}\n\nID: ${conversationId}`;
+    const message = `💬 <b>Message from ${clientName}</b>\n${metaDetails}\n<b>Message:</b>\n${text}\n\nID: ${conversationId}`;
     
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
