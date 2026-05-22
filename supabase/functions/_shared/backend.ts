@@ -8,7 +8,7 @@ import { MESSAGE_COOLDOWN_MS, MESSAGE_WINDOW_LIMIT, MESSAGE_WINDOW_MS, SESSION_T
 import { HttpError } from './http.ts';
 
 // Section: Shared row selectors.
-const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page';
+const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page, created_at, timezone, device_type, browser, referrer';
 const SESSION_SELECT = 'id, client_id, entry_page, last_page, started_at, last_activity_at, ended_at';
 const CONVERSATION_SELECT = 'id, client_id, active_session_id, status, created_at, updated_at, closed_at';
 const MESSAGE_SELECT = 'id, conversation_id, client_id, session_id, sender_type, message_type, message_text, metadata, created_at';
@@ -725,6 +725,7 @@ async function sendToTelegram(clientName: string, text: string, conversationId: 
                       `👤 <b>Visitor:</b> ${visitorType}\n` +
                       `🌍 <b>Location:</b> ${location}\n` +
                       `📱 <b>Device:</b> ${clientRow.device_type || 'Unknown'} (${clientRow.browser || 'Unknown'})\n` +
+                      `📞 <b>Mobile:</b> ${clientRow.mobile_number || 'Unknown'}\n` +
                       `🔗 <b>Referrer:</b> ${clientRow.referrer || 'Direct'}\n`;
     }
 
