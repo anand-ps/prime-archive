@@ -93,7 +93,6 @@ function createChatWidgetMarkup() {
                     <circle cx="15" cy="10" r="1" fill="currentColor"></circle>
                 </svg>
                 <span class="portfolio-chat-toggle-text">Let's Talk</span>
-                <span class="portfolio-chat-toggle-status" aria-hidden="true"></span>
             </div>
         </button>
 

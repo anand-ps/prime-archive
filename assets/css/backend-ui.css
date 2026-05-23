@@ -135,39 +135,33 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     transition: color 250ms ease;
 }
 
-.portfolio-chat-toggle-status {
-    width: 7px;
-    height: 7px;
-    background-color: #2ec4b6;
-    border-radius: 50%;
-    position: relative;
-    display: inline-block;
-    flex-shrink: 0;
-}
-
-.portfolio-chat-toggle-status::after {
+/* Breathing Iridescent Glow Aura behind the button */
+.portfolio-chat-toggle::after {
     content: '';
     position: absolute;
-    top: -2.5px;
-    left: -2.5px;
-    right: -2.5px;
-    bottom: -2.5px;
-    border-radius: 50%;
-    border: 1px solid #2ec4b6;
-    animation: status-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-    opacity: 0.8;
+    top: 2px; left: 2px; right: 2px; bottom: 2px;
+    z-index: -1;
+    border-radius: 99px;
+    background: linear-gradient(125deg, #ff5e62 0%, #ff9966 20%, #ffd000 40%, #2ec4b6 60%, #38bdf8 80%, #a855f7 100%);
+    background-size: 200% 200%;
+    filter: blur(12px);
+    opacity: 0.15;
+    pointer-events: none;
+    transition: opacity 300ms ease, transform 300ms ease;
+    animation: prismatic-flow 6s linear infinite, aura-breath 4s ease-in-out infinite;
 }
 
-@keyframes status-ping {
-    0% {
-        transform: scale(1);
-        opacity: 0.8;
+@keyframes aura-breath {
+    0%, 100% {
+        opacity: 0.15;
+        transform: scale(0.96);
     }
-    100% {
-        transform: scale(2.8);
-        opacity: 0;
+    50% {
+        opacity: 0.28;
+        transform: scale(1.04);
     }
 }
+
 
 .portfolio-chat-toggle-icon {
     display: flex;
@@ -186,15 +180,36 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     opacity: 0.75;
 }
 
+.portfolio-chat-toggle:hover::after,
+.portfolio-chat-toggle:focus-visible::after {
+    animation: prismatic-flow 6s linear infinite, aura-hover-breath 3s ease-in-out infinite;
+}
+
+@keyframes aura-hover-breath {
+    0%, 100% {
+        opacity: 0.28;
+        transform: scale(1.02);
+    }
+    50% {
+        opacity: 0.45;
+        transform: scale(1.08);
+    }
+}
+
 .portfolio-chat-toggle:hover,
 .portfolio-chat-toggle:focus-visible {
     transform: translateY(-6px) scale(1.04);
     background: color-mix(in srgb, var(--surface) 35%, transparent);
     box-shadow: 
-        0 14px 35px color-mix(in srgb, var(--text) 8%, transparent),
+        0 16px 40px color-mix(in srgb, var(--text) 8%, transparent),
         inset 0 1px 0 rgba(255, 255, 255, 0.55),
         inset 0 -1px 0 rgba(0, 0, 0, 0.04),
         0 0 15px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+.portfolio-chat-toggle:active::after {
+    opacity: 0.1;
+    transform: scale(0.92);
 }
 
 .portfolio-chat-toggle:active {
@@ -863,16 +878,12 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
         border-radius: 50%;
         justify-content: center;
     }
-    .portfolio-chat-toggle::before {
+    .portfolio-chat-toggle::before,
+    .portfolio-chat-toggle::after {
         border-radius: 50%;
     }
     .portfolio-chat-toggle-text {
         display: none;
-    }
-    .portfolio-chat-toggle-status {
-        position: absolute;
-        top: 8px;
-        right: 8px;
     }
 }
 
