@@ -415,7 +415,7 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
 
     if (!isLocalIp) {
         try {
-            const fetchUrl = `https://ipapi.co/${clientIp}/json/`;
+            const fetchUrl = `https://ipwho.is/${clientIp}`;
             console.info(`[GEOLOCATION DEBUG] Querying URL: ${fetchUrl}`);
 
             const controller = new AbortController();
@@ -434,18 +434,23 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
                 console.info(`[GEOLOCATION DEBUG] Raw response body: ${rawText}`);
                 
                 try {
-                    locationData = JSON.parse(rawText);
-                    console.info(`[GEOLOCATION DEBUG] Successfully parsed JSON. Keys: ${Object.keys(locationData).join(', ')}`);
-                    console.info(`[GEOLOCATION DEBUG] Parsed country_name: "${locationData?.country_name}", city: "${locationData?.city}"`);
+                    const parsed = JSON.parse(rawText);
+                    if (parsed && parsed.success === true) {
+                        locationData = parsed;
+                        console.info(`[GEOLOCATION DEBUG] Successfully resolved geolocation. Keys: ${Object.keys(locationData).join(', ')}`);
+                        console.info(`[GEOLOCATION DEBUG] Parsed country: "${locationData?.country}", city: "${locationData?.city}"`);
+                    } else {
+                        console.warn(`[GEOLOCATION DEBUG] ipwho.is reported failure: ${parsed?.message || "unknown error"}`);
+                    }
                 } catch (jsonErr) {
                     console.error(`[GEOLOCATION DEBUG] Failed to parse JSON response. Raw text: "${rawText}"`, jsonErr);
                 }
             } else {
                 const errText = await response.text().catch(() => "N/A");
-                console.warn(`[GEOLOCATION DEBUG] ipapi.co returned non-OK status: ${response.status}. Error body: "${errText}"`);
+                console.warn(`[GEOLOCATION DEBUG] ipwho.is returned non-OK status: ${response.status}. Error body: "${errText}"`);
             }
         } catch (error) {
-            console.error(`[GEOLOCATION DEBUG] Failed to fetch IP location from ipapi.co for IP ${clientIp}:`, error);
+            console.error(`[GEOLOCATION DEBUG] Failed to fetch IP location from ipwho.is for IP ${clientIp}:`, error);
         }
     } else {
         console.info(`[GEOLOCATION DEBUG] Skipping geolocation lookup for local IP address.`);
@@ -453,8 +458,8 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
 
     const enrichedPayload = {
         ...payload,
-        countryName: locationData?.country_name || null,
-        countryCode: locationData?.country || null,
+        countryName: locationData?.country || null,
+        countryCode: locationData?.country_code || null,
         cityName: locationData?.city || null,
         regionName: locationData?.region || null,
         zipCode: locationData?.postal || null
