@@ -584,109 +584,7 @@ async function countClientMessages(conversationId: string) {
     return Number(count ?? 0);
 }
 
-async function insertSystemConversationMessages({
-    clientId,
-    conversationId,
-    sessionId,
-    clientName,
-    detectedMobileNumber,
-    persistOnboardingFlow
-}: {
-    clientId: number,
-    conversationId: string,
-    sessionId: string,
-    clientName: string,
-    detectedMobileNumber: string,
-    persistOnboardingFlow: boolean
-}) {
-    const admin = getAdminClient();
-    const messageRows: Array<Record<string, unknown>> = [];
 
-    if (persistOnboardingFlow && clientName) {
-        messageRows.push(
-            {
-                conversation_id: conversationId,
-                client_id: clientId,
-                session_id: sessionId,
-                sender_type: 'admin',
-                message_type: 'text',
-                message_text: 'Thanks for reaching out!\nBefore I forward this to Anand, may I get your name?',
-                metadata: {
-                    displayVariant: 'system',
-                    automationKey: 'collect_name_prompt'
-                }
-            },
-            {
-                conversation_id: conversationId,
-                client_id: clientId,
-                session_id: sessionId,
-                sender_type: 'client',
-                message_type: 'text',
-                message_text: clientName,
-                metadata: {
-                    automationKey: 'collected_name_reply',
-                    captureType: 'client_name'
-                }
-            }
-        );
-    }
-
-    if (clientName) {
-        messageRows.push(
-            {
-                conversation_id: conversationId,
-                client_id: clientId,
-                session_id: sessionId,
-                sender_type: 'admin',
-                message_type: 'text',
-                message_text: `Hi ${clientName}!\nYour message has been shared with Anand. He'll reply here soon.`,
-                metadata: {
-                    displayVariant: 'system',
-                    automationKey: 'message_forwarded_confirmation'
-                }
-            },
-            {
-                conversation_id: conversationId,
-                client_id: clientId,
-                session_id: sessionId,
-                sender_type: 'admin',
-                message_type: 'text',
-                message_text: 'Prefer a callback over chat?\nDrop your contact below.',
-                metadata: {
-                    displayVariant: 'system',
-                    automationKey: 'callback_prompt'
-                }
-            }
-        );
-    }
-
-    if (detectedMobileNumber) {
-        messageRows.push({
-            conversation_id: conversationId,
-            client_id: clientId,
-            session_id: sessionId,
-            sender_type: 'admin',
-            message_type: 'text',
-            message_text: 'Done.\nYour contact has been noted.',
-            metadata: {
-                displayVariant: 'system',
-                automationKey: 'mobile_number_captured'
-            }
-        });
-    }
-
-    if (!messageRows.length) {
-        return [];
-    }
-
-    const { data, error } = await admin
-        .from('messages')
-        .insert(messageRows)
-        .select(MESSAGE_SELECT);
-
-    throwIfQueryError(error, 'Unable to store automated conversation messages.');
-    return Array.isArray(data) ? data : [];
-}
 
 async function getConversationMessages(conversationId: string) {
     const admin = getAdminClient();
@@ -740,27 +638,50 @@ export async function createClientMessage(payload: Record<string, unknown>) {
 
     throwIfQueryError(error, 'Unable to store the outgoing message.');
 
-    const persistOnboardingFlow = Boolean(payload.persistOnboardingFlow);
     let automatedRows: Record<string, unknown>[] = [];
 
-    if (existingClientMessageCount === 0) {
-        automatedRows = await insertSystemConversationMessages({
-            clientId: Number(clientRow.id),
-            conversationId: String(conversationRow.id),
-            sessionId: String(sessionRow.id),
-            clientName: String(payload.clientName || '').trim(),
-            detectedMobileNumber,
-            persistOnboardingFlow
-        });
-    } else if (detectedMobileNumber) {
-        automatedRows = await insertSystemConversationMessages({
-            clientId: Number(clientRow.id),
-            conversationId: String(conversationRow.id),
-            sessionId: String(sessionRow.id),
-            clientName: '',
-            detectedMobileNumber,
-            persistOnboardingFlow: false
-        });
+    if (Array.isArray(payload.automatedMessages) && payload.automatedMessages.length > 0) {
+        const messageRows = payload.automatedMessages.map((msg: any) => ({
+            conversation_id: conversationRow.id,
+            client_id: clientRow.id,
+            session_id: sessionRow.id,
+            sender_type: msg.senderType === 'client' ? 'client' : 'admin',
+            message_type: 'text',
+            message_text: msg.messageText,
+            metadata: msg.metadata || {}
+        }));
+
+        const { data: insertedData, error: insertError } = await admin
+            .from('messages')
+            .insert(messageRows)
+            .select(MESSAGE_SELECT);
+
+        throwIfQueryError(insertError, 'Unable to store automated messages.');
+        automatedRows = insertedData ?? [];
+    }
+
+    if (detectedMobileNumber) {
+        const { data: mobileData, error: mobileError } = await admin
+            .from('messages')
+            .insert({
+                conversation_id: conversationRow.id,
+                client_id: clientRow.id,
+                session_id: sessionRow.id,
+                sender_type: 'admin',
+                message_type: 'text',
+                message_text: 'Done.\nYour contact has been noted.',
+                metadata: {
+                    displayVariant: 'system',
+                    automationKey: 'mobile_number_accepted'
+                }
+            })
+            .select(MESSAGE_SELECT)
+            .single();
+
+        throwIfQueryError(mobileError, 'Unable to store mobile contact confirmation.');
+        if (mobileData) {
+            automatedRows.push(mobileData);
+        }
     }
 
     await touchConversation(String(conversationRow.id), String(sessionRow.id));

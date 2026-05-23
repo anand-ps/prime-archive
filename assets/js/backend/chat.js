@@ -681,7 +681,8 @@ async function executeMessageSend(messageText, clientName, elements, options = {
             messageType: MESSAGE_TYPES.TEXT,
             messageText,
             clientName: storedClientName,
-            persistOnboardingFlow: options.persistOnboardingFlow === true
+            persistOnboardingFlow: options.persistOnboardingFlow === true,
+            automatedMessages: options.automatedMessages
         });
 
         syncSessionSnapshot(response);
@@ -729,42 +730,13 @@ async function executeMessageSend(messageText, clientName, elements, options = {
     }
 }
 
-function showConfirmationBotMessage(name, elements) {
-    setTimeout(() => {
-        const hours = new Date().getHours();
-        let timeGreeting = "good morning";
-        if (hours >= 12 && hours < 17) timeGreeting = "good afternoon";
-        else if (hours >= 17) timeGreeting = "good evening";
 
-        chatState.messages.push({
-            id: 'temp_msg_4_' + Date.now(),
-            senderType: SENDER_TYPES.SYSTEM,
-            messageText: `Hi ${name}👋\nYour message has been shared with Anand. He’ll reply here soon`,
-            createdAt: new Date().toISOString()
-        });
-        renderMessages(elements);
 
-        setTimeout(() => {
-            chatState.messages.push({
-                id: 'temp_msg_5_' + Date.now(),
-                senderType: SENDER_TYPES.SYSTEM,
-                messageText: `Prefer a callback over chat?\nDrop your contact below.`,
-                createdAt: new Date().toISOString()
-            });
-            renderMessages(elements);
-        }, 5000);
-    }, 10);
-}
-
-function showMobileAcceptedBotMessage(name, elements) {
-    chatState.messages.push({
-        id: 'temp_msg_mobile_' + Date.now(),
-        senderType: SENDER_TYPES.SYSTEM,
-        messageText: `Done👍 \nYour contact has been noted`,
-        createdAt: new Date().toISOString()
-    });
-    renderMessages(elements);
-}
+const ONBOARDING_TEMPLATES = {
+    COLLECT_NAME_PROMPT: "Thanks for reaching out!\nBefore I forward this to Anand, may I get your name?",
+    getConfirmation: (name) => `Hi ${name}!\nYour message has been shared with Anand. He'll reply here soon.`,
+    CALLBACK_PROMPT: "Prefer a callback over chat?\nDrop your contact below."
+};
 
 function attachSubmitHandler(elements) {
     elements.form.addEventListener('submit', async (event) => {
@@ -800,7 +772,7 @@ function attachSubmitHandler(elements) {
                     chatState.messages.push({
                         id: 'temp_msg_2',
                         senderType: SENDER_TYPES.SYSTEM,
-                        messageText: "Thanks for reaching out!\nBefore I forward this to Anand, may I get your name?",
+                        messageText: ONBOARDING_TEMPLATES.COLLECT_NAME_PROMPT,
                         createdAt: new Date().toISOString()
                     });
                     renderMessages(elements);
@@ -819,12 +791,26 @@ function attachSubmitHandler(elements) {
                 elements.messageInput.style.height = 'auto';
                 elements.messageInput.placeholder = "Message...";
                 
-                chatState.messages.push({
-                    id: 'temp_msg_3',
-                    senderType: SENDER_TYPES.CLIENT,
-                    messageText: extractedName,
-                    createdAt: new Date().toISOString()
-                });
+                chatState.messages.push(
+                    {
+                        id: 'temp_msg_3',
+                        senderType: SENDER_TYPES.CLIENT,
+                        messageText: extractedName,
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'temp_msg_4',
+                        senderType: SENDER_TYPES.SYSTEM,
+                        messageText: ONBOARDING_TEMPLATES.getConfirmation(extractedName),
+                        createdAt: new Date().toISOString()
+                    },
+                    {
+                        id: 'temp_msg_5',
+                        senderType: SENDER_TYPES.SYSTEM,
+                        messageText: ONBOARDING_TEMPLATES.CALLBACK_PROMPT,
+                        createdAt: new Date().toISOString()
+                    }
+                );
                 renderMessages(elements);
                 
                 await createChatProfile(extractedName, elements, true);
@@ -835,7 +821,41 @@ function attachSubmitHandler(elements) {
                 await executeMessageSend(originalMessage, extractedName, elements, {
                     tempMessageId: 'temp_msg_1',
                     silentRender: true,
-                    persistOnboardingFlow: true
+                    persistOnboardingFlow: true,
+                    automatedMessages: [
+                        {
+                            senderType: 'admin',
+                            messageText: ONBOARDING_TEMPLATES.COLLECT_NAME_PROMPT,
+                            metadata: {
+                                displayVariant: 'system',
+                                automationKey: 'collect_name_prompt'
+                            }
+                        },
+                        {
+                            senderType: 'client',
+                            messageText: extractedName,
+                            metadata: {
+                                automationKey: 'collected_name_reply',
+                                captureType: 'client_name'
+                            }
+                        },
+                        {
+                            senderType: 'admin',
+                            messageText: ONBOARDING_TEMPLATES.getConfirmation(extractedName),
+                            metadata: {
+                                displayVariant: 'system',
+                                automationKey: 'message_forwarded_confirmation'
+                            }
+                        },
+                        {
+                            senderType: 'admin',
+                            messageText: ONBOARDING_TEMPLATES.CALLBACK_PROMPT,
+                            metadata: {
+                                displayVariant: 'system',
+                                automationKey: 'callback_prompt'
+                            }
+                        }
+                    ]
                 });
                 
                 return;
