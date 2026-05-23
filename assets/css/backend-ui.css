@@ -725,3 +725,28 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
         padding-bottom: 0.6rem;
     }
 }
+
+.portfolio-chat-privacy-notice {
+    color: var(--muted);
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.65rem;
+    line-height: 1.35;
+    margin-top: 0.45rem;
+    text-align: center;
+    padding: 0 0.5rem;
+    opacity: 0.8;
+}
+
+.portfolio-chat-legal-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 150ms ease;
+    display: inline-block;
+    margin-top: 0.25rem;
+}
+
+.portfolio-chat-legal-link:hover {
+    color: var(--accent-strong);
+    text-decoration: underline;
+}
