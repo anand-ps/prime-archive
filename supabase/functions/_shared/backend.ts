@@ -8,7 +8,7 @@ import { MESSAGE_COOLDOWN_MS, MESSAGE_WINDOW_LIMIT, MESSAGE_WINDOW_MS, SESSION_T
 import { HttpError } from './http.ts';
 
 // Section: Shared row selectors.
-const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page, created_at, timezone, device_type, browser, referrer';
+const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page, created_at, timezone, device_type, browser, referrer, country_name, country_code, city_name, region_name, zip_code';
 const SESSION_SELECT = 'id, client_id, entry_page, last_page, started_at, last_activity_at, ended_at';
 const CONVERSATION_SELECT = 'id, client_id, active_session_id, status, created_at, updated_at, closed_at';
 const MESSAGE_SELECT = 'id, conversation_id, client_id, session_id, sender_type, message_type, message_text, metadata, created_at';
@@ -130,7 +130,12 @@ async function upsertClientRecord(payload: Record<string, unknown>) {
             screen_height: payload.screenHeight,
             referrer: payload.referrer,
             last_seen_page: payload.currentPage,
-            last_seen_at: timestamp
+            last_seen_at: timestamp,
+            country_name: payload.countryName || null,
+            country_code: payload.countryCode || null,
+            city_name: payload.cityName || null,
+            region_name: payload.regionName || null,
+            zip_code: payload.zipCode || null
         }, {
             onConflict: 'public_client_id'
         })
@@ -400,9 +405,40 @@ async function resolveClientState(publicClientId: string, sessionId: string, cur
     };
 }
 
-// Section: Public workflows.
-export async function initializeAnonymousClient(payload: Record<string, unknown>) {
-    const clientRow = await upsertClientRecord(payload);
+export async function initializeAnonymousClient(payload: Record<string, unknown>, clientIp: string) {
+    let locationData: Record<string, any> | null = null;
+
+    const isLocalIp = !clientIp || clientIp === '127.0.0.1' || clientIp === '::1' || clientIp.startsWith('localhost');
+    if (!isLocalIp) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+            const response = await fetch(`https://freeipapi.com/api/json/${clientIp}`, {
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                locationData = await response.json();
+            } else {
+                console.warn(`freeipapi.com returned status ${response.status} for IP: ${clientIp}`);
+            }
+        } catch (error) {
+            console.error(`Failed to fetch IP location from freeipapi.com for IP ${clientIp}:`, error);
+        }
+    }
+
+    const enrichedPayload = {
+        ...payload,
+        countryName: locationData?.countryName || null,
+        countryCode: locationData?.countryCode || null,
+        cityName: locationData?.cityName || null,
+        regionName: locationData?.regionName || null,
+        zipCode: locationData?.zipCode || null
+    };
+
+    const clientRow = await upsertClientRecord(enrichedPayload);
     const sessionRow = await resolveActiveSession(Number(clientRow.id), '', String(payload.currentPage || '/'));
     const conversationRow = await resolveConversation(Number(clientRow.id), '', String(sessionRow.id));
 
@@ -720,7 +756,14 @@ async function sendToTelegram(clientName: string, text: string, conversationId: 
     if (clientRow) {
         const isNewVisitor = Date.now() - new Date(clientRow.created_at).getTime() < 1000 * 60 * 60 * 24;
         const visitorType = isNewVisitor ? '🆕 New Visitor' : '🔙 Returning';
-        const location = clientRow.timezone ? clientRow.timezone.split('/')[1]?.replace('_', ' ') || clientRow.timezone : 'Unknown';
+        
+        let location = 'Unknown';
+        if (clientRow.city_name || clientRow.country_name) {
+            const parts = [clientRow.city_name, clientRow.region_name, clientRow.country_name].filter(Boolean);
+            location = parts.join(', ');
+        } else if (clientRow.timezone) {
+            location = clientRow.timezone.split('/')[1]?.replace('_', ' ') || clientRow.timezone;
+        }
         
         metaDetails = `\n` +
                       `👤 <b>Visitor:</b> ${visitorType}\n` +
