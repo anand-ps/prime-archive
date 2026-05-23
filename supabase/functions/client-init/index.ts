@@ -45,7 +45,7 @@ Deno.serve(async (request) => {
             
         console.info(`[DEBUG] Client initialization request from IP: ${maskIp(clientIp)}`);
 
-        const snapshot = await initializeAnonymousClient(payload);
+        const snapshot = await initializeAnonymousClient(payload, clientIp);
         return successResponse(request, snapshot);
     } catch (error) {
         return handleUnexpectedError(request, error);
