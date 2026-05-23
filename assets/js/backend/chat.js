@@ -692,7 +692,7 @@ async function executeMessageSend(messageText, clientName, elements, options = {
             : [];
         const sentMessage = normalizeMessage(response?.message || {});
         
-        if (conversationMessages.length) {
+        if (conversationMessages.length && !options.silentRender) {
             chatState.messages = setCachedMessages(conversationMessages);
         } else if (options.tempMessageId) {
             const tempMsg = chatState.messages.find(m => m.id === options.tempMessageId);
@@ -702,14 +702,16 @@ async function executeMessageSend(messageText, clientName, elements, options = {
                 if (domNode) {
                     domNode.dataset.messageId = sentMessage.id;
                 }
-            } else {
+            } else if (!options.silentRender) {
                 chatState.messages.push(sentMessage);
             }
         } else if (!options.silentRender) {
             chatState.messages = mergeCachedMessages(chatState.messages, [sentMessage]);
         }
         
-        renderMessages(elements);
+        if (!options.silentRender) {
+            renderMessages(elements);
+        }
 
         elements.form.reset();
         elements.messageInput.style.height = 'auto';
@@ -718,7 +720,9 @@ async function executeMessageSend(messageText, clientName, elements, options = {
         chatState.nextAllowedSubmitAt = Date.now() + CHAT_CONFIG.SEND_COOLDOWN_MS;
 
         await trackMessageSend(messageText);
-        await chatState.syncController?.syncNow();
+        if (!options.skipSync) {
+            await chatState.syncController?.syncNow();
+        }
         return response;
     } catch (error) {
         console.error('Unable to send chat message.', error);
@@ -733,9 +737,17 @@ async function executeMessageSend(messageText, clientName, elements, options = {
 
 
 const ONBOARDING_TEMPLATES = {
-    COLLECT_NAME_PROMPT: "Thanks for reaching out!\nBefore I forward this to Anand, may I get your name?",
-    getConfirmation: (name) => `Hi ${name}!\nYour message has been shared with Anand. He'll reply here soon.`,
-    CALLBACK_PROMPT: "Prefer a callback over chat?\nDrop your contact below."
+    COLLECT_NAME_PROMPT: {
+        text: "Thanks for reaching out!\nBefore I forward this to Anand, may I get your name?",
+        delayMs: 1500
+    },
+    getConfirmation: (name) => `Hi ${name} 👋\nYour message has been shared with Anand. He'll reply here soon.`,
+    CONFIRMATION_DELAY_MS: 1000,
+    
+    CALLBACK_PROMPT: {
+        text: "Prefer a callback over chat?\nDrop your contact below.",
+        delayMs: 5000
+    }
 };
 
 function attachSubmitHandler(elements) {
@@ -772,13 +784,13 @@ function attachSubmitHandler(elements) {
                     chatState.messages.push({
                         id: 'temp_msg_2',
                         senderType: SENDER_TYPES.SYSTEM,
-                        messageText: ONBOARDING_TEMPLATES.COLLECT_NAME_PROMPT,
+                        messageText: ONBOARDING_TEMPLATES.COLLECT_NAME_PROMPT.text,
                         createdAt: new Date().toISOString()
                     });
                     renderMessages(elements);
                     elements.messageInput.placeholder = "Type your name...";
                     elements.messageInput.focus();
-                }, 1500);
+                }, ONBOARDING_TEMPLATES.COLLECT_NAME_PROMPT.delayMs);
                 
                 return;
             } else if (chatState.onboardingState === 'awaiting_name') {
@@ -791,87 +803,205 @@ function attachSubmitHandler(elements) {
                 elements.messageInput.style.height = 'auto';
                 elements.messageInput.placeholder = "Message...";
                 
-                chatState.messages.push(
-                    {
-                        id: 'temp_msg_3',
-                        senderType: SENDER_TYPES.CLIENT,
-                        messageText: extractedName,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 'temp_msg_4',
-                        senderType: SENDER_TYPES.SYSTEM,
-                        messageText: ONBOARDING_TEMPLATES.getConfirmation(extractedName),
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 'temp_msg_5',
-                        senderType: SENDER_TYPES.SYSTEM,
-                        messageText: ONBOARDING_TEMPLATES.CALLBACK_PROMPT,
-                        createdAt: new Date().toISOString()
-                    }
-                );
+                // 1. Show the client's name reply instantly
+                chatState.messages.push({
+                    id: 'temp_msg_3',
+                    senderType: SENDER_TYPES.CLIENT,
+                    messageText: extractedName,
+                    createdAt: new Date().toISOString()
+                });
                 renderMessages(elements);
                 
-                await createChatProfile(extractedName, elements, true);
-                
+                // 2. Execute profile creation and backend database sync completely asynchronously in the background
                 const originalMessage = chatState.pendingMessage;
                 chatState.pendingMessage = '';
                 
-                await executeMessageSend(originalMessage, extractedName, elements, {
-                    tempMessageId: 'temp_msg_1',
-                    silentRender: true,
-                    persistOnboardingFlow: true,
-                    automatedMessages: [
-                        {
-                            senderType: 'admin',
-                            messageText: ONBOARDING_TEMPLATES.COLLECT_NAME_PROMPT,
-                            metadata: {
-                                displayVariant: 'system',
-                                automationKey: 'collect_name_prompt'
-                            }
-                        },
-                        {
-                            senderType: 'client',
-                            messageText: extractedName,
-                            metadata: {
-                                automationKey: 'collected_name_reply',
-                                captureType: 'client_name'
-                            }
-                        },
-                        {
-                            senderType: 'admin',
-                            messageText: ONBOARDING_TEMPLATES.getConfirmation(extractedName),
-                            metadata: {
-                                displayVariant: 'system',
-                                automationKey: 'message_forwarded_confirmation'
-                            }
-                        },
-                        {
-                            senderType: 'admin',
-                            messageText: ONBOARDING_TEMPLATES.CALLBACK_PROMPT,
-                            metadata: {
-                                displayVariant: 'system',
-                                automationKey: 'callback_prompt'
-                            }
+                (async () => {
+                    try {
+                        await createChatProfile(extractedName, elements, true);
+                        await executeMessageSend(originalMessage, extractedName, elements, {
+                            tempMessageId: 'temp_msg_1',
+                            silentRender: true,
+                            persistOnboardingFlow: true,
+                            skipSync: true, // We skip the immediate sync to allow delayed messages to play out naturally
+                            automatedMessages: [
+                                {
+                                    senderType: 'admin',
+                                    messageText: ONBOARDING_TEMPLATES.COLLECT_NAME_PROMPT.text,
+                                    metadata: {
+                                        displayVariant: 'system',
+                                        automationKey: 'collect_name_prompt'
+                                    }
+                                },
+                                {
+                                    senderType: 'client',
+                                    messageText: extractedName,
+                                    metadata: {
+                                        automationKey: 'collected_name_reply',
+                                        captureType: 'client_name'
+                                    }
+                                },
+                                {
+                                    senderType: 'admin',
+                                    messageText: ONBOARDING_TEMPLATES.getConfirmation(extractedName),
+                                    metadata: {
+                                        displayVariant: 'system',
+                                        automationKey: 'message_forwarded_confirmation'
+                                    }
+                                },
+                                {
+                                    senderType: 'admin',
+                                    messageText: ONBOARDING_TEMPLATES.CALLBACK_PROMPT.text,
+                                    metadata: {
+                                        displayVariant: 'system',
+                                        automationKey: 'callback_prompt'
+                                    }
+                                }
+                            ]
+                        });
+                    } catch (err) {
+                        console.error("Background message dispatch failed:", err);
+                    }
+                })();
+                
+                // 3. Play the first bot reply (Confirmation) after configured delay (e.g. 1s)
+                setTimeout(() => {
+                    const confirmText = ONBOARDING_TEMPLATES.getConfirmation(extractedName);
+                    const confirmExists = chatState.messages.some(m => m.messageText === confirmText);
+                    
+                    if (!confirmExists) {
+                        chatState.messages.push({
+                            id: 'temp_msg_4',
+                            senderType: SENDER_TYPES.SYSTEM,
+                            messageText: confirmText,
+                            createdAt: new Date().toISOString()
+                        });
+                        renderMessages(elements);
+                    }
+                    
+                    // 4. Play the second bot reply (Callback prompt) after second configured delay (e.g. 1.5s)
+                    setTimeout(() => {
+                        const callbackText = ONBOARDING_TEMPLATES.CALLBACK_PROMPT.text;
+                        const callbackExists = chatState.messages.some(m => m.messageText === callbackText);
+                        
+                        if (!callbackExists) {
+                            chatState.messages.push({
+                                id: 'temp_msg_5',
+                                senderType: SENDER_TYPES.SYSTEM,
+                                messageText: callbackText,
+                                createdAt: new Date().toISOString()
+                            });
+                            renderMessages(elements);
                         }
-                    ]
-                });
+                        
+                        // 5. Cleanly sync up with the database to swap out temporary IDs for real ones
+                        chatState.syncController?.syncNow().catch(err => {
+                            console.error("Post-delay database sync failed:", err);
+                        });
+                    }, ONBOARDING_TEMPLATES.CALLBACK_PROMPT.delayMs);
+                    
+                }, ONBOARDING_TEMPLATES.CONFIRMATION_DELAY_MS);
                 
                 return;
             }
+        } else {
+            // Named user sending a message!
+            const nextClientName = existingClientName;
+            
+            // Check if this is the first message in the current conversation
+            // (We check client messages to see if they are empty in local memory)
+            const clientMessages = chatState.messages.filter(m => m.senderType === SENDER_TYPES.CLIENT);
+            const isFirstMessage = clientMessages.length === 0;
+            
+            if (isFirstMessage) {
+                // Show the client's message instantly
+                chatState.messages.push({
+                    id: 'temp_msg_1',
+                    senderType: SENDER_TYPES.CLIENT,
+                    messageText: messageText,
+                    createdAt: new Date().toISOString()
+                });
+                renderMessages(elements);
+                
+                elements.messageInput.value = '';
+                elements.messageInput.style.height = 'auto';
+                
+                // 1. Dispatch message send to backend asynchronously in the background
+                (async () => {
+                    try {
+                        await executeMessageSend(messageText, nextClientName, elements, {
+                            tempMessageId: 'temp_msg_1',
+                            silentRender: true,
+                            persistOnboardingFlow: false,
+                            skipSync: true, // Let the delayed bot replies play out smoothly first
+                            automatedMessages: [
+                                {
+                                    senderType: 'admin',
+                                    messageText: ONBOARDING_TEMPLATES.getConfirmation(nextClientName),
+                                    metadata: {
+                                        displayVariant: 'system',
+                                        automationKey: 'message_forwarded_confirmation'
+                                    }
+                                },
+                                {
+                                    senderType: 'admin',
+                                    messageText: ONBOARDING_TEMPLATES.CALLBACK_PROMPT.text,
+                                    metadata: {
+                                        displayVariant: 'system',
+                                        automationKey: 'callback_prompt'
+                                    }
+                                }
+                            ]
+                        });
+                    } catch (err) {
+                        console.error("Background message dispatch failed:", err);
+                    }
+                })();
+                
+                // 2. Play the automated bot confirmation and callback prompt trickling delays
+                setTimeout(() => {
+                    const confirmText = ONBOARDING_TEMPLATES.getConfirmation(nextClientName);
+                    const confirmExists = chatState.messages.some(m => m.messageText === confirmText);
+                    
+                    if (!confirmExists) {
+                        chatState.messages.push({
+                            id: 'temp_msg_4',
+                            senderType: SENDER_TYPES.SYSTEM,
+                            messageText: confirmText,
+                            createdAt: new Date().toISOString()
+                        });
+                        renderMessages(elements);
+                    }
+                    
+                    setTimeout(() => {
+                        const callbackText = ONBOARDING_TEMPLATES.CALLBACK_PROMPT.text;
+                        const callbackExists = chatState.messages.some(m => m.messageText === callbackText);
+                        
+                        if (!callbackExists) {
+                            chatState.messages.push({
+                                id: 'temp_msg_5',
+                                senderType: SENDER_TYPES.SYSTEM,
+                                messageText: callbackText,
+                                createdAt: new Date().toISOString()
+                            });
+                            renderMessages(elements);
+                        }
+                        
+                        chatState.syncController?.syncNow().catch(err => {
+                            console.error("Post-delay database sync failed:", err);
+                        });
+                    }, ONBOARDING_TEMPLATES.CALLBACK_PROMPT.delayMs);
+                    
+                }, ONBOARDING_TEMPLATES.CONFIRMATION_DELAY_MS);
+                
+                return;
+            } else {
+                // Subsequent messages: send normally without automated replies
+                await executeMessageSend(messageText, nextClientName, elements, {
+                    persistOnboardingFlow: false
+                });
+            }
         }
-
-        const nextClientName = existingClientName || sanitizeName(elements.nameInput.value);
-        if (!nextClientName) {
-            updateChatStatus(elements, 'Please enter your name before sending.', 'error');
-            elements.nameInput.focus();
-            return;
-        }
-
-        await executeMessageSend(messageText, nextClientName, elements, {
-            persistOnboardingFlow: false
-        });
     });
 }
 

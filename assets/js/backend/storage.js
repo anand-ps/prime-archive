@@ -181,17 +181,53 @@ export function getCachedMessages() {
         .sort(compareMessages);
 }
 
+function deduplicateMessagesByText(messages) {
+    if (!Array.isArray(messages)) return [];
+
+    // Prioritize messages with real database IDs over temporary string IDs (e.g. temp_msg_X)
+    const sorted = [...messages].sort((a, b) => {
+        const aIsTemp = String(a.id).startsWith('temp_');
+        const bIsTemp = String(b.id).startsWith('temp_');
+        if (aIsTemp && !bIsTemp) return 1;
+        if (!aIsTemp && bIsTemp) return -1;
+        return 0;
+    });
+
+    const seen = new Map();
+    const result = [];
+
+    for (const msg of sorted) {
+        const key = `${msg.senderType}:${String(msg.messageText || '').trim()}`;
+        if (!seen.has(key)) {
+            seen.set(key, true);
+            result.push(msg);
+        }
+    }
+
+    // Sort chronologically back so the UI displays them in the correct order
+    return result.sort((a, b) => {
+        const aTime = new Date(a.createdAt).getTime();
+        const bTime = new Date(b.createdAt).getTime();
+        if (aTime !== bTime) {
+            return aTime - bTime;
+        }
+        return String(a.id).localeCompare(String(b.id));
+    });
+}
+
 export function setCachedMessages(messages) {
-    const normalizedMessages = Array.isArray(messages)
+    let normalizedMessages = Array.isArray(messages)
         ? messages
             .map(normalizeCachedMessage)
             .filter((message) => message.id !== '' && message.senderType && message.messageText && message.createdAt)
             .sort(compareMessages)
-            .slice(-CHAT_CONFIG.MAX_CACHED_MESSAGES)
         : [];
 
-    window.localStorage.setItem(STORAGE_KEYS.CACHED_MESSAGES, stringifyJson(normalizedMessages));
-    return normalizedMessages;
+    normalizedMessages = deduplicateMessagesByText(normalizedMessages);
+    const cappedMessages = normalizedMessages.slice(-CHAT_CONFIG.MAX_CACHED_MESSAGES);
+
+    window.localStorage.setItem(STORAGE_KEYS.CACHED_MESSAGES, stringifyJson(cappedMessages));
+    return cappedMessages;
 }
 
 export function clearCachedMessages() {
