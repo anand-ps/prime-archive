@@ -120,8 +120,10 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     z-index: 1;
 }
 
-/* Show the tooltip automatically after page load, but hide it if panel is open */
-.portfolio-chat-shell:not(.is-open) .portfolio-chat-tooltip.is-visible {
+/* Show the tooltip automatically after page load, on hover, or on focus, but hide it if panel is open */
+.portfolio-chat-shell:not(.is-open) .portfolio-chat-tooltip.is-visible,
+.portfolio-chat-shell:not(.is-open):hover .portfolio-chat-tooltip,
+.portfolio-chat-shell:not(.is-open):focus-within .portfolio-chat-tooltip {
     opacity: 1;
     transform: translateY(0) translateX(0);
 }
