@@ -58,6 +58,16 @@ create table if not exists public.clients (
 
     updated_at timestamptz not null default now(),
 
+    country_name text,
+
+    country_code text,
+
+    city_name text,
+
+    region_name text,
+
+    zip_code text,
+
     constraint clients_screen_width_nonnegative
         check (screen_width >= 0),
 

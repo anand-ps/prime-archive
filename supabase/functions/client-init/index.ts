@@ -16,7 +16,13 @@ Deno.serve(async (request) => {
     try {
         assertMethod(request, ['POST']);
         const payload = parseClientInitPayload(await readJsonBody(request));
-        const snapshot = await initializeAnonymousClient(payload);
+        
+        // Extract client IP address from standard headers (x-forwarded-for or cf-connecting-ip)
+        const clientIp = request.headers.get("x-forwarded-for")?.split(",")[0].trim()
+            || request.headers.get("cf-connecting-ip")
+            || "";
+
+        const snapshot = await initializeAnonymousClient(payload, clientIp);
         return successResponse(request, snapshot);
     } catch (error) {
         return handleUnexpectedError(request, error);
