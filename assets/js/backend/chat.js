@@ -453,6 +453,27 @@ function renderMessages(elements) {
     const empty = elements.thread.querySelector('.portfolio-chat-empty-state');
     if (empty) empty.remove();
 
+    // Perform in-place DOM ID reconciliation for optimistic/temporary messages
+    // to prevent visual layout thrashing ("jerks") when swapping temporary IDs for DB IDs.
+    const renderedBubbles = Array.from(elements.thread.querySelectorAll('[data-message-id]'));
+    if (renderedBubbles.length > 0) {
+        chatState.messages.forEach(message => {
+            if (!message.id) return;
+            
+            const match = renderedBubbles.find(node => {
+                const textNode = node.querySelector('.portfolio-chat-bubble-text');
+                const text = textNode ? textNode.textContent.trim() : '';
+                const isClientNode = node.classList.contains('portfolio-chat-bubble-visitor');
+                const isClientMsg = message.senderType === SENDER_TYPES.CLIENT;
+                return text === String(message.messageText || '').trim() && isClientNode === isClientMsg;
+            });
+            
+            if (match && match.dataset.messageId !== String(message.id)) {
+                match.dataset.messageId = String(message.id);
+            }
+        });
+    }
+
     const rebuildThread = shouldRebuildThread(elements);
     
     const isNearBottom = elements.thread.scrollHeight - elements.thread.scrollTop - elements.thread.clientHeight < 50;
