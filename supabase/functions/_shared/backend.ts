@@ -408,26 +408,47 @@ async function resolveClientState(publicClientId: string, sessionId: string, cur
 export async function initializeAnonymousClient(payload: Record<string, unknown>, clientIp: string) {
     let locationData: Record<string, any> | null = null;
 
-    const isLocalIp = !clientIp || clientIp === '127.0.0.1' || clientIp === '::1' || clientIp.startsWith('localhost');
+    console.info(`[GEOLOCATION DEBUG] Received client IP for lookup: "${clientIp}"`);
+
+    const isLocalIp = !clientIp || clientIp === '127.0.0.1' || clientIp === '::1' || clientIp.startsWith('localhost') || clientIp.startsWith('192.168.') || clientIp.startsWith('10.');
+    console.info(`[GEOLOCATION DEBUG] Is local IP address? ${isLocalIp}`);
+
     if (!isLocalIp) {
         try {
+            const fetchUrl = `https://ipapi.co/${clientIp}/json/`;
+            console.info(`[GEOLOCATION DEBUG] Querying URL: ${fetchUrl}`);
+
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-            const response = await fetch(`https://ipapi.co/${clientIp}/json/`, {
+            const response = await fetch(fetchUrl, {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
                 signal: controller.signal
             });
             clearTimeout(timeoutId);
 
+            console.info(`[GEOLOCATION DEBUG] Response HTTP Status: ${response.status}`);
+
             if (response.ok) {
-                locationData = await response.json();
+                const rawText = await response.text();
+                console.info(`[GEOLOCATION DEBUG] Raw response body: ${rawText}`);
+                
+                try {
+                    locationData = JSON.parse(rawText);
+                    console.info(`[GEOLOCATION DEBUG] Successfully parsed JSON. Keys: ${Object.keys(locationData).join(', ')}`);
+                    console.info(`[GEOLOCATION DEBUG] Parsed country_name: "${locationData?.country_name}", city: "${locationData?.city}"`);
+                } catch (jsonErr) {
+                    console.error(`[GEOLOCATION DEBUG] Failed to parse JSON response. Raw text: "${rawText}"`, jsonErr);
+                }
             } else {
-                console.warn(`ipapi.co returned status ${response.status} for IP: ${clientIp}`);
+                const errText = await response.text().catch(() => "N/A");
+                console.warn(`[GEOLOCATION DEBUG] ipapi.co returned non-OK status: ${response.status}. Error body: "${errText}"`);
             }
         } catch (error) {
-            console.error(`Failed to fetch IP location from ipapi.co for IP ${clientIp}:`, error);
+            console.error(`[GEOLOCATION DEBUG] Failed to fetch IP location from ipapi.co for IP ${clientIp}:`, error);
         }
+    } else {
+        console.info(`[GEOLOCATION DEBUG] Skipping geolocation lookup for local IP address.`);
     }
 
     const enrichedPayload = {
@@ -438,6 +459,14 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
         regionName: locationData?.region || null,
         zipCode: locationData?.postal || null
     };
+
+    console.info(`[GEOLOCATION DEBUG] Final Enriched Payload for Database:`, {
+        countryName: enrichedPayload.countryName,
+        countryCode: enrichedPayload.countryCode,
+        cityName: enrichedPayload.cityName,
+        regionName: enrichedPayload.regionName,
+        zipCode: enrichedPayload.zipCode
+    });
 
     const clientRow = await upsertClientRecord(enrichedPayload);
     const sessionRow = await resolveActiveSession(Number(clientRow.id), '', String(payload.currentPage || '/'));
