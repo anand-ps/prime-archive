@@ -414,7 +414,8 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-            const response = await fetch(`https://freeipapi.com/api/json/${clientIp}`, {
+            const response = await fetch(`https://ipapi.co/${clientIp}/json/`, {
+                headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
                 signal: controller.signal
             });
             clearTimeout(timeoutId);
@@ -422,20 +423,20 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
             if (response.ok) {
                 locationData = await response.json();
             } else {
-                console.warn(`freeipapi.com returned status ${response.status} for IP: ${clientIp}`);
+                console.warn(`ipapi.co returned status ${response.status} for IP: ${clientIp}`);
             }
         } catch (error) {
-            console.error(`Failed to fetch IP location from freeipapi.com for IP ${clientIp}:`, error);
+            console.error(`Failed to fetch IP location from ipapi.co for IP ${clientIp}:`, error);
         }
     }
 
     const enrichedPayload = {
         ...payload,
-        countryName: locationData?.countryName || null,
-        countryCode: locationData?.countryCode || null,
-        cityName: locationData?.cityName || null,
-        regionName: locationData?.regionName || null,
-        zipCode: locationData?.zipCode || null
+        countryName: locationData?.country_name || null,
+        countryCode: locationData?.country || null,
+        cityName: locationData?.city || null,
+        regionName: locationData?.region || null,
+        zipCode: locationData?.postal || null
     };
 
     const clientRow = await upsertClientRecord(enrichedPayload);
