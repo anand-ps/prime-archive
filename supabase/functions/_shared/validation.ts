@@ -190,7 +190,18 @@ export function parseSendMessagePayload(body: unknown) {
         messageType: validateMessageType(payload.messageType),
         messageText: requireText(payload.messageText, 'messageText', 1000),
         clientName: normalizeText(payload.clientName, 80),
-        persistOnboardingFlow: payload.persistOnboardingFlow === true
+        persistOnboardingFlow: payload.persistOnboardingFlow === true,
+        automatedMessages: Array.isArray(payload.automatedMessages)
+            ? payload.automatedMessages.map(msg => {
+                const obj = ensureObject(msg, 'automated message');
+                return {
+                    senderType: String(obj.senderType || 'admin'),
+                    messageType: String(obj.messageType || 'text'),
+                    messageText: String(obj.messageText || ''),
+                    metadata: typeof obj.metadata === 'object' && obj.metadata !== null ? obj.metadata : {}
+                };
+            })
+            : undefined
     };
 }
 

@@ -58,87 +58,158 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 }
 
 .portfolio-chat-toggle {
+    display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, var(--accent) 0%, var(--accent-strong) 100%);
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 16px 34px rgba(20, 30, 38, 0.18);
-    color: #ffffff;
-    cursor: pointer;
-    display: flex;
-    height: 3.5rem;
-    width: 3.5rem;
-    padding: 0;
-    transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
-}
-
-.portfolio-chat-tooltip {
-    position: absolute;
-    right: 28px;
-    bottom: calc(100% + 12px);
-    transform: translateY(10px);
-    backdrop-filter: blur(12px);
-    background: color-mix(in srgb, var(--surface) 90%, transparent);
-    border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+    background: color-mix(in srgb, var(--surface) 22%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    border-radius: 99px;
     color: var(--text);
-    padding: 0.6rem 1rem;
-    border-radius: 14px;
-    border-bottom-right-radius: 6px;
-    font-family: "Manrope", "Segoe UI", sans-serif;
-    font-size: 0.85rem;
+    cursor: pointer;
+    height: 3.25rem;
+    width: auto;
+    padding: 0 1.35rem 0 1.15rem;
+    position: relative;
+    box-shadow: 
+        0 10px 30px color-mix(in srgb, var(--text) 5%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+    transition: 
+        transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), 
+        box-shadow 300ms ease, 
+        background-color 300ms ease, 
+        border-color 300ms ease;
+    animation: chat-button-float 4s ease-in-out infinite;
+}
+
+@keyframes chat-button-float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.portfolio-chat-toggle-content {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    position: relative;
+    z-index: 2;
+}
+
+.portfolio-chat-toggle-text {
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: 0.88rem;
     font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.015em;
+    color: var(--text);
     white-space: nowrap;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1), transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
-    animation: tooltip-float 3.5s ease-in-out infinite;
+    transition: color 250ms ease;
 }
 
-.portfolio-chat-tooltip::after {
+.portfolio-chat-toggle-status {
+    width: 7px;
+    height: 7px;
+    background-color: #2ec4b6;
+    border-radius: 50%;
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.portfolio-chat-toggle-status::after {
     content: '';
     position: absolute;
-    bottom: -8px;
-    right: 12px;
-    width: 0;
-    height: 0;
-    border-top: 8px solid color-mix(in srgb, var(--border) 50%, transparent);
-    border-left: 8px solid transparent;
+    top: -2.5px;
+    left: -2.5px;
+    right: -2.5px;
+    bottom: -2.5px;
+    border-radius: 50%;
+    border: 1px solid #2ec4b6;
+    animation: status-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    opacity: 0.8;
 }
 
-.portfolio-chat-tooltip::before {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    right: 13px;
-    width: 0;
-    height: 0;
-    border-top: 7px solid var(--surface);
-    border-left: 7px solid transparent;
-    z-index: 1;
+@keyframes status-ping {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(2.8);
+        opacity: 0;
+    }
 }
 
-/* Show the tooltip automatically after page load, on hover, or on focus, but hide it if panel is open */
-.portfolio-chat-shell:not(.is-open) .portfolio-chat-tooltip.is-visible,
-.portfolio-chat-shell:not(.is-open):hover .portfolio-chat-tooltip,
-.portfolio-chat-shell:not(.is-open):focus-within .portfolio-chat-tooltip {
-    opacity: 1;
-    transform: translateY(0) translateX(0);
+.portfolio-chat-toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), color 300ms ease;
+    stroke-width: 2.2;
 }
 
-@keyframes tooltip-float {
-    0%, 100% { translate: 0 0px; }
-    50% { translate: 0 -6px; }
-}
+
+
 
 .portfolio-chat-toggle:hover,
 .portfolio-chat-toggle:focus-visible {
-    box-shadow: 0 20px 38px rgba(20, 30, 38, 0.22);
-    filter: saturate(1.03);
-    transform: translateY(-1px);
+    transform: translateY(-6px) scale(1.04);
+    background: color-mix(in srgb, var(--surface) 35%, transparent);
+    border-color: color-mix(in srgb, var(--text) 22%, transparent);
+    box-shadow: 
+        0 14px 35px color-mix(in srgb, var(--text) 8%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.04),
+        0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
 }
+
+.portfolio-chat-toggle:active {
+    transform: translateY(-2px) scale(0.96);
+    background: color-mix(in srgb, var(--surface) 45%, transparent);
+    box-shadow: 
+        0 6px 18px color-mix(in srgb, var(--text) 4%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.portfolio-chat-toggle:hover .portfolio-chat-toggle-text {
+    color: var(--accent);
+}
+
+.portfolio-chat-toggle:hover .portfolio-chat-toggle-icon {
+    color: var(--accent);
+}
+
+/* Staggered bouncing animation for the three typing dots inside the SVG */
+.portfolio-chat-toggle-icon circle {
+    transform-origin: center;
+    transition: transform 0.2s ease;
+}
+
+.portfolio-chat-toggle:hover .portfolio-chat-toggle-icon circle:nth-child(2) {
+    animation: typing-dot-bounce 0.6s infinite alternate;
+}
+.portfolio-chat-toggle:hover .portfolio-chat-toggle-icon circle:nth-child(3) {
+    animation: typing-dot-bounce 0.6s infinite alternate 0.15s;
+}
+.portfolio-chat-toggle:hover .portfolio-chat-toggle-icon circle:nth-child(4) {
+    animation: typing-dot-bounce 0.6s infinite alternate 0.3s;
+}
+
+@keyframes typing-dot-bounce {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-3.5px);
+    }
+}
+
 
 .portfolio-chat-toggle:focus-visible,
 .portfolio-chat-close:focus-visible,
@@ -475,6 +546,8 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     flex: 1;
     min-height: 80px;
     overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
     padding-right: 0.4rem;
     scroll-behavior: smooth;
 }
@@ -563,17 +636,17 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     border-radius: 18px;
     padding: 0.7rem 0.9rem;
     max-width: 85%;
-    animation: bubbleSlideIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation: bubbleSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes bubbleSlideIn {
     from {
         opacity: 0;
-        transform: translateY(8px) scale(0.96);
+        transform: translateY(6px);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 }
 
@@ -752,3 +825,23 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     color: var(--accent-strong);
     text-decoration: underline;
 }
+
+/* Additional premium media query to collapse the toggle pill into a circle on mobile devices */
+@media (max-width: 500px) {
+    .portfolio-chat-toggle {
+        width: 3.4rem;
+        height: 3.4rem;
+        padding: 0;
+        border-radius: 50%;
+        justify-content: center;
+    }
+    .portfolio-chat-toggle-text {
+        display: none;
+    }
+    .portfolio-chat-toggle-status {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+}
+
