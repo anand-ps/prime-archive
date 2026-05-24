@@ -1041,7 +1041,7 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 
 .portfolio-chat-legal-link:hover {
     color: var(--accent-strong);
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 /* Deep-linking instant opening transition override */
