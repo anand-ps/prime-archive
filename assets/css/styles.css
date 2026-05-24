@@ -1299,6 +1299,16 @@ body::after {
     list-style: none;
 }
 
+button.contact-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
 .contact-link {
     align-items: center;
     color: color-mix(in srgb, var(--text) 90%, var(--muted));
@@ -1331,6 +1341,57 @@ body::after {
     mask-position: center;
     mask-repeat: no-repeat;
     mask-size: contain;
+}
+
+.icon-chat {
+    background-image: none;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'%3E%3C/path%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'%3E%3C/path%3E%3C/svg%3E");
+    background-color: currentColor;
+}
+
+.contact-chat-note {
+    background: color-mix(in srgb, var(--accent) 10%, rgba(28, 124, 114, 0.05));
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    color: var(--accent-strong);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.16rem 0.55rem;
+    margin-left: 0.58rem;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(28, 124, 114, 0.06);
+    vertical-align: middle;
+}
+
+.contact-chat-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #10b981;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    margin-right: 0.38rem;
+    flex-shrink: 0;
+    animation: pulse-green-contact 2.5s infinite;
+}
+
+@keyframes pulse-green-contact {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
 }
 
 .icon-google {
