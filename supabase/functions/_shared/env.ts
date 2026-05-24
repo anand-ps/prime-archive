@@ -7,7 +7,7 @@ Purpose: Centralize Edge Function environment access and numeric runtime configu
 const DEFAULT_SESSION_TIMEOUT_MS = 60 * 60 * 1000; // 1 hour (in milliseconds)
 const DEFAULT_MESSAGE_COOLDOWN_MS = 3000;         // 3 seconds (in milliseconds)
 const DEFAULT_MESSAGE_WINDOW_MS = 60 * 1000;       // 1 minute (in milliseconds)
-const DEFAULT_MESSAGE_WINDOW_LIMIT = 10;            // 10 messages maximum
+const DEFAULT_MESSAGE_WINDOW_LIMIT = 20;            // 20 messages maximum
 
 // Section: Environment readers.
 export function getRequiredEnv(name: string) {
