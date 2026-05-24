@@ -877,6 +877,7 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
         min-width: 102px;
         padding: 0.62rem 0.75rem;
     }
+    html.chat-is-open-mobile,
     body.chat-is-open-mobile {
         overflow: hidden !important;
         touch-action: none;
@@ -895,12 +896,12 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     }
 
     .portfolio-chat-shell.is-open {
-        bottom: var(--chat-mobile-keyboard-offset, 0px);
+        bottom: auto;
         right: 0;
         left: 0;
-        top: 0;
-        width: auto;
-        height: auto;
+        top: var(--chat-mobile-offset-top, 0px);
+        width: 100%;
+        height: var(--chat-mobile-viewport-height, 100dvh);
         max-height: none;
         margin: 0;
         padding: 0;

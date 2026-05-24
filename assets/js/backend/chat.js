@@ -37,6 +37,7 @@ function updateMobileViewportMetrics(elements) {
     if (isDesktopChatViewport()) {
         elements.shell.style.setProperty('--chat-mobile-viewport-height', '100dvh');
         elements.shell.style.setProperty('--chat-mobile-keyboard-offset', '0px');
+        elements.shell.style.setProperty('--chat-mobile-offset-top', '0px');
         return;
     }
 
@@ -44,10 +45,12 @@ function updateMobileViewportMetrics(elements) {
     if (!visualViewport) {
         elements.shell.style.setProperty('--chat-mobile-viewport-height', '100dvh');
         elements.shell.style.setProperty('--chat-mobile-keyboard-offset', '0px');
+        elements.shell.style.setProperty('--chat-mobile-offset-top', '0px');
         return;
     }
 
     const viewportHeight = Math.round(visualViewport.height);
+    const offsetTop = Math.round(visualViewport.offsetTop);
     const keyboardOffset = Math.max(
         0,
         Math.round(window.innerHeight - visualViewport.height - visualViewport.offsetTop)
@@ -55,6 +58,7 @@ function updateMobileViewportMetrics(elements) {
 
     elements.shell.style.setProperty('--chat-mobile-viewport-height', `${viewportHeight}px`);
     elements.shell.style.setProperty('--chat-mobile-keyboard-offset', `${keyboardOffset}px`);
+    elements.shell.style.setProperty('--chat-mobile-offset-top', `${offsetTop}px`);
 }
 
 function scrollComposerIntoView(elements) {
@@ -202,7 +206,11 @@ function setPanelOpen(elements, isOpen, skipHistory = false) {
     elements.shell.classList.toggle('is-desktop-open', isOpen && isDesktopChatViewport());
     elements.toggle.setAttribute('aria-expanded', String(isOpen));
     elements.panel.setAttribute('aria-hidden', String(!isOpen));
-    document.body.classList.toggle('chat-is-open-mobile', isOpen && !isDesktopChatViewport());
+    
+    const isMobileOpen = isOpen && !isDesktopChatViewport();
+    document.documentElement.classList.toggle('chat-is-open-mobile', isMobileOpen);
+    document.body.classList.toggle('chat-is-open-mobile', isMobileOpen);
+    
     updateMobileViewportMetrics(elements);
 
     if (!skipHistory) {
