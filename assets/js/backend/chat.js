@@ -746,6 +746,13 @@ async function executeMessageSend(messageText, clientName, elements, options = {
             : [];
         const sentMessage = normalizeMessage(response?.message || {});
         
+        if (sentMessage.id) {
+            const exists = conversationMessages.some(m => String(m.id) === String(sentMessage.id));
+            if (!exists) {
+                conversationMessages.push(sentMessage);
+            }
+        }
+        
         if (conversationMessages.length && !options.silentRender) {
             chatState.messages = setCachedMessages(conversationMessages);
         } else if (options.tempMessageId) {
@@ -784,7 +791,15 @@ async function executeMessageSend(messageText, clientName, elements, options = {
         return null;
     } finally {
         chatState.isSubmitting = false;
-        setFormBusy(elements, false);
+        
+        const cooldownRemaining = Math.max(0, chatState.nextAllowedSubmitAt - Date.now());
+        if (cooldownRemaining > 0) {
+            setTimeout(() => {
+                setFormBusy(elements, false);
+            }, cooldownRemaining);
+        } else {
+            setFormBusy(elements, false);
+        }
     }
 }
 
@@ -1051,7 +1066,20 @@ function attachSubmitHandler(elements) {
                 return;
             } else {
                 // Subsequent messages: send normally without automated replies
+                const tempId = 'temp_msg_' + Date.now();
+                chatState.messages.push({
+                    id: tempId,
+                    senderType: SENDER_TYPES.CLIENT,
+                    messageText: messageText,
+                    createdAt: new Date().toISOString()
+                });
+                renderMessages(elements);
+                
+                elements.messageInput.value = '';
+                elements.messageInput.style.height = 'auto';
+
                 await executeMessageSend(messageText, nextClientName, elements, {
+                    tempMessageId: tempId,
                     persistOnboardingFlow: false
                 });
             }

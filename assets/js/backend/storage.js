@@ -184,23 +184,34 @@ export function getCachedMessages() {
 function deduplicateMessagesByText(messages) {
     if (!Array.isArray(messages)) return [];
 
-    // Prioritize messages with real database IDs over temporary string IDs (e.g. temp_msg_X)
-    const sorted = [...messages].sort((a, b) => {
-        const aIsTemp = String(a.id).startsWith('temp_');
-        const bIsTemp = String(b.id).startsWith('temp_');
-        if (aIsTemp && !bIsTemp) return 1;
-        if (!aIsTemp && bIsTemp) return -1;
-        return 0;
-    });
+    const realMessages = messages.filter(m => !String(m.id).startsWith('temp_'));
+    const tempMessages = messages.filter(m => String(m.id).startsWith('temp_'));
 
-    const seen = new Map();
-    const result = [];
+    const result = [...realMessages];
+    const unmatchedRealMessages = new Set(realMessages.map(m => String(m.id)));
 
-    for (const msg of sorted) {
-        const key = `${msg.senderType}:${String(msg.messageText || '').trim()}`;
-        if (!seen.has(key)) {
-            seen.set(key, true);
-            result.push(msg);
+    for (const tempMsg of tempMessages) {
+        const tempTime = new Date(tempMsg.createdAt).getTime();
+        
+        let foundMatchId = null;
+        for (const realMsg of realMessages) {
+            if (!unmatchedRealMessages.has(String(realMsg.id))) continue;
+            
+            if (realMsg.senderType === tempMsg.senderType &&
+                String(realMsg.messageText || '').trim() === String(tempMsg.messageText || '').trim()) {
+                
+                const realTime = new Date(realMsg.createdAt).getTime();
+                if (Math.abs(realTime - tempTime) < 60000) {
+                    foundMatchId = String(realMsg.id);
+                    break;
+                }
+            }
+        }
+
+        if (foundMatchId) {
+            unmatchedRealMessages.delete(foundMatchId);
+        } else {
+            result.push(tempMsg);
         }
     }
 
