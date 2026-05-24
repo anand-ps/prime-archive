@@ -212,6 +212,10 @@ function setPanelOpen(elements, isOpen, skipHistory = false) {
             history.back();
         }
     }
+
+    if (isOpen && elements.messageInput) {
+        elements.messageInput.focus();
+    }
 }
 
 function updateChatStatus(elements, message, tone = 'default') {
