@@ -873,7 +873,7 @@ async function executeMessageSend(messageText, clientName, elements, options = {
 
 const ONBOARDING_TEMPLATES = {
     COLLECT_NAME_PROMPT: {
-        text: "Thanks for reaching out!\nBefore I forward this to Anand, may I get your name?",
+        text: "Thanks for reaching out! 😀\nBefore I forward this to Anand, may I get your name?",
         delayMs: 1500
     },
     getConfirmation: (name) => `Hi ${name} 👋\nYour message has been shared with Anand. He'll reply here soon.`,

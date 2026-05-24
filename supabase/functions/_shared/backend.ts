@@ -693,7 +693,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
                 session_id: sessionRow.id,
                 sender_type: 'admin',
                 message_type: 'text',
-                message_text: 'Done.\nYour contact has been noted.',
+                message_text: 'Done. Your contact has been noted.',
                 metadata: {
                     displayVariant: 'system',
                     automationKey: 'mobile_number_accepted'
