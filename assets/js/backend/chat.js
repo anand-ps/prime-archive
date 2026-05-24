@@ -675,6 +675,18 @@ function attachPanelEvents(elements) {
         updateMobileViewportMetrics(elements);
     });
 
+    // Shrink chat toggle capsule to just the icon on scroll after the first viewport is moved up, expand at the top
+    const handleScroll = () => {
+        const threshold = window.innerHeight || 800;
+        if (window.scrollY > threshold) {
+            elements.toggle.classList.add('is-shrunk');
+        } else {
+            elements.toggle.classList.remove('is-shrunk');
+        }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Run immediately to capture initial page scroll state
+
     if (window.visualViewport) {
         const handleViewportChange = () => {
             updateMobileViewportMetrics(elements);
