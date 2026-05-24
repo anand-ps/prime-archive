@@ -1346,7 +1346,7 @@ export async function initChatWidget() {
         if (window.location.hash === '#chat') {
             // Enforce a premium 1.2-second minimum loading display duration
             const elapsed = Date.now() - (window.__chat_launcher_start || Date.now());
-            const minDuration = 1300; // 1.3 seconds minimum display window
+            const minDuration = 2000; // 2 seconds minimum display window
             const remaining = Math.max(0, minDuration - elapsed);
 
             const performOpen = () => {
