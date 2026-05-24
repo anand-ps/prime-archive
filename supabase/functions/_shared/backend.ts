@@ -14,6 +14,19 @@ const CONVERSATION_SELECT = 'id, client_id, active_session_id, status, created_a
 const MESSAGE_SELECT = 'id, conversation_id, client_id, session_id, sender_type, message_type, message_text, metadata, created_at';
 
 // Section: Utility helpers.
+function maskIp(ip: string): string {
+    if (!ip) return "unknown";
+    if (ip.includes(":")) {
+        const parts = ip.split(":");
+        return parts.map((part, index) => (index >= Math.ceil(parts.length / 2) ? "xxxx" : part)).join(":");
+    }
+    const parts = ip.split(".");
+    if (parts.length === 4) {
+        return `${parts[0]}.${parts[1]}.x.x`;
+    }
+    return ip;
+}
+
 function nowIso() {
     return new Date().toISOString();
 }
@@ -408,7 +421,7 @@ async function resolveClientState(publicClientId: string, sessionId: string, cur
 export async function initializeAnonymousClient(payload: Record<string, unknown>, clientIp: string) {
     let locationData: Record<string, any> | null = null;
 
-    console.info(`[GEOLOCATION DEBUG] Received client IP for lookup: "${clientIp}"`);
+    console.info(`[GEOLOCATION DEBUG] Received client IP for lookup: "${maskIp(clientIp)}"`);
 
     const isLocalIp = !clientIp || clientIp === '127.0.0.1' || clientIp === '::1' || clientIp.startsWith('localhost') || clientIp.startsWith('192.168.') || clientIp.startsWith('10.');
     console.info(`[GEOLOCATION DEBUG] Is local IP address? ${isLocalIp}`);
@@ -416,7 +429,7 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
     if (!isLocalIp) {
         try {
             const fetchUrl = `https://ipwho.is/${clientIp}`;
-            console.info(`[GEOLOCATION DEBUG] Querying URL: ${fetchUrl}`);
+            console.info(`[GEOLOCATION DEBUG] Querying URL: https://ipwho.is/${maskIp(clientIp)}`);
 
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
@@ -431,7 +444,8 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
 
             if (response.ok) {
                 const rawText = await response.text();
-                console.info(`[GEOLOCATION DEBUG] Raw response body: ${rawText}`);
+                // Raw response body might contain raw IP - let's mask it in console if needed, but since it's database-wide geolocation JSON, rawText has city/country anyway. We keep it or skip log.
+                console.info(`[GEOLOCATION DEBUG] Successfully retrieved geolocation data.`);
                 
                 try {
                     const parsed = JSON.parse(rawText);
@@ -443,14 +457,14 @@ export async function initializeAnonymousClient(payload: Record<string, unknown>
                         console.warn(`[GEOLOCATION DEBUG] ipwho.is reported failure: ${parsed?.message || "unknown error"}`);
                     }
                 } catch (jsonErr) {
-                    console.error(`[GEOLOCATION DEBUG] Failed to parse JSON response. Raw text: "${rawText}"`, jsonErr);
+                    console.error(`[GEOLOCATION DEBUG] Failed to parse JSON response.`, jsonErr);
                 }
             } else {
                 const errText = await response.text().catch(() => "N/A");
                 console.warn(`[GEOLOCATION DEBUG] ipwho.is returned non-OK status: ${response.status}. Error body: "${errText}"`);
             }
         } catch (error) {
-            console.error(`[GEOLOCATION DEBUG] Failed to fetch IP location from ipwho.is for IP ${clientIp}:`, error);
+            console.error(`[GEOLOCATION DEBUG] Failed to fetch IP location from ipwho.is for IP ${maskIp(clientIp)}:`, error);
         }
     } else {
         console.info(`[GEOLOCATION DEBUG] Skipping geolocation lookup for local IP address.`);
@@ -600,6 +614,8 @@ async function getConversationMessages(conversationId: string) {
 }
 
 export async function createClientMessage(payload: Record<string, unknown>) {
+    console.info(`[DEBUG] Received createClientMessage request. Sender: "${payload.clientName || 'Anonymous'}" | Client ID: "${payload.clientId}"`);
+    
     const { clientRow, sessionRow, conversationRow } = await resolveClientState(
         String(payload.clientId || ''),
         String(payload.sessionId || ''),
@@ -608,6 +624,8 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     );
 
     await enforceMessageRateLimit(Number(clientRow.id), String(conversationRow.id));
+    console.info(`[DEBUG] Rate limit passed for Client DB ID: ${clientRow.id}`);
+    
     await updateClientName(Number(clientRow.id), String(payload.clientName || ''));
 
     const existingMobileNumber = String(clientRow.mobile_number || '').trim();
@@ -616,12 +634,15 @@ export async function createClientMessage(payload: Record<string, unknown>) {
         : extractMobileNumber(String(payload.messageText || ''));
 
     if (detectedMobileNumber) {
+        console.info(`[DEBUG] Detected mobile number: "${detectedMobileNumber}". Updating database...`);
         await updateClientMobile(Number(clientRow.id), detectedMobileNumber);
         clientRow.mobile_number = detectedMobileNumber;
     }
 
     const admin = getAdminClient();
     const existingClientMessageCount = await countClientMessages(String(conversationRow.id));
+    
+    console.info(`[DEBUG] Storing outgoing message in database...`);
     const { data, error } = await admin
         .from('messages')
         .insert({
@@ -637,10 +658,12 @@ export async function createClientMessage(payload: Record<string, unknown>) {
         .single();
 
     throwIfQueryError(error, 'Unable to store the outgoing message.');
+    console.info(`[DEBUG] Message stored successfully. Message ID: ${data.id}. Total client messages: ${existingClientMessageCount + 1}`);
 
     let automatedRows: Record<string, unknown>[] = [];
 
     if (Array.isArray(payload.automatedMessages) && payload.automatedMessages.length > 0) {
+        console.info(`[DEBUG] Found ${payload.automatedMessages.length} automated replies to process...`);
         const messageRows = payload.automatedMessages.map((msg: any) => ({
             conversation_id: conversationRow.id,
             client_id: clientRow.id,
@@ -658,6 +681,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
 
         throwIfQueryError(insertError, 'Unable to store automated messages.');
         automatedRows = insertedData ?? [];
+        console.info(`[DEBUG] Automated replies stored successfully.`);
     }
 
     if (detectedMobileNumber) {
@@ -689,6 +713,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     const conversationMessages = await getConversationMessages(String(conversationRow.id));
 
     // Fire and forget Telegram notification
+    console.info(`[DEBUG] Dispatching notification to Telegram...`);
     sendToTelegram(String(payload.clientName || 'Anonymous'), String(payload.messageText), String(conversationRow.id), clientRow, conversationMessages, Number(data.id)).catch((err) => {
         console.error('Failed to send Telegram notification:', err);
     });

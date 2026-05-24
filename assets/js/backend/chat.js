@@ -20,6 +20,23 @@ const chatState = {
     pendingMessage: ''
 };
 
+// Section: Production-grade conditional logger.
+const chatLogger = {
+    log(...args) {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.localStorage.getItem('chat_debug') === 'true') {
+            console.log(...args);
+        }
+    },
+    warn(...args) {
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.localStorage.getItem('chat_debug') === 'true') {
+            console.warn(...args);
+        }
+    },
+    error(...args) {
+        console.error(...args);
+    }
+};
+
 // Section: Viewport behavior helpers.
 function isDesktopChatViewport() {
     return window.matchMedia(`(min-width: ${BACKEND_BREAKPOINTS.CHAT_MOBILE + 1}px)`).matches;
@@ -228,9 +245,9 @@ function setPanelOpen(elements, isOpen, skipHistory = false) {
 
 function updateChatStatus(elements, message, tone = 'default') {
     if (tone === 'error') {
-        console.error(`Live Chat: ${message}`);
+        chatLogger.error(`Live Chat: ${message}`);
     } else {
-        console.log(`Live Chat: ${message}`);
+        chatLogger.log(`Live Chat: ${message}`);
     }
 }
 
@@ -247,6 +264,7 @@ async function switchChatProfile(profileId, elements) {
     const target = profiles.find(p => p.id === profileId);
     if (!target) return;
     
+    chatLogger.log(`[Live Chat] Switching profile to ID: "${target.id}" (Name: "${target.name}")`);
     resetSession();
     window.localStorage.setItem(STORAGE_KEYS.CLIENT_ID, target.id);
     window.localStorage.setItem(STORAGE_KEYS.CLIENT_NAME, target.name);
@@ -260,6 +278,7 @@ async function switchChatProfile(profileId, elements) {
 }
 
 async function createChatProfile(name, elements, keepMessages = false) {
+    chatLogger.log(`[Live Chat] Creating new profile with name: "${name}"`);
     resetSession();
     const newId = (window.crypto && window.crypto.randomUUID) 
         ? window.crypto.randomUUID() 
@@ -284,6 +303,7 @@ function renderIdentity(elements) {
     try {
         const clientName = getClientName();
         const clientId = getClientId();
+        chatLogger.log(`[Live Chat] Identity loaded. Name: "${clientName || 'Anonymous'}" | ID: "${clientId || 'None'}"`);
 
         if (clientName) {
             elements.identity.textContent = clientName;
@@ -318,7 +338,7 @@ function renderIdentity(elements) {
             });
         }
     } catch (err) {
-        console.error("renderIdentity error:", err);
+        chatLogger.error("renderIdentity error:", err);
     }
 }
 
@@ -740,6 +760,7 @@ function attachPanelEvents(elements) {
 }
 
 async function executeMessageSend(messageText, clientName, elements, options = {}) {
+    chatLogger.log(`[Live Chat] Sending message. Length: ${messageText.length} characters. Sender: "${clientName || 'Anonymous'}"`);
     try {
         chatState.isSubmitting = true;
         setFormBusy(elements, true);
@@ -800,6 +821,7 @@ async function executeMessageSend(messageText, clientName, elements, options = {
         elements.form.reset();
         elements.messageInput.style.height = 'auto';
         elements.nameInput.value = storedClientName;
+        chatLogger.log(`[Live Chat] Message sent successfully. Database Message ID: ${sentMessage.id}`);
         updateChatStatus(elements, 'Message sent. Syncing replies...', 'success');
         chatState.nextAllowedSubmitAt = Date.now() + CHAT_CONFIG.SEND_COOLDOWN_MS;
 
@@ -809,7 +831,7 @@ async function executeMessageSend(messageText, clientName, elements, options = {
         }
         return response;
     } catch (error) {
-        console.error('Unable to send chat message.', error);
+        chatLogger.error('Unable to send chat message.', error);
         updateChatStatus(elements, error.message || 'Unable to send your message right now.', 'error');
         return null;
     } finally {
@@ -952,7 +974,7 @@ function attachSubmitHandler(elements) {
                             ]
                         });
                     } catch (err) {
-                        console.error("Background message dispatch failed:", err);
+                        chatLogger.error("Background message dispatch failed:", err);
                     }
                 })();
                 
@@ -988,7 +1010,7 @@ function attachSubmitHandler(elements) {
                         
                         // 5. Cleanly sync up with the database to swap out temporary IDs for real ones
                         chatState.syncController?.syncNow().catch(err => {
-                            console.error("Post-delay database sync failed:", err);
+                            chatLogger.error("Post-delay database sync failed:", err);
                         });
                     }, ONBOARDING_TEMPLATES.CALLBACK_PROMPT.delayMs);
                     
@@ -1046,7 +1068,7 @@ function attachSubmitHandler(elements) {
                             ]
                         });
                     } catch (err) {
-                        console.error("Background message dispatch failed:", err);
+                        chatLogger.error("Background message dispatch failed:", err);
                     }
                 })();
                 
@@ -1080,7 +1102,7 @@ function attachSubmitHandler(elements) {
                         }
                         
                         chatState.syncController?.syncNow().catch(err => {
-                            console.error("Post-delay database sync failed:", err);
+                            chatLogger.error("Post-delay database sync failed:", err);
                         });
                     }, ONBOARDING_TEMPLATES.CALLBACK_PROMPT.delayMs);
                     
@@ -1112,6 +1134,7 @@ function attachSubmitHandler(elements) {
 
 // Section: Public initializer.
 export async function initChatWidget() {
+    chatLogger.log("[Live Chat] Initializing widget...");
     const elements = ensureChatWidget();
 
     updateMobileViewportMetrics(elements);
@@ -1143,7 +1166,7 @@ export async function initChatWidget() {
             updateChatStatus(elements, 'Connected to the latest conversation state.', 'success');
         },
         onError(error) {
-            console.error('Unable to sync chat messages.', error);
+            chatLogger.error('Unable to sync chat messages.', error);
             updateChatStatus(elements, 'Unable to sync the latest messages right now.', 'error');
         },
         isPanelOpen() {

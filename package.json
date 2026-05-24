@@ -11,6 +11,9 @@
     "generate:github-repos": "node projects/shared/scripts/fetch-contributor-github-repos.js",
     "generate:contributor-profiles": "node projects/shared/scripts/generate-contributor-profiles.js",
     "generate:refresh-site": "npm run generate:contributor-thumbs && npm run generate:carousels && npm run generate:project-html && npm run generate:contributors && npm run generate:github-repos && npm run generate:contributor-profiles",
+    
+    "supabase:deploy": "supabase functions deploy && supabase functions deploy telegram-webhook --no-verify-jwt",
+    
     "prestart": "npm run generate:refresh-site",
     "start": "serve ."
   },
