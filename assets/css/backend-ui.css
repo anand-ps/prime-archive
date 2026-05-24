@@ -135,7 +135,7 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     color: var(--text);
     cursor: pointer;
     height: 3.25rem;
-    width: 8.5rem; /* Strict fixed width to prevent character shifting/reflows and ensure smooth collapse */
+    width: 8.75rem; /* Precise fixed width to prevent character shifting/reflows and ensure smooth collapse */
     padding: 0 1.35rem 0 1.15rem;
     position: relative;
     box-shadow: 
@@ -189,7 +189,7 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 .portfolio-chat-toggle-content {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
     gap: 0;
     position: relative;
@@ -266,6 +266,9 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     align-items: center;
     justify-content: center;
     color: var(--text);
+    width: 20px; /* Fixed static icon width */
+    height: 20px; /* Fixed static icon height */
+    flex-shrink: 0; /* Prevent flex layouts from squeezing the icon */
     transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), color 300ms ease;
     stroke-width: var(--chat-icon-stroke);
 }
