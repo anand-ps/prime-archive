@@ -168,20 +168,41 @@ function assignRevealItems(selector, direction, staggerMs = 70) {
     });
 }
 
+/*
+ * Groups children under a parent container for coordinated reveal.
+ * Instead of observing each child independently (which causes partial reveals
+ * when only the top of a card is visible), we observe the parent container
+ * and cascade visibility to all children simultaneously with stagger delays.
+ */
+function assignRevealGroup(parentSelector, childSelector, direction, staggerMs = 70) {
+    const parents = document.querySelectorAll(parentSelector);
+    parents.forEach((parent) => {
+        parent.classList.add('reveal-group');
+        const children = parent.querySelectorAll(childSelector);
+        children.forEach((child, index) => {
+            child.classList.add('reveal-item', 'reveal-grouped');
+            if (direction) {
+                child.classList.add(`reveal-${direction}`);
+            }
+            child.style.setProperty('--reveal-delay', `${index * staggerMs}ms`);
+        });
+    });
+}
+
 assignRevealItems('.hero-copy > *:not(.hero-specialization-role)', 'up', 70);
 assignRevealItems('.hero-visual .image-frame', 'right', 80);
 assignRevealItems('.hero-metrics .metric', 'zoom', 85);
 assignRevealItems('.section-head', 'up', 40);
-assignRevealItems('#about .about-card > *', 'up', 90);
+assignRevealGroup('#about .about-card', ':scope > *', 'up', 90);
 assignRevealItems('#skills .skill-matrix-row', 'up', 85);
 assignRevealItems('#domains .domain-card', 'up', 90);
 assignRevealItems('#projects .panel', 'up', 100);
 assignRevealItems('#experience .panel', 'up', 100);
-assignRevealItems('#contact .contact-panel > *', 'up', 90);
-assignRevealItems('#contact .contact-list li', 'up', 70);
+assignRevealGroup('#contact .contact-panel', ':scope > *, .contact-list li', 'up', 70);
 assignRevealItems('[data-downloads-list] .panel', 'up', 90);
 
-const revealElements = document.querySelectorAll('.reveal, .reveal-item');
+const revealElements = document.querySelectorAll('.reveal, .reveal-item:not(.reveal-grouped)');
+const revealGroups = document.querySelectorAll('.reveal-group');
 
 if ('IntersectionObserver' in window) {
     const revealObserver = new IntersectionObserver(
@@ -201,9 +222,37 @@ if ('IntersectionObserver' in window) {
         }
     );
 
+    /* Observe standalone reveal items as before */
     revealElements.forEach((element) => revealObserver.observe(element));
+
+    /* Observe parent containers; when visible, cascade to grouped children */
+    const groupObserver = new IntersectionObserver(
+        (entries, observer) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) {
+                    return;
+                }
+
+                entry.target.classList.add('visible');
+                entry.target.querySelectorAll('.reveal-grouped').forEach((child) => {
+                    child.classList.add('visible');
+                });
+                observer.unobserve(entry.target);
+            });
+        },
+        {
+            rootMargin: '0px 0px -5% 0px',
+            threshold: 0.08
+        }
+    );
+
+    revealGroups.forEach((group) => groupObserver.observe(group));
 } else {
     revealElements.forEach((element) => element.classList.add('visible'));
+    revealGroups.forEach((group) => {
+        group.classList.add('visible');
+        group.querySelectorAll('.reveal-grouped').forEach((child) => child.classList.add('visible'));
+    });
 }
 
 function normalizeDownloadPath(filePath) {
