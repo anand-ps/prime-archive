@@ -202,6 +202,7 @@ function setPanelOpen(elements, isOpen, skipHistory = false) {
     elements.shell.classList.toggle('is-desktop-open', isOpen && isDesktopChatViewport());
     elements.toggle.setAttribute('aria-expanded', String(isOpen));
     elements.panel.setAttribute('aria-hidden', String(!isOpen));
+    document.body.classList.toggle('chat-is-open-mobile', isOpen && !isDesktopChatViewport());
     updateMobileViewportMetrics(elements);
 
     if (!skipHistory) {
