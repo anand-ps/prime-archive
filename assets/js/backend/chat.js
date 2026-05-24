@@ -832,6 +832,27 @@ async function executeMessageSend(messageText, clientName, elements, options = {
         return response;
     } catch (error) {
         chatLogger.error('Unable to send chat message.', error);
+        
+        // Remove the temporary message bubble that failed
+        if (options.tempMessageId) {
+            chatState.messages = chatState.messages.filter(m => m.id !== options.tempMessageId);
+        }
+        
+        // Add a visual system error warning inside the chat thread
+        chatState.messages.push({
+            id: 'error_msg_' + Date.now(),
+            senderType: SENDER_TYPES.SYSTEM,
+            messageText: `⚠️ ${error.message || 'Unable to send your message right now.'}`,
+            createdAt: new Date().toISOString()
+        });
+        renderMessages(elements);
+        
+        // Restore the message text back to the input box so the user doesn't lose it
+        if (elements.messageInput) {
+            elements.messageInput.value = messageText;
+            elements.messageInput.focus();
+        }
+
         updateChatStatus(elements, error.message || 'Unable to send your message right now.', 'error');
         return null;
     } finally {
