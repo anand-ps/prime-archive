@@ -1344,38 +1344,49 @@ export async function initChatWidget() {
     // Deep-linking: Automatically open the chat widget if the URL hash is #chat
     const checkHashAndOpen = (isInitialLoad = false) => {
         if (window.location.hash === '#chat') {
-            if (!chatState.isPanelOpen) {
-                if (isInitialLoad) {
-                    elements.shell.classList.add('no-transitions');
-                    setPanelOpen(elements, true);
-                    // Force DOM reflow to apply open state instantly
-                    elements.shell.offsetHeight;
-                    elements.shell.classList.remove('no-transitions');
-                } else {
-                    setPanelOpen(elements, true);
-                }
-            }
-
             // Enforce a premium 1.2-second minimum loading display duration
             const elapsed = Date.now() - (window.__chat_launcher_start || Date.now());
-            const minDuration = 1200; // 1.2 seconds minimum display window
+            const minDuration = 1300; // 1.3 seconds minimum display window
             const remaining = Math.max(0, minDuration - elapsed);
 
-            const performCleanup = () => {
+            const performOpen = () => {
+                // 1. Instantly open the chat panel in the background behind the loader
+                if (!chatState.isPanelOpen) {
+                    if (isInitialLoad) {
+                        elements.shell.classList.add('no-transitions');
+                        setPanelOpen(elements, true);
+                        elements.shell.offsetHeight; // Force DOM reflow
+                        elements.shell.classList.remove('no-transitions');
+                    } else {
+                        setPanelOpen(elements, true);
+                    }
+                }
+
+                // 2. Clear absolute fallback timeout
                 if (window.__chat_fallback_timeout) {
                     clearTimeout(window.__chat_fallback_timeout);
                 }
+
+                // 3. Clean up style rules to render the landing page underneath
                 const styleNode = document.getElementById('chat-launcher-styles');
                 if (styleNode) styleNode.remove();
-                const screenNode = document.getElementById('chat-launcher-screen');
-                if (screenNode) screenNode.remove();
                 document.documentElement.style.visibility = '';
+
+                // 4. Smoothly fade out the launcher loader screen
+                const screenNode = document.getElementById('chat-launcher-screen');
+                if (screenNode) {
+                    screenNode.classList.add('fade-out');
+                    // Fully delete the loader element from the DOM after its transition completes (300ms)
+                    setTimeout(() => {
+                        screenNode.remove();
+                    }, 300);
+                }
             };
 
             if (isInitialLoad && remaining > 0) {
-                setTimeout(performCleanup, remaining);
+                setTimeout(performOpen, remaining);
             } else {
-                performCleanup();
+                performOpen();
             }
         }
     };
