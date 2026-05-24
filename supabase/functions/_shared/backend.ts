@@ -750,12 +750,12 @@ async function sendToTelegram(clientName: string, text: string, conversationId: 
                 senderName = 'You';
             }
             
-            historyStr += `<b>${senderName}:</b> ${msg.message_text}\n`;
+            historyStr += `<b>${senderName}:</b> ${msg.message_text}\n\n`;
         }
     }
 
     // We include the conversationId so we can extract it later when you reply
-    const message = `💬 <b>Message from ${clientName}</b>\n${metaDetails}${historyStr}\n\n<b>Current Message:</b>\n${text}\n\nID: ${conversationId}`;
+    const message = `💬 <b>Message from ${clientName}</b>\n${metaDetails}${historyStr.trimEnd()}\n\n<b>Current Message:</b>\n${text}\n\nID: ${conversationId}`;
     
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
