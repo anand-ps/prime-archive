@@ -220,7 +220,7 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
 
 /* Shrinking Toggle Capsule state */
 .portfolio-chat-toggle.is-shrunk {
-    width: 3.25rem; /* Shrink to perfect 52px circle */
+    width: 3.25rem; /* Shrink to perfect 52px circle (height is 3.25rem) */
     padding: 0 1rem;
 }
 
