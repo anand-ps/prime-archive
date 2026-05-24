@@ -675,9 +675,12 @@ function attachPanelEvents(elements) {
         updateMobileViewportMetrics(elements);
     });
 
-    // Shrink chat toggle capsule to just the icon on scroll after the first viewport is moved up, expand at the top
+    // Shrink chat toggle capsule to just the icon on scroll.
+    // On desktop: shrink after the first viewport is moved up.
+    // On mobile: shrink almost immediately (e.g. 50px scroll).
     const handleScroll = () => {
-        const threshold = window.innerHeight || 800;
+        const isMobile = window.innerWidth <= 720;
+        const threshold = isMobile ? 50 : (window.innerHeight || 800);
         if (window.scrollY > threshold) {
             elements.toggle.classList.add('is-shrunk');
         } else {
@@ -1084,21 +1087,6 @@ export async function initChatWidget() {
         }
     });
 
-    const heroVisual = document.querySelector('.hero-visual');
-    if (heroVisual && window.IntersectionObserver) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting || entry.boundingClientRect.top < 0) {
-                    elements.shell.classList.add('hero-photo-visible');
-                } else {
-                    elements.shell.classList.remove('hero-photo-visible');
-                }
-            });
-        }, { threshold: 0.9 });
-        observer.observe(heroVisual);
-    } else {
-        elements.shell.classList.add('hero-photo-visible');
-    }
 
     const contactLinks = document.querySelectorAll('.open-chat-btn');
     contactLinks.forEach(btn => {

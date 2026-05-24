@@ -62,6 +62,7 @@ html,
 body {
     scroll-behavior: auto;
     scroll-padding-top: 5.8rem;
+    overflow-x: hidden;
 }
 
 [id] {
