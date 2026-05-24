@@ -137,6 +137,7 @@ function createChatWidgetMarkup() {
                             autocomplete="name"
                         />
                         <button type="button" class="portfolio-chat-new-user-btn" data-chat-add-btn>Save</button>
+                        <button type="button" class="portfolio-chat-cancel-btn" data-chat-cancel-btn>Cancel</button>
                     </div>
                 </div>
             </div>
@@ -178,6 +179,7 @@ function createChatElements(shell) {
         editNameBtn: shell.querySelector('[data-chat-edit-btn]'),
         identity: shell.querySelector('[data-chat-identity]'),
         avatar: shell.querySelector('[data-chat-avatar]'),
+        cancelBtn: shell.querySelector('[data-chat-cancel-btn]'),
         thread: shell.querySelector('[data-chat-thread]'),
         form: shell.querySelector('.portfolio-chat-form'),
         nameField: shell.querySelector('[data-chat-name-field]'),
@@ -623,6 +625,14 @@ function attachPanelEvents(elements) {
         elements.nameInput.focus();
     });
 
+    if (elements.cancelBtn) {
+        elements.cancelBtn.addEventListener('click', () => {
+            elements.nameField.style.display = 'none';
+            elements.identityDisplay.style.display = 'flex';
+            elements.nameInput.value = '';
+        });
+    }
+
     elements.addBtn.addEventListener('click', () => {
         const newName = sanitizeName(elements.nameInput.value);
         if (newName) {
@@ -634,6 +644,12 @@ function attachPanelEvents(elements) {
         if (event.key === 'Enter') {
             event.preventDefault();
             elements.addBtn.click();
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            if (elements.cancelBtn) {
+                elements.cancelBtn.click();
+            }
         }
     });
 

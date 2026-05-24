@@ -536,6 +536,24 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     filter: saturate(1.1) brightness(1.1);
 }
 
+.portfolio-chat-cancel-btn {
+    background: color-mix(in srgb, var(--surface-soft) 60%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.portfolio-chat-cancel-btn:hover {
+    background-color: color-mix(in srgb, var(--surface-soft) 90%, transparent);
+    border-color: color-mix(in srgb, var(--border) 90%, transparent);
+}
+
 .portfolio-chat-identity-display {
     display: none;
     align-items: center;
