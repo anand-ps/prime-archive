@@ -118,16 +118,13 @@ function createChatWidgetMarkup() {
                     </p>
                     <h2>Let's Talk</h2>
                 </div>
-                <button class="portfolio-chat-close" type="button" aria-label="Close chat">&times;</button>
+                <button type="button" class="portfolio-chat-identity-display" data-chat-identity-display data-chat-edit-btn aria-label="Switch User">
+                    <span class="portfolio-chat-identity-name" data-chat-identity></span>
+                    <div class="portfolio-chat-avatar" data-chat-avatar></div>
+                </button>
             </div>
             
             <div class="portfolio-chat-identity-row">
-                <div class="portfolio-chat-identity-display" data-chat-identity-display>
-                    <span data-chat-identity></span>
-                    <button type="button" class="portfolio-chat-edit-name" data-chat-edit-btn aria-label="Switch User">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                    </button>
-                </div>
                 <div class="portfolio-chat-name-field" data-chat-name-field>
                     <div class="portfolio-chat-profiles-list" data-chat-profiles-list></div>
                     <div class="portfolio-chat-new-user-row">
@@ -180,6 +177,7 @@ function createChatElements(shell) {
         identityDisplay: shell.querySelector('[data-chat-identity-display]'),
         editNameBtn: shell.querySelector('[data-chat-edit-btn]'),
         identity: shell.querySelector('[data-chat-identity]'),
+        avatar: shell.querySelector('[data-chat-avatar]'),
         thread: shell.querySelector('[data-chat-thread]'),
         form: shell.querySelector('.portfolio-chat-form'),
         nameField: shell.querySelector('[data-chat-name-field]'),
@@ -286,12 +284,19 @@ function renderIdentity(elements) {
         const clientId = getClientId();
 
         if (clientName) {
-            elements.identity.textContent = `Connected as ${clientName}`;
+            elements.identity.textContent = clientName;
+            if (elements.avatar) {
+                const initial = clientName.trim().charAt(0).toUpperCase();
+                elements.avatar.textContent = initial;
+            }
             elements.identityDisplay.style.display = 'flex';
             elements.nameField.style.display = 'none';
             elements.nameInput.value = '';
         } else {
             elements.identity.textContent = '';
+            if (elements.avatar) {
+                elements.avatar.textContent = '';
+            }
             elements.identityDisplay.style.display = 'none';
             elements.nameField.style.display = 'none';
         }
@@ -588,9 +593,11 @@ function attachPanelEvents(elements) {
         }
     });
 
-    elements.closeButton.addEventListener('click', () => {
-        setPanelOpen(elements, false);
-    });
+    if (elements.closeButton) {
+        elements.closeButton.addEventListener('click', () => {
+            setPanelOpen(elements, false);
+        });
+    }
 
     document.addEventListener('pointerdown', (event) => {
         if (!chatState.isPanelOpen) {
