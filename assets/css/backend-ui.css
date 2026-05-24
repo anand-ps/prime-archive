@@ -892,8 +892,34 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     color: #ffffff;
 }
 
-/* Admin Message (Left Side) */
+/* Admin Message (Left Side - Real Human Reply) */
 .portfolio-chat-bubble-admin {
+    align-self: flex-start;
+    background: color-mix(in srgb, var(--accent) 8%, var(--surface-soft) 92%);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: 18px 18px 18px 4px;
+    color: var(--text);
+    transform-origin: bottom left;
+    box-shadow: 
+        0 4px 14px color-mix(in srgb, var(--accent) 6%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.portfolio-chat-bubble-admin .portfolio-chat-bubble-label {
+    color: var(--accent-strong);
+    font-weight: 800;
+}
+
+.portfolio-chat-bubble-admin .portfolio-chat-bubble-text {
+    color: var(--text);
+}
+
+.portfolio-chat-bubble-admin .portfolio-chat-bubble-time {
+    color: var(--text);
+}
+
+/* System/Bot Message (Left Side - Automated) */
+.portfolio-chat-bubble-system {
     align-self: flex-start;
     background: color-mix(in srgb, var(--surface-soft) 86%, transparent);
     border: 1px solid color-mix(in srgb, var(--border) 76%, transparent);
@@ -902,15 +928,16 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     transform-origin: bottom left;
 }
 
-.portfolio-chat-bubble-admin .portfolio-chat-bubble-label {
-    color: var(--accent-strong);
+.portfolio-chat-bubble-system .portfolio-chat-bubble-label {
+    color: var(--muted);
+    font-weight: 700;
 }
 
-.portfolio-chat-bubble-admin .portfolio-chat-bubble-text {
+.portfolio-chat-bubble-system .portfolio-chat-bubble-text {
     color: var(--text);
 }
 
-.portfolio-chat-bubble-admin .portfolio-chat-bubble-time {
+.portfolio-chat-bubble-system .portfolio-chat-bubble-time {
     color: var(--text);
 }
 

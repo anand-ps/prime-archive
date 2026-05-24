@@ -378,7 +378,14 @@ function createMessageBubble(message, hideLabel = false) {
     const isClientMessage = message.senderType === SENDER_TYPES.CLIENT;
     const isSystemMessage = message.senderType === SENDER_TYPES.SYSTEM;
 
-    article.className = `portfolio-chat-bubble ${isClientMessage ? 'portfolio-chat-bubble-visitor' : 'portfolio-chat-bubble-admin'}`;
+    let bubbleClass = 'portfolio-chat-bubble-admin';
+    if (isClientMessage) {
+        bubbleClass = 'portfolio-chat-bubble-visitor';
+    } else if (isSystemMessage) {
+        bubbleClass = 'portfolio-chat-bubble-system';
+    }
+
+    article.className = `portfolio-chat-bubble ${bubbleClass}`;
     if (message.id) article.dataset.messageId = message.id;
 
     if (!hideLabel) {
@@ -873,7 +880,7 @@ async function executeMessageSend(messageText, clientName, elements, options = {
 
 const ONBOARDING_TEMPLATES = {
     COLLECT_NAME_PROMPT: {
-        text: "Thanks for reaching out! 😀\nBefore I forward this to Anand, may I get your name?",
+        text: "Thanks for reaching out! 😊\nBefore I forward this to Anand,\nmay I get your name?",
         delayMs: 1500
     },
     getConfirmation: (name) => `Hi ${name} 👋\nYour message has been shared with Anand. He'll reply here soon.`,
