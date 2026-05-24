@@ -8,9 +8,11 @@ Deno.serve(async (req) => {
 
     try {
         const update = await req.json();
+        console.info(`[DEBUG] Incoming Telegram Webhook update ID: ${update.update_id}`);
         
         // Ignore updates that are not messages
         if (!update.message || !update.message.text) {
+            console.info(`[DEBUG] Ignored non-text Telegram update.`);
             return new Response('OK');
         }
 
@@ -19,13 +21,13 @@ Deno.serve(async (req) => {
 
         // Security: Only allow your specific Telegram Chat ID to send replies
         if (chatId !== allowedChatId) {
-            console.warn(`Blocked unauthorized message from chat ID: ${chatId}`);
+            console.warn(`[SECURITY WARN] Blocked unauthorized message from Chat ID: ${chatId}`);
             return new Response('OK');
         }
 
         // Check if this is a reply to the bot's message
         if (!message.reply_to_message || !message.reply_to_message.text) {
-            // It's not a reply, just a normal message. Do nothing.
+            console.info(`[DEBUG] Telegram message is not a direct reply. Ignored.`);
             return new Response('OK');
         }
 
@@ -35,10 +37,12 @@ Deno.serve(async (req) => {
         // Extract the conversation ID we appended to the bottom of the original message
         const match = repliedText.match(/ID:\s*([a-fA-F0-9-]+)/);
         if (!match) {
+            console.warn(`[DEBUG] Could not extract conversation ID from replied message text.`);
             return new Response('OK');
         }
 
         const conversationId = match[1];
+        console.info(`[DEBUG] Extracted Conversation ID: ${conversationId}. Fetching client context...`);
         const admin = getAdminClient();
         
         // We need the client_id for the database insert. Load the conversation.
@@ -49,10 +53,11 @@ Deno.serve(async (req) => {
             .single();
 
         if (convError || !convData) {
-            console.error('Conversation not found for ID:', conversationId);
+            console.error(`[ERROR] Conversation not found in DB for ID: ${conversationId}`);
             return new Response('OK');
         }
 
+        console.info(`[DEBUG] Conversation found. Client ID: ${convData.client_id}. Inserting admin reply...`);
         // Insert the admin's reply into the messages table
         const { error: insertError } = await admin.from('messages').insert({
             conversation_id: conversationId,
@@ -65,14 +70,16 @@ Deno.serve(async (req) => {
         });
 
         if (insertError) {
-            console.error('Failed to insert admin message:', insertError);
+            console.error(`[ERROR] Failed to insert admin message in DB:`, insertError);
         } else {
+            console.info(`[DEBUG] Admin message inserted successfully. Updating conversation timestamp...`);
             // Update the conversation's updated_at timestamp to bubble it up
             await admin.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', conversationId);
+            console.info(`[DEBUG] Conversation updated successfully.`);
         }
 
     } catch (error) {
-        console.error('Webhook error:', error);
+        console.error('[ERROR] Webhook processing exception:', error);
     }
 
     // Always return 200 OK to Telegram so it stops retrying the webhook

@@ -16,7 +16,10 @@ Deno.serve(async (request) => {
     try {
         assertMethod(request, ['POST']);
         const payload = parseHeartbeatPayload(await readJsonBody(request));
+        console.info(`[DEBUG] Heartbeat request. Client ID: "${payload.clientId}" | Session ID: "${payload.sessionId}" | Page: "${payload.currentPage}"`);
+        
         const snapshot = await refreshAnonymousSession(payload);
+        console.info(`[DEBUG] Session refreshed. Active Session ID: "${snapshot.sessionId}"`);
         return successResponse(request, snapshot);
     } catch (error) {
         return handleUnexpectedError(request, error);

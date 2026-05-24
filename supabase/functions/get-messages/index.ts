@@ -16,7 +16,10 @@ Deno.serve(async (request) => {
     try {
         assertMethod(request, ['GET']);
         const payload = parseGetMessagesRequest(request);
+        console.info(`[DEBUG] GET messages request. Client ID: "${payload.clientId}" | Session ID: "${payload.sessionId}" | Conversation ID: "${payload.conversationId}"`);
+        
         const result = await listConversationMessages(payload);
+        console.info(`[DEBUG] Successfully loaded ${result.messages.length} messages for Conversation ID: "${result.conversationId}"`);
         return successResponse(request, result);
     } catch (error) {
         return handleUnexpectedError(request, error);

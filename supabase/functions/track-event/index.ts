@@ -16,7 +16,10 @@ Deno.serve(async (request) => {
     try {
         assertMethod(request, ['POST']);
         const payload = parseTrackEventPayload(await readJsonBody(request));
+        console.info(`[DEBUG] Tracking event: "${payload.eventType}" | Page: "${payload.pagePath}" | Title: "${payload.pageTitle}"`);
+        
         const result = await createEventRecord(payload);
+        console.info(`[DEBUG] Event stored. Event ID: ${result.eventId}. Total Page Views: ${result.pageViewCount ?? 'N/A'}`);
         return successResponse(request, result);
     } catch (error) {
         return handleUnexpectedError(request, error);
