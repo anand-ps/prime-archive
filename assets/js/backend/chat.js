@@ -1340,4 +1340,58 @@ export async function initChatWidget() {
             }
         });
     });
+
+    // Deep-linking: Automatically open the chat widget if the URL hash is #chat
+    const checkHashAndOpen = (isInitialLoad = false) => {
+        if (window.location.hash === '#chat') {
+            if (!chatState.isPanelOpen) {
+                if (isInitialLoad) {
+                    elements.shell.classList.add('no-transitions');
+                    setPanelOpen(elements, true);
+                    // Force DOM reflow to apply open state instantly
+                    elements.shell.offsetHeight;
+                    elements.shell.classList.remove('no-transitions');
+                } else {
+                    setPanelOpen(elements, true);
+                }
+            }
+
+            // Enforce a premium 1.2-second minimum loading display duration
+            const elapsed = Date.now() - (window.__chat_launcher_start || Date.now());
+            const minDuration = 1200; // 1.2 seconds minimum display window
+            const remaining = Math.max(0, minDuration - elapsed);
+
+            const performCleanup = () => {
+                if (window.__chat_fallback_timeout) {
+                    clearTimeout(window.__chat_fallback_timeout);
+                }
+                const styleNode = document.getElementById('chat-launcher-styles');
+                if (styleNode) styleNode.remove();
+                const screenNode = document.getElementById('chat-launcher-screen');
+                if (screenNode) screenNode.remove();
+                document.documentElement.style.visibility = '';
+            };
+
+            if (isInitialLoad && remaining > 0) {
+                setTimeout(performCleanup, remaining);
+            } else {
+                performCleanup();
+            }
+        }
+    };
+
+    // Run instantly on load to capture the hidden document state and open the panel immediately
+    checkHashAndOpen(true);
+
+    // Dynamic layout settle backup to cleanly restore elements in case of unexpected delays
+    setTimeout(() => {
+        const styleNode = document.getElementById('chat-launcher-styles');
+        if (styleNode) styleNode.remove();
+        const screenNode = document.getElementById('chat-launcher-screen');
+        if (screenNode) screenNode.remove();
+        document.documentElement.style.visibility = '';
+    }, 4000);
+
+    // Listen for dynamic hash changes while the user is actively on the page
+    window.addEventListener('hashchange', () => checkHashAndOpen(false));
 }

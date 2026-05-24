@@ -7,6 +7,77 @@ Description: SEO-optimized, semantic, accessible portfolio website using pure HT
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        if (window.location.hash === '#chat') {
+            window.__chat_launcher_start = Date.now();
+            // Inject a style block instantly to hide main sections and style the launcher screen
+            const style = document.createElement('style');
+            style.id = 'chat-launcher-styles';
+            style.textContent = `
+                #top, header, footer, .portfolio-chat-toggle {
+                    display: none !important;
+                }
+                .chat-launcher-screen {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    background: #080c12; /* site dark surface background */
+                    z-index: 99999;
+                    font-family: "Manrope", "Segoe UI", sans-serif;
+                    color: #fbfaf6;
+                }
+                .chat-launcher-spinner {
+                    width: 48px;
+                    height: 48px;
+                    border: 3px solid rgba(28, 124, 114, 0.1);
+                    border-top: 3px solid #1c7c72; /* var(--accent) green */
+                    border-radius: 50%;
+                    animation: chat-spin 1s linear infinite;
+                    margin-bottom: 1.2rem;
+                }
+                .chat-launcher-text {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    letter-spacing: 0.05em;
+                    color: rgba(251, 250, 246, 0.7);
+                    /*text-transform: uppercase;*/
+                }
+                @keyframes chat-spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Create launcher element on DOMContentLoaded
+            window.addEventListener('DOMContentLoaded', () => {
+                if (!document.getElementById('chat-launcher-screen') && window.location.hash === '#chat') {
+                    const launcher = document.createElement('div');
+                    launcher.id = 'chat-launcher-screen';
+                    launcher.className = 'chat-launcher-screen';
+                    launcher.innerHTML = `
+                        <div class="chat-launcher-spinner"></div>
+                        <div class="chat-launcher-text">Launching Live Chat...</div>
+                    `;
+                    document.body.appendChild(launcher);
+                }
+            });
+
+            // Set fallback safety timeout (3 seconds) to prevent frozen blank page if script fails
+            window.__chat_fallback_timeout = setTimeout(() => {
+                const styleNode = document.getElementById('chat-launcher-styles');
+                if (styleNode) styleNode.remove();
+                const screenNode = document.getElementById('chat-launcher-screen');
+                if (screenNode) screenNode.remove();
+            }, 3000);
+        }
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Anand P S | Systems Engineer</title>

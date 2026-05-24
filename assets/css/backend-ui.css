@@ -1044,3 +1044,8 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     text-decoration: underline;
 }
 
+/* Deep-linking instant opening transition override */
+.portfolio-chat-shell.no-transitions * {
+    transition: none !important;
+}
+
