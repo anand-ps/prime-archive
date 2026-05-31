@@ -1737,6 +1737,16 @@ button.contact-link {
         top: 1.35rem;
         width: 0.72rem;
     }
+
+    .contact-link {
+        flex-wrap: wrap;
+        row-gap: 0.4rem;
+    }
+
+    .contact-chat-note {
+        margin-left: 0;
+        display: inline-flex;
+    }
 }
 
 @media (max-width: 420px) {
