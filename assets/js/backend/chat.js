@@ -566,7 +566,7 @@ function createMessageBubble(message, hideLabel = false) {
         article.appendChild(label);
     }
 
-    const text = document.createElement('p');
+    const text = document.createElement('div');
     text.className = 'portfolio-chat-bubble-text';
     renderFormattedMessageText(text, message.messageText);
 
