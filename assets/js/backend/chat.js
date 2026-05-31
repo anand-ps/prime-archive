@@ -22,29 +22,7 @@ const chatState = {
 };
 
 // Section: Automated Reassurance Replies Configuration.
-const AUTO_REPLY_THROTTLE_MS = 15000; // 15 seconds throttle cooldown
-const AUTO_REPLY_MESSAGES = [
-  "Message received. Anand will review it shortly.",
-  "Got your message 👌 Anand will check it soon.",
-  "Thanks for reaching out. Anand will get back soon.",
-  "Your message has been noted. Anand will respond shortly.",
-  "All set. Anand will take a look soon.",
-  "Received successfully ✨ Anand will review this shortly.",
-  "Your message is with Anand now.",
-  "Noted. Anand will get back shortly.",
-  "Everything received. Anand will check this soon.",
-  "Message captured successfully.",
-  "Thanks 🚀 Anand will review this shortly.",
-  "Your message has been forwarded to Anand.",
-  "Received and queued for review.",
-  "Perfect 👍 Anand will look into this soon.",
-  "All details received. Anand will get back shortly.",
-  "Inbox updated. Anand will review this soon.",
-  "Thanks for the message. Anand will respond shortly.",
-  "Message locked in 🔒 Anand will check it soon.",
-  "Everything looks good. Anand will take a look shortly.",
-  "Received ✔️ Anand will get back soon."
-];
+// Note: Hardcoded auto replies have been successfully migrated to the backend via Gemini 2.5 Flash!
 
 // Section: Production-grade conditional logger.
 const chatLogger = {
@@ -832,6 +810,13 @@ async function executeMessageSend(messageText, clientName, elements, options = {
 
         syncSessionSnapshot(response);
 
+        // Section: Sync backend-validated client name with local storage and identity headers
+        if (response?.clientName) {
+            setClientName(response.clientName);
+            saveProfile(context.clientId, response.clientName);
+            renderIdentity(elements);
+        }
+
         const conversationMessages = Array.isArray(response?.messages)
             ? response.messages.map(normalizeMessage)
             : [];
@@ -1200,88 +1185,23 @@ function attachSubmitHandler(elements) {
                         persistOnboardingFlow: false
                     });
                 } else {
-                    // Regular message or subsequent chats
-                    const now = Date.now();
-                    const shouldTriggerAutoReply = (now - chatState.lastAutoReplyAt >= AUTO_REPLY_THROTTLE_MS);
+                    // Regular message: route directly to the backend for real-time Gemini generation
+                    const tempId = 'temp_msg_' + Date.now();
+                    chatState.messages.push({
+                        id: tempId,
+                        senderType: SENDER_TYPES.CLIENT,
+                        messageText: messageText,
+                        createdAt: new Date().toISOString()
+                    });
+                    renderMessages(elements);
 
-                    if (shouldTriggerAutoReply) {
-                        const randomIndex = Math.floor(Math.random() * AUTO_REPLY_MESSAGES.length);
-                        const autoReplyText = AUTO_REPLY_MESSAGES[randomIndex];
-                        chatState.lastAutoReplyAt = now;
+                    elements.messageInput.value = '';
+                    elements.messageInput.style.height = 'auto';
 
-                        const tempClientId = 'temp_msg_client_' + now;
-                        chatState.messages.push({
-                            id: tempClientId,
-                            senderType: SENDER_TYPES.CLIENT,
-                            messageText: messageText,
-                            createdAt: new Date(now).toISOString()
-                        });
-                        renderMessages(elements);
-
-                        elements.messageInput.value = '';
-                        elements.messageInput.style.height = 'auto';
-
-                        // 1. Dispatch message send to backend asynchronously in the background
-                        (async () => {
-                            try {
-                                await executeMessageSend(messageText, nextClientName, elements, {
-                                    tempMessageId: tempClientId,
-                                    silentRender: true,
-                                    persistOnboardingFlow: false,
-                                    skipSync: true, // Let the delayed bot reply play out smoothly first
-                                    automatedMessages: [
-                                        {
-                                            senderType: 'admin',
-                                            messageText: autoReplyText,
-                                            metadata: {
-                                                displayVariant: 'system',
-                                                automationKey: 'auto_reply_reassurance'
-                                            }
-                                        }
-                                    ]
-                                });
-                            } catch (err) {
-                                chatLogger.error("Background auto-reply dispatch failed:", err);
-                            }
-                        })();
-
-                        // 2. Play the automated bot reassurance after a premium 1.2s delay
-                        setTimeout(() => {
-                            const replyExists = chatState.messages.some(m => m.messageText === autoReplyText);
-                            if (!replyExists) {
-                                chatState.messages.push({
-                                    id: 'temp_reply_' + Date.now(),
-                                    senderType: SENDER_TYPES.SYSTEM,
-                                    messageText: autoReplyText,
-                                    createdAt: new Date().toISOString()
-                                });
-                                renderMessages(elements);
-                            }
-
-                            chatState.syncController?.syncNow().catch(err => {
-                                chatLogger.error("Post-auto-reply database sync failed:", err);
-                            });
-                        }, 1200);
-
-                    } else {
-                        // Cooldown hasn't expired: send message normally without auto-reply
-                        const tempId = 'temp_msg_' + Date.now();
-                        chatState.messages.push({
-                            id: tempId,
-                            senderType: SENDER_TYPES.CLIENT,
-                            messageText: messageText,
-                            createdAt: new Date().toISOString()
-                        });
-                        renderMessages(elements);
-
-                        elements.messageInput.value = '';
-                        elements.messageInput.style.height = 'auto';
-
-                        await executeMessageSend(messageText, nextClientName, elements, {
-                            tempMessageId: tempId,
-                            persistOnboardingFlow: false
-                        });
-                    }
+                    await executeMessageSend(messageText, nextClientName, elements, {
+                        tempMessageId: tempId,
+                        persistOnboardingFlow: false
+                    });
                 }
             }
         }

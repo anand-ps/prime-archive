@@ -6,6 +6,7 @@ Purpose: Encapsulate anonymous client, session, analytics, conversation, and mes
 import { getAdminClient } from './db.ts';
 import { MESSAGE_COOLDOWN_MS, MESSAGE_WINDOW_LIMIT, MESSAGE_WINDOW_MS, SESSION_TIMEOUT_MS } from './env.ts';
 import { HttpError } from './http.ts';
+import { generateGeminiReply, validateNameWithGemini } from './ai.ts';
 
 // Section: Shared row selectors.
 const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page, created_at, timezone, device_type, browser, referrer, country_name, country_code, city_name, region_name, zip_code';
@@ -626,7 +627,26 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     await enforceMessageRateLimit(Number(clientRow.id), String(conversationRow.id));
     console.info(`[DEBUG] Rate limit passed for Client DB ID: ${clientRow.id}`);
     
-    await updateClientName(Number(clientRow.id), String(payload.clientName || ''));
+    // Section: Dynamic name verification with Gemini validation
+    const existingName = String(clientRow.client_name || '').trim();
+    let clientName = String(payload.clientName || '').trim();
+
+    if (clientName && clientName !== existingName) {
+        console.info(`[DEBUG] Client name change detected from "${existingName}" to "${clientName}". Running validation...`);
+        const isValid = await validateNameWithGemini(clientName);
+        if (!isValid) {
+            console.info(`[DEBUG] Name "${clientName}" rejected by Gemini. Overriding to "Visitor".`);
+            clientName = 'Visitor';
+        }
+    } else if (!clientName && !existingName) {
+        clientName = 'Visitor';
+    } else if (!clientName) {
+        clientName = existingName;
+    }
+
+    payload.clientName = clientName; // Sync payload key for serialization
+
+    await updateClientName(Number(clientRow.id), clientName);
 
     const existingMobileNumber = String(clientRow.mobile_number || '').trim();
     const detectedMobileNumber = existingMobileNumber
@@ -705,6 +725,48 @@ export async function createClientMessage(payload: Record<string, unknown>) {
         throwIfQueryError(mobileError, 'Unable to store mobile contact confirmation.');
         if (mobileData) {
             automatedRows.push(mobileData);
+        }
+    }
+
+    // Section: Gemini Integration Interception
+    const hasAutomatedMessages = Array.isArray(payload.automatedMessages) && payload.automatedMessages.length > 0;
+    const isClientMessage = payload.senderType === 'client';
+    const isMobileCapture = Boolean(detectedMobileNumber);
+
+    if (isClientMessage && !hasAutomatedMessages && !isMobileCapture) {
+        try {
+            // Load conversation history including the message just saved to give full context
+            const conversationMessages = await getConversationMessages(String(conversationRow.id));
+            const nameToPass = String(payload.clientName || 'Visitor');
+            
+            const geminiReply = await generateGeminiReply(conversationMessages, nameToPass);
+            
+            if (geminiReply) {
+                console.info(`[DEBUG] Storing Gemini reply in database...`);
+                const { data: geminiData, error: geminiError } = await admin
+                    .from('messages')
+                    .insert({
+                        conversation_id: conversationRow.id,
+                        client_id: clientRow.id,
+                        session_id: sessionRow.id,
+                        sender_type: 'admin',
+                        message_type: 'text',
+                        message_text: geminiReply,
+                        metadata: {
+                            automationKey: 'gemini_reply'
+                        }
+                    })
+                    .select(MESSAGE_SELECT)
+                    .single();
+                
+                throwIfQueryError(geminiError, 'Unable to store Gemini reply.');
+                if (geminiData) {
+                    automatedRows.push(geminiData);
+                    console.info(`[DEBUG] Gemini reply saved successfully with ID: ${geminiData.id}`);
+                }
+            }
+        } catch (geminiErr) {
+            console.error('[GEMINI ERROR] Failed to generate or save Gemini reply:', geminiErr);
         }
     }
 
