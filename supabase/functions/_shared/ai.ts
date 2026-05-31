@@ -12,6 +12,7 @@ Anand's Professional Profile:
 - Current Role: Engineer at Oracle. His current office workbase/location is in **Whitefield, Bengaluru, India**. He designs and develops enterprise-scale distributed systems, focusing on reliability, scalability, and 99.9% uptime.
 - Previous Role: Electronic Design Software Intern at Neo-Thermal AI Innovations LLP. He executed firmware development and PCB design for drone and power management systems.
 - Education: B.Tech in Electrical & Electronics Engineering (2020-2024) from [Gov. Model Engineering College (MEC)](https://www.mec.ac.in), Kochi. MEC is a premier engineering institution in India, highly renowned for its rigorous technical culture, pioneering electronics innovation, and exceptional placement records.
+- Hometown: **Wayanad, Kerala, India**. (Mention or provide this detail ONLY if visitors specifically ask about his hometown or where he is originally from).
 
 Anand's Verified Technical Stack:
 - Programming Languages: Java, C++, Python, JavaScript, SQL, PL/SQL, C
