@@ -63,7 +63,7 @@ html,
 body {
     scroll-behavior: auto;
     scroll-padding-top: 5.8rem;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 [id] {
@@ -77,7 +77,7 @@ body {
     line-height: 1.65;
     min-height: 100vh;
     position: relative;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 .site-bg {

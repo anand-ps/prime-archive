@@ -51,6 +51,7 @@ Purpose: Shared visual styling for contributor pages, including the backend-powe
 html,
 body {
     min-height: 100%;
+    overflow-x: clip;
 }
 
 body {
@@ -58,6 +59,7 @@ body {
     color: var(--text);
     font-family: "Lora", "Times New Roman", serif;
     line-height: 1.8;
+    overflow-x: clip;
 }
 
 .page-bg {
