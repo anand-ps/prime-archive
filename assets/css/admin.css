@@ -1,0 +1,592 @@
+/*
+File: /assets/css/admin.css
+Purpose: Admin dashboard and login aesthetics.
+Description: Standalone premium native-app-like design system. Hides website chrome, floating chat buttons,
+             and encapsulates login/telemetry layers in gorgeous floating glassmorphic frames.
+*/
+
+/* Hide the website's live chat toggle on the admin page so it doesn't block the button actions */
+.portfolio-chat-toggle,
+#portfolio-chat-toggle,
+.portfolio-chat-toggle-icon {
+    display: none !important;
+}
+
+/* Base Body settings for immersive full screen */
+body {
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.admin-section {
+    min-height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+/* Glassmorphism App Frame */
+.admin-card {
+    background: color-mix(in srgb, var(--surface) 28%, transparent);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: 1px solid color-mix(in srgb, #ffffff 14%, var(--border));
+    border-radius: 24px;
+    box-shadow: 
+        0 24px 50px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    width: 100%;
+    max-width: 400px;
+    padding: 2.4rem 2rem;
+    transition: transform 300ms ease, box-shadow 300ms ease;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Floating Orb glow inside card */
+.admin-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 6%, transparent) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Form Styles */
+.admin-card-head {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.admin-card-head h2 {
+    font-family: "Sora", "Segoe UI", sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    margin-bottom: 0.45rem;
+}
+
+.admin-card-head p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+}
+
+.admin-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.admin-form-group label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.admin-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.admin-input-icon {
+    position: absolute;
+    left: 0.95rem;
+    color: var(--muted);
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+    transition: color 180ms ease;
+}
+
+.admin-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 1rem 0 2.7rem;
+    background: rgba(0, 0, 0, 0.16);
+    border: 1px solid color-mix(in srgb, #ffffff 8%, var(--border));
+    border-radius: 12px;
+    color: var(--text);
+    font-family: "Manrope", sans-serif;
+    font-size: 1rem; /* Premium touch: 16px exact font size stops auto-zoom on mobile inputs */
+    font-weight: 600;
+    transition: all 180ms ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.admin-input:focus {
+    border-color: var(--accent);
+    background: rgba(0, 0, 0, 0.28);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.admin-input:focus + .admin-input-icon {
+    color: var(--accent);
+}
+
+.admin-password-toggle {
+    position: absolute;
+    right: 0.85rem;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: color 160ms ease, background-color 160ms ease;
+}
+
+.admin-password-toggle:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-password-toggle svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Premium Solid Actions Buttons (No Side Gradients) */
+.admin-form .btn-primary {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent) !important;
+    color: #ffffff !important;
+    border: 1px solid color-mix(in srgb, #ffffff 8%, var(--accent)) !important;
+    border-radius: 12px !important;
+    font-family: "Manrope", sans-serif;
+    font-size: 0.98rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em;
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 24%, transparent) !important;
+    transition: all 180ms ease !important;
+    cursor: pointer;
+    padding: 0 1.5rem !important;
+}
+
+.admin-form .btn-primary:hover,
+.admin-form .btn-primary:focus-visible {
+    background: var(--accent-strong) !important;
+    box-shadow: 0 12px 24px color-mix(in srgb, var(--accent) 34%, transparent) !important;
+    transform: translateY(-1.5px) !important;
+}
+
+/* Standalone App Style Text Link for secondary options */
+.admin-form .btn-ghost {
+    background: transparent !important;
+    border: none !important;
+    color: var(--muted) !important;
+    font-family: "Manrope", sans-serif;
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    padding: 0.5rem !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    margin-top: 0.35rem;
+    transition: color 180ms ease !important;
+    box-shadow: none !important;
+    transform: none !important;
+    text-align: center;
+}
+
+.admin-form .btn-ghost:hover,
+.admin-form .btn-ghost:focus-visible {
+    color: var(--text) !important;
+    background: transparent !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Custom Alert Component */
+.admin-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 0.8rem;
+    animation: alert-slide-in 240ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-alert-error {
+    background: rgba(234, 67, 53, 0.12);
+    border: 1px solid rgba(234, 67, 53, 0.22);
+    color: #f28b82;
+}
+
+.admin-alert-success {
+    background: rgba(30, 142, 62, 0.12);
+    border: 1px solid rgba(30, 142, 62, 0.22);
+    color: #81c995;
+}
+
+.admin-alert-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+@keyframes alert-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Spinner Loader */
+.btn-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    pointer-events: none;
+    opacity: 0.85;
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.28);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Dashboard View Styling */
+.admin-dashboard-container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    animation: dashboard-fade-in 450ms ease;
+    box-sizing: border-box;
+}
+
+@keyframes dashboard-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-dashboard-header {
+    background: color-mix(in srgb, var(--surface) 35%, transparent);
+    backdrop-filter: blur(20px) saturate(130%);
+    border: 1px solid color-mix(in srgb, #ffffff 12%, var(--border));
+    border-radius: 20px;
+    padding: 1.25rem 1.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    box-shadow: var(--shadow);
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 26%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-family: "Sora", sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.admin-profile-info h2 {
+    font-family: "Sora", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.1rem;
+}
+
+.admin-profile-info p {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+#admin-logout-btn {
+    padding: 0.6rem 1rem !important;
+    font-size: 0.85rem !important;
+    border-radius: 10px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 180ms ease !important;
+}
+
+#admin-logout-btn:hover {
+    background: rgba(220, 53, 69, 0.15) !important;
+    border-color: rgba(220, 53, 69, 0.3) !important;
+    color: #f28b82 !important;
+}
+
+/* Dashboard Analytics Grid */
+.admin-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.4rem;
+}
+
+.admin-metric-card {
+    background: color-mix(in srgb, var(--surface) 35%, transparent);
+    backdrop-filter: blur(20px) saturate(130%);
+    border: 1px solid color-mix(in srgb, #ffffff 12%, var(--border));
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    box-shadow: var(--shadow);
+}
+
+.admin-metric-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+    box-shadow: 0 16px 36px rgba(23, 32, 38, 0.16);
+}
+
+.admin-metric-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+
+.admin-metric-icon-box svg {
+    width: 20px;
+    height: 20px;
+}
+
+.admin-metric-content h3 {
+    font-size: 0.84rem;
+    font-weight: 750;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.admin-metric-value {
+    font-family: "Sora", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.admin-metric-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+/* Connection Test UI */
+.admin-db-tester {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 0.85rem;
+    border: 1px dashed var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: 0.3rem;
+}
+
+.admin-db-tester-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.84rem;
+    font-weight: 700;
+}
+
+.admin-status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background-color: var(--muted);
+    transition: background-color 200ms ease;
+}
+
+.admin-status-dot.active {
+    background-color: #81c995;
+    box-shadow: 0 0 10px rgba(129, 201, 149, 0.5);
+}
+
+.admin-status-dot.testing {
+    background-color: var(--highlight);
+    animation: status-pulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes status-pulse {
+    from { opacity: 0.4; }
+    to { opacity: 1; }
+}
+
+/* Session Inspector Panel */
+.admin-panel {
+    background: color-mix(in srgb, var(--surface) 35%, transparent);
+    backdrop-filter: blur(20px) saturate(130%);
+    border: 1px solid color-mix(in srgb, #ffffff 12%, var(--border));
+    border-radius: 20px;
+    padding: 1.6rem;
+    box-shadow: var(--shadow);
+}
+
+.admin-panel-title {
+    font-family: "Sora", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.admin-panel-title svg {
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+}
+
+.admin-session-code-wrapper {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    max-height: 220px;
+    overflow-y: auto;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.admin-session-code-wrapper code {
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .admin-section {
+        padding: 2.5rem 1.75rem; /* Precise space around all outer screen edges */
+        min-height: calc(100vh - 4.9rem);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .admin-card {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important; /* No internal padding needed so it aligns with screen margins */
+        max-width: 100% !important;
+        border-radius: 0 !important;
+    }
+    
+    .admin-card::before {
+        display: none !important;
+    }
+    
+    .admin-dashboard-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.25rem;
+    }
+    
+    .admin-profile {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 0.75rem;
+    }
+    
+    #admin-logout-btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    
+    .admin-metrics-grid {
+        grid-template-columns: 1fr;
+        gap: 1.1rem;
+    }
+    
+    .admin-input {
+        font-size: 1rem; /* Stops auto-zooming on iOS inputs */
+    }
+}
