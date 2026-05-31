@@ -8,6 +8,7 @@ const DEFAULT_SESSION_TIMEOUT_MS = 60 * 60 * 1000; // 1 hour (in milliseconds)
 const DEFAULT_MESSAGE_COOLDOWN_MS = 3000;         // 3 seconds (in milliseconds)
 const DEFAULT_MESSAGE_WINDOW_MS = 60 * 1000;       // 1 minute (in milliseconds)
 const DEFAULT_MESSAGE_WINDOW_LIMIT = 20;            // 20 messages maximum
+const DEFAULT_HUMAN_TAKEOVER_WINDOW_MS = 30 * 60 * 1000; // 30 minutes (in milliseconds)
 
 // Section: Environment readers.
 export function getRequiredEnv(name: string) {
@@ -36,3 +37,5 @@ export const SESSION_TIMEOUT_MS = getIntegerEnv('SESSION_TIMEOUT_MS', DEFAULT_SE
 export const MESSAGE_COOLDOWN_MS = getIntegerEnv('MESSAGE_COOLDOWN_MS', DEFAULT_MESSAGE_COOLDOWN_MS, 1000, 60 * 1000);
 export const MESSAGE_WINDOW_MS = getIntegerEnv('MESSAGE_WINDOW_MS', DEFAULT_MESSAGE_WINDOW_MS, 10 * 1000, 10 * 60 * 1000);
 export const MESSAGE_WINDOW_LIMIT = getIntegerEnv('MESSAGE_WINDOW_LIMIT', DEFAULT_MESSAGE_WINDOW_LIMIT, 1, 100);
+export const HUMAN_TAKEOVER_WINDOW_MS = getIntegerEnv('HUMAN_TAKEOVER_WINDOW_MS', DEFAULT_HUMAN_TAKEOVER_WINDOW_MS, 10 * 1000, 24 * 60 * 60 * 1000);
+

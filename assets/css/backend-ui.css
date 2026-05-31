@@ -860,6 +860,53 @@ Purpose: Shared styling for the backend-powered page view badge and floating rea
     white-space: pre-wrap;
 }
 
+.portfolio-chat-bubble-text a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 700;
+    transition: opacity 150ms ease;
+}
+
+.portfolio-chat-bubble-text a:hover {
+    opacity: 0.8;
+}
+
+.portfolio-chat-bubble-admin .portfolio-chat-bubble-text a,
+.portfolio-chat-bubble-system .portfolio-chat-bubble-text a {
+    color: var(--accent-strong);
+}
+
+.portfolio-chat-bubble-text p {
+    margin: 0 0 0.5rem 0;
+}
+
+.portfolio-chat-bubble-text p:last-child {
+    margin: 0;
+}
+
+.portfolio-chat-bubble-text ul {
+    margin: 0 0 0.5rem 1.2rem;
+    padding: 0;
+}
+
+.portfolio-chat-bubble-text ul:last-child {
+    margin-bottom: 0;
+}
+
+.portfolio-chat-bubble-text li {
+    margin-bottom: 0.25rem;
+    line-height: 1.4;
+}
+
+.portfolio-chat-bubble-text li:last-child {
+    margin-bottom: 0;
+}
+
+.portfolio-chat-bubble-text strong {
+    font-weight: 700;
+}
+
 .portfolio-chat-bubble-time {
     align-self: flex-end;
     font-size: 0.65rem;

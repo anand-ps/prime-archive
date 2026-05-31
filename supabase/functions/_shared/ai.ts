@@ -1,6 +1,6 @@
 /*
 File: /supabase/functions/_shared/ai.ts
-Purpose: Helper to fetch conversational replies and validate user names using Google's Gemini 2.5 Flash Developer API.
+Purpose: Helper to fetch conversational replies and validate user names using the AI API.
 */
 
 const ANAND_PERSONA = `You are the AI Assistant for Anand P S, representing him on his personal portfolio website (anandps.in). 
@@ -29,89 +29,87 @@ Communication Guidelines:
   * LinkedIn: linkedin.com/in/anand-ps
   * GitHub: github.com/anand-ps
   * Email: anandps.in@outlook.com
-- Do not use markdown image formatting in your replies. Keep styling simple (bold or lists are fine, but no markdown images).`;
+- FORMATTING RULE: You must use standard Markdown to format your replies. Bold key labels and terms (e.g. **Email:**, **LinkedIn:**, **GitHub:**). Use bulleted lists (* item) to structure lists of contacts, projects, or skills cleanly. Always format links as standard markdown links: [Label](URL) (for example, [linkedin.com/in/anand-ps](https://linkedin.com/in/anand-ps) or [anandps.in@outlook.com](mailto:anandps.in@outlook.com)).
+- Do not use markdown image formatting or HTML headings in your replies. Keep styling elegant, compact, and concise.`;
 
-export async function generateGeminiReply(conversationMessages: any[], clientName: string): Promise<string | null> {
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
+export async function generateAiReply(conversationMessages: any[], clientName: string): Promise<string | null> {
+    const apiKey = Deno.env.get('GROQ_API_KEY');
     if (!apiKey) {
-        console.warn("[GEMINI] GEMINI_API_KEY is not configured. Skipping AI reply.");
+        console.warn("[AI] GROQ_API_KEY is not configured. Skipping AI reply.");
         return null;
     }
 
-    const contents: any[] = [];
+    const messages: any[] = [
+        {
+            role: 'system',
+            content: ANAND_PERSONA
+        }
+    ];
     
     // Process last 15 messages to keep context efficient
     const recentMessages = conversationMessages.slice(-15);
     
     for (const msg of recentMessages) {
         const senderType = msg.senderType || msg.sender_type || '';
-        const role = senderType === 'client' ? 'user' : 'model';
+        const role = senderType === 'client' ? 'user' : 'assistant';
         const text = msg.messageText || msg.message_text || '';
         
         if (!text) continue;
         
-        if (contents.length > 0 && contents[contents.length - 1].role === role) {
-            // Merge consecutive messages from same role to maintain alternating turns
-            contents[contents.length - 1].parts[0].text += `\n${text}`;
-        } else {
-            contents.push({
-                role: role,
-                parts: [{ text: text }]
-            });
-        }
+        messages.push({
+            role: role,
+            content: text
+        });
     }
 
-    // Gemini expects the last turn to be from 'user' (the prompt)
-    if (contents.length === 0 || contents[contents.length - 1].role !== 'user') {
-        console.warn("[GEMINI] History is empty or does not end with a user message. Skipping Gemini reply.");
+    // Verify last message is from user (the prompt)
+    if (messages.length <= 1 || messages[messages.length - 1].role !== 'user') {
+        console.warn("[AI] History is empty or does not end with a user message. Skipping AI reply.");
         return null;
     }
 
     try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const url = 'https://api.groq.com/openai/v1/chat/completions';
         
-        console.info(`[GEMINI] Requesting reply for user "${clientName}"...`);
+        console.info(`[AI] Requesting reply for user "${clientName}"...`);
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                contents: contents,
-                systemInstruction: {
-                    parts: [{ text: ANAND_PERSONA }]
-                },
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 300
-                }
+                model: 'llama-3.1-8b-instant',
+                messages: messages,
+                temperature: 0.7,
+                max_tokens: 300
             })
         });
 
         if (!response.ok) {
             const errText = await response.text();
-            console.error(`[GEMINI] API error status: ${response.status}. Response: ${errText}`);
+            console.error(`[AI] API error status: ${response.status}. Response: ${errText}`);
             return null;
         }
 
         const data = await response.json();
-        const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        const replyText = data.choices?.[0]?.message?.content;
         
         if (replyText) {
-            console.info(`[GEMINI] Successfully generated reply.`);
+            console.info(`[AI] Successfully generated reply.`);
             return replyText.trim();
         } else {
-            console.warn(`[GEMINI] No content candidates returned in response.`, data);
+            console.warn(`[AI] No choices returned in response.`, data);
             return null;
         }
     } catch (error) {
-        console.error(`[GEMINI] Failed to call Gemini API:`, error);
+        console.error(`[AI] Failed to call AI API:`, error);
         return null;
     }
 }
 
-export async function validateNameWithGemini(name: string): Promise<boolean> {
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
+export async function validateNameWithAi(name: string): Promise<boolean> {
+    const apiKey = Deno.env.get('GROQ_API_KEY');
     if (!apiKey) {
         return true; // Graceful fallback if key is missing
     }
@@ -127,42 +125,40 @@ export async function validateNameWithGemini(name: string): Promise<boolean> {
     if (blacklist.includes(cleanName.toLowerCase())) return false;
 
     try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const url = 'https://api.groq.com/openai/v1/chat/completions';
         
-        console.info(`[GEMINI] Validating if "${cleanName}" is a valid name...`);
+        console.info(`[AI] Validating if "${cleanName}" is a valid name...`);
         const response = await fetch(url, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                contents: [{
+                model: 'llama-3.1-8b-instant',
+                messages: [{
                     role: 'user',
-                    parts: [{
-                        text: `Determine if the following input is a plausible human name or nickname. It should not be keyboard gibberish (like "asdf", "gfhj", "qwerty"), clear jokes/insults, random symbols/numbers, or filler words (like "no", "yes", "none").
+                    content: `Determine if the following input is a plausible human name or nickname. It should not be keyboard gibberish (like "asdf", "gfhj", "qwerty"), clear jokes/insults, random symbols/numbers, or filler words (like "no", "yes", "none").
 Input: "${cleanName}"
 Response strictly with "YES" if it is a plausible human name/nickname, or "NO" if it is gibberish/invalid.`
-                    }]
                 }],
-                generationConfig: {
-                    temperature: 0.1,
-                    maxOutputTokens: 5
-                }
+                temperature: 0.1,
+                max_tokens: 5
             })
         });
 
         if (!response.ok) {
-            console.error(`[GEMINI] Name validation API error: ${response.status}`);
+            console.error(`[AI] Name validation API error: ${response.status}`);
             return true; // Fallback to accepting the name on API error
         }
 
         const data = await response.json();
-        const resultText = String(data.candidates?.[0]?.content?.parts?.[0]?.text || '').trim().toUpperCase();
+        const resultText = String(data.choices?.[0]?.message?.content || '').trim().toUpperCase();
         
-        console.info(`[GEMINI] Name validation result for "${cleanName}": ${resultText}`);
+        console.info(`[AI] Name validation result for "${cleanName}": ${resultText}`);
         return resultText.includes('YES');
     } catch (error) {
-        console.error(`[GEMINI] Failed to validate name with Gemini:`, error);
+        console.error(`[AI] Failed to validate name with AI:`, error);
         return true; // Fallback to accepting the name on exception
     }
 }

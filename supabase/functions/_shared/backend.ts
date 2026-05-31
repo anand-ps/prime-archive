@@ -4,9 +4,9 @@ Purpose: Encapsulate anonymous client, session, analytics, conversation, and mes
 */
 
 import { getAdminClient } from './db.ts';
-import { MESSAGE_COOLDOWN_MS, MESSAGE_WINDOW_LIMIT, MESSAGE_WINDOW_MS, SESSION_TIMEOUT_MS } from './env.ts';
+import { HUMAN_TAKEOVER_WINDOW_MS, MESSAGE_COOLDOWN_MS, MESSAGE_WINDOW_LIMIT, MESSAGE_WINDOW_MS, SESSION_TIMEOUT_MS } from './env.ts';
 import { HttpError } from './http.ts';
-import { generateGeminiReply, validateNameWithGemini } from './ai.ts';
+import { generateAiReply, validateNameWithAi } from './ai.ts';
 
 // Section: Shared row selectors.
 const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page, created_at, timezone, device_type, browser, referrer, country_name, country_code, city_name, region_name, zip_code';
@@ -614,6 +614,32 @@ async function getConversationMessages(conversationId: string) {
     return Array.isArray(data) ? data : [];
 }
 
+// Helper function to check if the human admin (Anand) has sent a manual message recently
+function isHumanAdminActive(conversationMessages: any[]): boolean {
+    const now = Date.now();
+
+    for (const msg of conversationMessages) {
+        const senderType = msg.senderType || msg.sender_type || '';
+        const metadata = msg.metadata || {};
+
+        if (senderType === 'admin') {
+            const isAutomated = metadata.displayVariant === 'system' || 
+                                metadata.automationKey;
+            
+            if (!isAutomated) {
+                const messageTime = Date.parse(msg.createdAt || msg.created_at || '');
+                if (Number.isFinite(messageTime)) {
+                    const elapsedMs = now - messageTime;
+                    if (elapsedMs >= 0 && elapsedMs < HUMAN_TAKEOVER_WINDOW_MS) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
 export async function createClientMessage(payload: Record<string, unknown>) {
     console.info(`[DEBUG] Received createClientMessage request. Sender: "${payload.clientName || 'Anonymous'}" | Client ID: "${payload.clientId}"`);
     
@@ -627,15 +653,15 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     await enforceMessageRateLimit(Number(clientRow.id), String(conversationRow.id));
     console.info(`[DEBUG] Rate limit passed for Client DB ID: ${clientRow.id}`);
     
-    // Section: Dynamic name verification with Gemini validation
+    // Section: Dynamic name verification with AI validation
     const existingName = String(clientRow.client_name || '').trim();
     let clientName = String(payload.clientName || '').trim();
 
     if (clientName && clientName !== existingName) {
         console.info(`[DEBUG] Client name change detected from "${existingName}" to "${clientName}". Running validation...`);
-        const isValid = await validateNameWithGemini(clientName);
+        const isValid = await validateNameWithAi(clientName);
         if (!isValid) {
-            console.info(`[DEBUG] Name "${clientName}" rejected by Gemini. Overriding to "Visitor".`);
+            console.info(`[DEBUG] Name "${clientName}" rejected by AI. Overriding to "Visitor".`);
             clientName = 'Visitor';
         }
     } else if (!clientName && !existingName) {
@@ -647,6 +673,17 @@ export async function createClientMessage(payload: Record<string, unknown>) {
     payload.clientName = clientName; // Sync payload key for serialization
 
     await updateClientName(Number(clientRow.id), clientName);
+
+    if (clientName === 'Visitor' && Array.isArray(payload.automatedMessages)) {
+        console.info(`[DEBUG] Name overridden to "Visitor". Cleaning up automated messages...`);
+        payload.automatedMessages = payload.automatedMessages.map((msg: any) => {
+            if (msg && typeof msg.messageText === 'string') {
+                // Replace "Hi [Junk] 👋" with "Hi 👋"
+                msg.messageText = msg.messageText.replace(/Hi\s+\S+\s+👋/, 'Hi 👋');
+            }
+            return msg;
+        });
+    }
 
     const existingMobileNumber = String(clientRow.mobile_number || '').trim();
     const detectedMobileNumber = existingMobileNumber
@@ -728,7 +765,7 @@ export async function createClientMessage(payload: Record<string, unknown>) {
         }
     }
 
-    // Section: Gemini Integration Interception
+    // Section: AI Integration Interception
     const hasAutomatedMessages = Array.isArray(payload.automatedMessages) && payload.automatedMessages.length > 0;
     const isClientMessage = payload.senderType === 'client';
     const isMobileCapture = Boolean(detectedMobileNumber);
@@ -737,36 +774,41 @@ export async function createClientMessage(payload: Record<string, unknown>) {
         try {
             // Load conversation history including the message just saved to give full context
             const conversationMessages = await getConversationMessages(String(conversationRow.id));
-            const nameToPass = String(payload.clientName || 'Visitor');
             
-            const geminiReply = await generateGeminiReply(conversationMessages, nameToPass);
-            
-            if (geminiReply) {
-                console.info(`[DEBUG] Storing Gemini reply in database...`);
-                const { data: geminiData, error: geminiError } = await admin
-                    .from('messages')
-                    .insert({
-                        conversation_id: conversationRow.id,
-                        client_id: clientRow.id,
-                        session_id: sessionRow.id,
-                        sender_type: 'admin',
-                        message_type: 'text',
-                        message_text: geminiReply,
-                        metadata: {
-                            automationKey: 'gemini_reply'
-                        }
-                    })
-                    .select(MESSAGE_SELECT)
-                    .single();
+            if (isHumanAdminActive(conversationMessages)) {
+                console.info(`[DEBUG] Human admin (Anand) has been active recently. Muting AI reply.`);
+            } else {
+                const nameToPass = String(payload.clientName || 'Visitor');
+                const aiReply = await generateAiReply(conversationMessages, nameToPass);
                 
-                throwIfQueryError(geminiError, 'Unable to store Gemini reply.');
-                if (geminiData) {
-                    automatedRows.push(geminiData);
-                    console.info(`[DEBUG] Gemini reply saved successfully with ID: ${geminiData.id}`);
+                if (aiReply) {
+                    console.info(`[DEBUG] Storing AI reply in database...`);
+                    const { data: aiData, error: aiError } = await admin
+                        .from('messages')
+                        .insert({
+                            conversation_id: conversationRow.id,
+                            client_id: clientRow.id,
+                            session_id: sessionRow.id,
+                            sender_type: 'admin',
+                            message_type: 'text',
+                            message_text: aiReply,
+                            metadata: {
+                                displayVariant: 'system',
+                                automationKey: 'ai_reply'
+                            }
+                        })
+                        .select(MESSAGE_SELECT)
+                        .single();
+                    
+                    throwIfQueryError(aiError, 'Unable to store AI reply.');
+                    if (aiData) {
+                        automatedRows.push(aiData);
+                        console.info(`[DEBUG] AI reply saved successfully with ID: ${aiData.id}`);
+                    }
                 }
             }
-        } catch (geminiErr) {
-            console.error('[GEMINI ERROR] Failed to generate or save Gemini reply:', geminiErr);
+        } catch (aiErr) {
+            console.error('[AI ERROR] Failed to generate or save AI reply:', aiErr);
         }
     }
 

@@ -22,7 +22,7 @@ const chatState = {
 };
 
 // Section: Automated Reassurance Replies Configuration.
-// Note: Hardcoded auto replies have been successfully migrated to the backend via Gemini 2.5 Flash!
+// Note: Hardcoded auto replies have been successfully migrated to the backend via the AI assistant!
 
 // Section: Production-grade conditional logger.
 const chatLogger = {
@@ -391,6 +391,153 @@ function formatChatDate(isoString) {
     }
 }
 
+function parseInlineMarkdown(element, text) {
+    // Matches bold: **text**
+    // Matches markdown links: [Label](URL)
+    // Matches markdown autolinks: <url> or <email>
+    // Matches mailto and loose email addresses
+    // Matches loose domains or standard URLs
+    const inlineRegex = /(\*\*([^*]+)\*\*)|(\[([^\]]+)\]\(([^)]+)\))|(<(https?:\/\/[^\s>]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>)|(mailto:([^\s@]+@[^\s@]+\.[^\s@]+))|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|((?:https?:\/\/|www\.)[^\s\)]+)|((?:[a-zA-Z0-9-]+\.)+(?:com|org|net|in|io|co|edu)(?:\/[^\s\)]*)?)/g;
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = inlineRegex.exec(text)) !== null) {
+        if (match.index > lastIndex) {
+            element.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+        }
+
+        const [
+            fullMatch,
+            boldBlock,
+            boldText,
+            linkBlock,
+            linkLabel,
+            linkUrl,
+            autoLinkBlock,
+            autoLinkContent,
+            mailtoBlock,
+            mailtoEmail,
+            emailAddress,
+            looseUrl,
+            plainDomain
+        ] = match;
+
+        if (boldBlock) {
+            const strong = document.createElement('strong');
+            strong.textContent = boldText;
+            element.appendChild(strong);
+        } else if (linkBlock) {
+            const anchor = document.createElement('a');
+            anchor.target = '_blank';
+            anchor.rel = 'noopener noreferrer';
+            anchor.textContent = linkLabel;
+            anchor.href = linkUrl.startsWith('http') || linkUrl.startsWith('mailto') ? linkUrl : `https://${linkUrl}`;
+            element.appendChild(anchor);
+        } else if (autoLinkBlock && autoLinkContent) {
+            const anchor = document.createElement('a');
+            anchor.target = '_blank';
+            anchor.rel = 'noopener noreferrer';
+            if (autoLinkContent.includes('@')) {
+                // Email address autolink
+                anchor.textContent = autoLinkContent;
+                anchor.href = `mailto:${autoLinkContent}`;
+            } else {
+                // URL autolink
+                anchor.textContent = autoLinkContent.replace(/^https?:\/\/(www\.)?/, '');
+                anchor.href = autoLinkContent.startsWith('http') ? autoLinkContent : `https://${autoLinkContent}`;
+            }
+            element.appendChild(anchor);
+        } else if (mailtoBlock) {
+            const anchor = document.createElement('a');
+            anchor.target = '_blank';
+            anchor.rel = 'noopener noreferrer';
+            anchor.textContent = mailtoEmail;
+            anchor.href = `mailto:${mailtoEmail}`;
+            element.appendChild(anchor);
+        } else if (emailAddress) {
+            const anchor = document.createElement('a');
+            anchor.target = '_blank';
+            anchor.rel = 'noopener noreferrer';
+            anchor.textContent = emailAddress;
+            anchor.href = `mailto:${emailAddress}`;
+            element.appendChild(anchor);
+        } else if (looseUrl || plainDomain) {
+            const urlText = looseUrl || plainDomain;
+            let cleanUrl = urlText;
+            let suffix = '';
+            
+            const trailingPunctuation = /[.,;:!?)]+$/;
+            const punctMatch = urlText.match(trailingPunctuation);
+            if (punctMatch) {
+                cleanUrl = urlText.slice(0, -punctMatch[0].length);
+                suffix = punctMatch[0];
+            }
+
+            const anchor = document.createElement('a');
+            anchor.target = '_blank';
+            anchor.rel = 'noopener noreferrer';
+            anchor.textContent = cleanUrl.replace(/^https?:\/\/(www\.)?/, '');
+            anchor.href = cleanUrl.startsWith('http') ? cleanUrl : `https://${cleanUrl}`;
+            
+            element.appendChild(anchor);
+            if (suffix) {
+                element.appendChild(document.createTextNode(suffix));
+            }
+        }
+
+        lastIndex = inlineRegex.lastIndex;
+    }
+
+    if (lastIndex < text.length) {
+        element.appendChild(document.createTextNode(text.slice(lastIndex)));
+    }
+}
+
+function renderFormattedMessageText(textElement, rawText) {
+    textElement.replaceChildren();
+
+    const lines = String(rawText || '').split('\n');
+    let currentList = null;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+
+        // 1. Check for bullet list items
+        const listMatch = trimmed.match(/^[*+-]\s+(.*)$/);
+        if (listMatch) {
+            if (!currentList) {
+                currentList = document.createElement('ul');
+                currentList.className = 'portfolio-chat-list';
+                textElement.appendChild(currentList);
+            }
+            const listItem = document.createElement('li');
+            listItem.className = 'portfolio-chat-list-item';
+            parseInlineMarkdown(listItem, listMatch[1]);
+            currentList.appendChild(listItem);
+            continue;
+        }
+
+        // Close list if line is not a list item
+        currentList = null;
+
+        // 2. Check for empty spacing line
+        if (trimmed === '') {
+            if (textElement.lastChild && textElement.lastChild.nodeName !== 'BR') {
+                textElement.appendChild(document.createElement('br'));
+            }
+            continue;
+        }
+
+        // 3. Regular block paragraph
+        const paragraph = document.createElement('p');
+        paragraph.className = 'portfolio-chat-paragraph';
+        parseInlineMarkdown(paragraph, line);
+        textElement.appendChild(paragraph);
+    }
+}
+
 function createMessageBubble(message, hideLabel = false) {
     const article = document.createElement('article');
     const isClientMessage = message.senderType === SENDER_TYPES.CLIENT;
@@ -421,7 +568,7 @@ function createMessageBubble(message, hideLabel = false) {
 
     const text = document.createElement('p');
     text.className = 'portfolio-chat-bubble-text';
-    text.textContent = message.messageText;
+    renderFormattedMessageText(text, message.messageText);
 
     article.appendChild(text);
     
@@ -903,12 +1050,38 @@ async function executeMessageSend(messageText, clientName, elements, options = {
 
 
 
+function isGibberishName(name) {
+    const clean = String(name || '').trim();
+    if (clean.length < 2) return true;
+    
+    // Check if it's all numbers/symbols
+    if (/^[^a-zA-Z\s]+$/.test(clean)) return true;
+    
+    // Check for keyboard patterns
+    const keyboardPatterns = [/^[asdfghjkl;']+$/i, /^[qwertyuiop]+$/i, /^[zxcvbnm,./]+$/i];
+    if (keyboardPatterns.some(regex => regex.test(clean))) return true;
+    
+    // Check for high consonant density (random clusters like "Ashnikd")
+    if (/[bcdfghjklmnpqrstvwxyz]{4,}/i.test(clean)) return true;
+    
+    // Check for blacklisted words
+    const blacklist = ['none', 'no', 'nothing', 'test', 'anonymous', 'visitor', 'guest', 'na', 'n/a', 'fake', 'user', 'asdf', 'qwerty'];
+    if (blacklist.includes(clean.toLowerCase())) return true;
+    
+    return false;
+}
+
 const ONBOARDING_TEMPLATES = {
     COLLECT_NAME_PROMPT: {
         text: "Thanks for reaching out! 😊\nBefore I forward this to Anand,\nmay I get your name?",
         delayMs: 1500
     },
-    getConfirmation: (name) => `Hi ${name} 👋\nYour message has been shared with Anand. He'll reply here soon.`,
+    getConfirmation: (name) => {
+        const isJunk = isGibberishName(name);
+        return isJunk 
+            ? `Hi 👋\nYour message has been shared with Anand. He'll reply here soon.`
+            : `Hi ${name} 👋\nYour message has been shared with Anand. He'll reply here soon.`;
+    },
     CONFIRMATION_DELAY_MS: 1000,
     
     CALLBACK_PROMPT: {
@@ -1185,7 +1358,7 @@ function attachSubmitHandler(elements) {
                         persistOnboardingFlow: false
                     });
                 } else {
-                    // Regular message: route directly to the backend for real-time Gemini generation
+                    // Regular message: route directly to the backend for real-time AI generation
                     const tempId = 'temp_msg_' + Date.now();
                     chatState.messages.push({
                         id: tempId,
