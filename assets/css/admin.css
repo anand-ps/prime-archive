@@ -519,6 +519,44 @@ body {
     color: var(--accent);
 }
 
+.admin-panel-description {
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.admin-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.admin-summary-stat {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.admin-summary-label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.admin-summary-value {
+    color: var(--text);
+    font-family: "Sora", sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
 .admin-session-code-wrapper {
     background: rgba(0, 0, 0, 0.25);
     border: 1px solid var(--border);

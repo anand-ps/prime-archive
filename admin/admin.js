@@ -7,6 +7,7 @@ Description: Secure session controller connecting to Supabase auth service with 
 // Configuration Constants
 const SUPABASE_URL = 'https://lpepcjskxtbcmclcqxie.supabase.co';
 const PUBLIC_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwZXBjanNreHRiY21jbGNxeGllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NjQ5MDUsImV4cCI6MjA5NDQ0MDkwNX0.bgxKbkkyW69pz_Ls5kxSfwOsxyW94gHDomdV0aynRko';
+const FUNCTIONS_BASE_URL = `${SUPABASE_URL}/functions/v1`;
 const SESSION_KEY = 'admin_session';
 
 // DOM Elements
@@ -29,6 +30,13 @@ const dbStatusIndicator = document.getElementById('db-status-indicator');
 const dbStatusText = document.getElementById('db-status-text');
 const dbPingBtn = document.getElementById('db-ping-btn');
 const dashboardClientId = document.getElementById('dashboard-client-id');
+const adminSummaryStatus = document.getElementById('admin-summary-status');
+const summaryTotalVisitors = document.getElementById('summary-total-visitors');
+const summaryActiveSessions = document.getElementById('summary-active-sessions');
+const summaryOpenConversations = document.getElementById('summary-open-conversations');
+const summaryMessagesToday = document.getElementById('summary-messages-today');
+const summaryCapturedMobiles = document.getElementById('summary-captured-mobiles');
+const summaryPageViewsToday = document.getElementById('summary-page-views-today');
 
 // --- Helper Functions ---
 
@@ -64,6 +72,38 @@ function showAlert(message, type = 'error') {
 
 function clearAlert() {
     alertContainer.innerHTML = '';
+}
+
+function formatMetricValue(value) {
+    const numericValue = Number(value);
+
+    if (!Number.isFinite(numericValue)) {
+        return '--';
+    }
+
+    return new Intl.NumberFormat('en-US').format(numericValue);
+}
+
+function setSummaryValues(summary = {}) {
+    summaryTotalVisitors.textContent = formatMetricValue(summary.totalVisitors);
+    summaryActiveSessions.textContent = formatMetricValue(summary.activeSessions);
+    summaryOpenConversations.textContent = formatMetricValue(summary.openConversations);
+    summaryMessagesToday.textContent = formatMetricValue(summary.messagesToday);
+    summaryCapturedMobiles.textContent = formatMetricValue(summary.capturedMobileNumbers);
+    summaryPageViewsToday.textContent = formatMetricValue(summary.pageViewsToday);
+}
+
+function setSummaryStatus(message) {
+    adminSummaryStatus.textContent = message;
+}
+
+function clearSessionAndReturnToLogin(message) {
+    localStorage.removeItem(SESSION_KEY);
+    transitionToView('login');
+
+    window.setTimeout(() => {
+        showAlert(message);
+    }, 220);
 }
 
 // Manage UI View States with Transition Fades
@@ -157,6 +197,50 @@ function initDashboard(session) {
     
     // Auto-ping database on entrance
     pingDatabaseConnection();
+    loadAdminSummary(session);
+}
+
+async function loadAdminSummary(session) {
+    if (!session?.access_token) {
+        setSummaryStatus('No secure admin session is available.');
+        setSummaryValues();
+        return;
+    }
+
+    setSummaryStatus('Loading secure dashboard summary...');
+    setSummaryValues();
+
+    try {
+        const response = await fetch(`${FUNCTIONS_BASE_URL}/get-admin-dashboard-data?scope=summary`, {
+            method: 'GET',
+            headers: {
+                'apikey': PUBLIC_ANON_KEY,
+                'Authorization': `Bearer ${session.access_token}`
+            }
+        });
+
+        const payload = await response.json().catch(() => ({}));
+
+        if (!response.ok || !payload?.ok) {
+            const errorCode = payload?.error?.code || '';
+            const errorMessage = payload?.error?.message || 'Unable to load the secure admin summary.';
+
+            if (response.status === 401 || response.status === 403 || errorCode === 'INVALID_TOKEN' || errorCode === 'ADMIN_ACCESS_REQUIRED') {
+                clearSessionAndReturnToLogin(errorMessage);
+                return;
+            }
+
+            throw new Error(errorMessage);
+        }
+
+        const summary = payload.data?.summary || {};
+        setSummaryValues(summary);
+
+        const generatedAt = summary.generatedAt ? new Date(summary.generatedAt).toLocaleString() : '';
+        setSummaryStatus(generatedAt ? `Secure summary loaded at ${generatedAt}` : 'Secure summary loaded.');
+    } catch (error) {
+        setSummaryStatus(error.message || 'Unable to load the secure admin summary.');
+    }
 }
 
 // Validate database/auth telemetry response latency

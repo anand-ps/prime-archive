@@ -32,6 +32,11 @@ function nowIso() {
     return new Date().toISOString();
 }
 
+function startOfUtcDayIso() {
+    const now = new Date();
+    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString();
+}
+
 function isSessionExpired(lastActivityAt: string) {
     const lastActivityTimestamp = Date.parse(String(lastActivityAt || ''));
 
@@ -548,6 +553,71 @@ export async function createEventRecord(payload: Record<string, unknown>) {
         ...serializeSessionSnapshot(clientRow, sessionRow, conversationRow),
         eventId: data.id,
         pageViewCount
+    };
+}
+
+export async function getAdminDashboardSummary() {
+    const admin = getAdminClient();
+    const activeSessionThresholdIso = new Date(Date.now() - SESSION_TIMEOUT_MS).toISOString();
+    const startOfTodayIso = startOfUtcDayIso();
+
+    const [
+        totalVisitorsResult,
+        activeSessionsResult,
+        openConversationsResult,
+        totalMessagesResult,
+        messagesTodayResult,
+        knownMobileNumbersResult,
+        pageViewsTodayResult
+    ] = await Promise.all([
+        admin
+            .from('clients')
+            .select('id', { count: 'exact', head: true }),
+        admin
+            .from('client_sessions')
+            .select('id', { count: 'exact', head: true })
+            .is('ended_at', null)
+            .gte('last_activity_at', activeSessionThresholdIso),
+        admin
+            .from('conversations')
+            .select('id', { count: 'exact', head: true })
+            .eq('status', 'open'),
+        admin
+            .from('messages')
+            .select('id', { count: 'exact', head: true }),
+        admin
+            .from('messages')
+            .select('id', { count: 'exact', head: true })
+            .gte('created_at', startOfTodayIso),
+        admin
+            .from('clients')
+            .select('id', { count: 'exact', head: true })
+            .not('mobile_number', 'is', null)
+            .neq('mobile_number', ''),
+        admin
+            .from('page_events')
+            .select('id', { count: 'exact', head: true })
+            .eq('event_type', 'page_view')
+            .gte('created_at', startOfTodayIso)
+    ]);
+
+    throwIfQueryError(totalVisitorsResult.error, 'Unable to count total visitors.');
+    throwIfQueryError(activeSessionsResult.error, 'Unable to count active sessions.');
+    throwIfQueryError(openConversationsResult.error, 'Unable to count open conversations.');
+    throwIfQueryError(totalMessagesResult.error, 'Unable to count total messages.');
+    throwIfQueryError(messagesTodayResult.error, 'Unable to count today\'s messages.');
+    throwIfQueryError(knownMobileNumbersResult.error, 'Unable to count captured mobile numbers.');
+    throwIfQueryError(pageViewsTodayResult.error, 'Unable to count today\'s page views.');
+
+    return {
+        totalVisitors: Number(totalVisitorsResult.count ?? 0),
+        activeSessions: Number(activeSessionsResult.count ?? 0),
+        openConversations: Number(openConversationsResult.count ?? 0),
+        totalMessages: Number(totalMessagesResult.count ?? 0),
+        messagesToday: Number(messagesTodayResult.count ?? 0),
+        capturedMobileNumbers: Number(knownMobileNumbersResult.count ?? 0),
+        pageViewsToday: Number(pageViewsTodayResult.count ?? 0),
+        generatedAt: nowIso()
     };
 }
 
