@@ -306,6 +306,10 @@ body {
     box-sizing: border-box;
 }
 
+#admin-user-page.admin-dashboard-container {
+    gap: 1.8rem;
+}
+
 @keyframes dashboard-fade-in {
     from {
         opacity: 0;
@@ -795,7 +799,7 @@ body {
 
 .admin-section-top {
     align-items: flex-start;
-    padding-top: 1.75rem;
+    padding-top: 1.7rem;
 }
 
 .admin-header-actions {
