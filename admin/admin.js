@@ -214,6 +214,46 @@ function formatMetricValue(value) {
     return new Intl.NumberFormat('en-US').format(numericValue);
 }
 
+function getAdminDisplayName(user = {}) {
+    const metadata = user?.user_metadata || {};
+    const nameCandidates = [
+        metadata.display_name,
+        metadata.full_name,
+        metadata.name,
+        user?.display_name,
+        user?.full_name
+    ];
+
+    for (const candidate of nameCandidates) {
+        const normalized = String(candidate || '').trim();
+        if (normalized) {
+            return normalized;
+        }
+    }
+
+    const email = String(user?.email || '').trim();
+    if (email) {
+        const emailLocalPart = email.split('@')[0] || 'admin';
+        return emailLocalPart.charAt(0).toUpperCase() + emailLocalPart.slice(1);
+    }
+
+    return 'Admin';
+}
+
+function getInitialsFromName(name = '') {
+    const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+
+    if (parts.length === 0) {
+        return 'AD';
+    }
+
+    if (parts.length === 1) {
+        return parts[0].slice(0, 2).toUpperCase();
+    }
+
+    return `${parts[0][0] || ''}${parts[parts.length - 1][0] || ''}`.toUpperCase();
+}
+
 function setSummaryValues(summary = {}) {
     summaryTotalVisitors.textContent = formatMetricValue(summary.totalVisitors);
     summaryActiveSessions.textContent = formatMetricValue(summary.activeSessions);
@@ -472,18 +512,18 @@ function populateAdminIdentity(session) {
     adminState.session = session;
     const user = session.user;
     const email = user.email || 'admin@anandps.in';
+    const displayName = getAdminDisplayName(user);
 
     if (profileEmail) {
         profileEmail.textContent = email;
     }
 
-    const username = email.split('@')[0];
     if (welcomeName) {
-        welcomeName.textContent = `Welcome back, ${username.charAt(0).toUpperCase() + username.slice(1)}!`;
+        welcomeName.textContent = `Welcome back, ${displayName}!`;
     }
 
     if (initialsAvatar) {
-        initialsAvatar.textContent = username.substring(0, 2).toUpperCase();
+        initialsAvatar.textContent = getInitialsFromName(displayName);
     }
 
     if (adminLastLogin) {
