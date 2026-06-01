@@ -1,0 +1,129 @@
+<!--
+File: /admin/user.html
+Purpose: Dedicated secure user detail and conversation workspace.
+Description: Focused admin screen for one user profile and their chat history.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Detail | Admin Console</title>
+    <meta name="description" content="Secure user detail and conversation viewer for the admin console." />
+    <meta name="author" content="Anand P S" />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="icon" href="../favicon.ico?v=20260228" sizes="any" type="image/x-icon" />
+    <link rel="shortcut icon" href="../favicon.ico?v=20260228" type="image/x-icon" />
+    <link rel="icon" href="../assets/icons/favicon.ico?v=20260228" sizes="any" type="image/x-icon" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/css/styles.css" />
+    <link rel="stylesheet" href="../assets/css/admin.css" />
+</head>
+
+<body data-admin-page="user">
+<div class="site-bg" aria-hidden="true">
+    <div class="orb orb-one"></div>
+    <div class="orb orb-two"></div>
+</div>
+
+<header class="header">
+    <nav class="nav container" aria-label="Primary">
+        <a class="logo" href="/#top">Anand P S</a>
+        <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <ul id="primary-nav" class="nav-links">
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#domains">Domains</a></li>
+            <li><a href="/#experience">Experience</a></li>
+            <li><a href="/#projects">Projects</a></li>
+            <li><a href="/#contact">Contact</a></li>
+            <li><a href="/downloads/">Downloads</a></li>
+            <li><a href="/admin/" aria-current="page">Admin</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main id="top">
+    <section class="admin-section admin-section-top">
+        <div id="admin-user-page" class="admin-dashboard-container">
+            <div class="admin-dashboard-header">
+                <div class="admin-profile">
+                    <div class="admin-avatar" id="admin-avatar-initials">A</div>
+                    <div class="admin-profile-info">
+                        <h2 id="admin-welcome-name">Admin Console</h2>
+                        <p id="admin-profile-email">admin@anandps.in</p>
+                    </div>
+                </div>
+                <div class="admin-header-actions">
+                    <a class="btn btn-ghost" href="/admin/">Back to users</a>
+                    <button type="button" id="admin-logout-btn" class="btn btn-ghost">Terminate Session</button>
+                </div>
+            </div>
+
+            <div class="admin-panel admin-user-hero">
+                <span class="admin-user-kicker">Secure User Workspace</span>
+                <h1 id="admin-user-page-title" class="admin-user-page-title">Loading user...</h1>
+                <p id="admin-user-page-subtitle" class="admin-panel-description">Secure user profile</p>
+                <p id="admin-user-page-meta" class="admin-user-page-meta">Waiting for secure user data...</p>
+            </div>
+
+            <div class="admin-user-layout">
+                <div class="admin-user-sidebar">
+                    <div class="admin-panel">
+                        <div class="admin-panel-title">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+                            </svg>
+                            <span>User Detail</span>
+                        </div>
+                        <p id="admin-client-detail-status" class="admin-panel-description">Loading secure user details...</p>
+                        <div id="admin-client-detail-content"></div>
+                    </div>
+
+                    <div class="admin-panel">
+                        <div class="admin-panel-title">
+                            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75h6.75m-6.75 3h4.5m6.375 1.5a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Conversations</span>
+                        </div>
+                        <p id="admin-conversations-status" class="admin-panel-description">Loading conversations for this user...</p>
+                        <div id="admin-conversations-list" class="admin-entity-list admin-scroll-surface"></div>
+                    </div>
+                </div>
+
+                <div class="admin-panel admin-user-chat-panel">
+                    <div class="admin-panel-title">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3h6m-9.75 8.25L6.72 16.53A9 9 0 1119.5 12a8.958 8.958 0 01-2.47 6.22l-2.97 2.97-3.53-3.53A8.963 8.963 0 013.75 19.5z"></path>
+                        </svg>
+                        <span>Chat Transcript</span>
+                    </div>
+                    <p id="admin-conversation-detail-status" class="admin-panel-description">Select a conversation to inspect the full chat transcript and user context.</p>
+                    <div id="admin-conversation-detail-content" class="admin-scroll-surface"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2026 Anand P S</p>
+        <p class="footer-privacy-notice"><a href="/legal/" class="footer-legal-link">Privacy Policy &bull; Terms of Service</a></p>
+    </div>
+</footer>
+
+<script src="../assets/js/main.js" defer></script>
+<script src="admin.js" type="module"></script>
+</body>
+</html>

@@ -9,10 +9,11 @@ import { HttpError } from './http.ts';
 import { generateAiReply, validateNameWithAi } from './ai.ts';
 
 // Section: Shared row selectors.
-const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page, created_at, timezone, device_type, browser, referrer, country_name, country_code, city_name, region_name, zip_code';
-const SESSION_SELECT = 'id, client_id, entry_page, last_page, started_at, last_activity_at, ended_at';
+const CLIENT_SELECT = 'id, public_client_id, client_name, mobile_number, last_seen_at, last_seen_page, created_at, updated_at, timezone, device_type, browser, referrer, country_name, country_code, city_name, region_name, zip_code, screen_width, screen_height';
+const SESSION_SELECT = 'id, client_id, entry_page, last_page, started_at, last_activity_at, ended_at, created_at, updated_at';
 const CONVERSATION_SELECT = 'id, client_id, active_session_id, status, created_at, updated_at, closed_at';
 const MESSAGE_SELECT = 'id, conversation_id, client_id, session_id, sender_type, message_type, message_text, metadata, created_at';
+const PAGE_EVENT_SELECT = 'id, client_id, session_id, event_type, page_path, page_title, metadata, created_at';
 
 // Section: Utility helpers.
 function maskIp(ip: string): string {
@@ -618,6 +619,345 @@ export async function getAdminDashboardSummary() {
         capturedMobileNumbers: Number(knownMobileNumbersResult.count ?? 0),
         pageViewsToday: Number(pageViewsTodayResult.count ?? 0),
         generatedAt: nowIso()
+    };
+}
+
+function serializeAdminClient(row: Record<string, unknown>) {
+    return {
+        id: row.id,
+        publicClientId: row.public_client_id,
+        clientName: row.client_name || '',
+        mobileNumber: row.mobile_number || '',
+        browser: row.browser || '',
+        deviceType: row.device_type || '',
+        timezone: row.timezone || '',
+        screenWidth: row.screen_width || 0,
+        screenHeight: row.screen_height || 0,
+        referrer: row.referrer || '',
+        lastSeenPage: row.last_seen_page || '/',
+        lastSeenAt: row.last_seen_at,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+        countryName: row.country_name || '',
+        countryCode: row.country_code || '',
+        cityName: row.city_name || '',
+        regionName: row.region_name || '',
+        zipCode: row.zip_code || ''
+    };
+}
+
+function serializeAdminSession(row: Record<string, unknown>) {
+    return {
+        id: row.id,
+        clientId: row.client_id,
+        entryPage: row.entry_page || '/',
+        lastPage: row.last_page || '/',
+        startedAt: row.started_at,
+        lastActivityAt: row.last_activity_at,
+        endedAt: row.ended_at,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+    };
+}
+
+function serializeAdminConversation(row: Record<string, unknown>, extra: Record<string, unknown> = {}) {
+    return {
+        id: row.id,
+        clientId: row.client_id,
+        activeSessionId: row.active_session_id,
+        status: row.status || 'open',
+        createdAt: row.created_at,
+        updatedAt: row.updated_at,
+        closedAt: row.closed_at,
+        ...extra
+    };
+}
+
+function serializePageEvent(row: Record<string, unknown>) {
+    return {
+        id: row.id,
+        clientId: row.client_id,
+        sessionId: row.session_id,
+        eventType: row.event_type,
+        pagePath: row.page_path,
+        pageTitle: row.page_title,
+        metadata: row.metadata && typeof row.metadata === 'object' ? row.metadata : {},
+        createdAt: row.created_at
+    };
+}
+
+function truncateText(value: unknown, maxLength = 140) {
+    const normalizedValue = String(value || '').trim();
+
+    if (!normalizedValue) {
+        return '';
+    }
+
+    return normalizedValue.length > maxLength
+        ? `${normalizedValue.slice(0, maxLength - 1)}…`
+        : normalizedValue;
+}
+
+async function getAdminClientById(clientId: number) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('clients')
+        .select(CLIENT_SELECT)
+        .eq('id', clientId)
+        .maybeSingle();
+
+    throwIfQueryError(error, 'Unable to load the requested admin client.');
+    return data;
+}
+
+async function getAdminConversationById(conversationId: string) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('conversations')
+        .select(CONVERSATION_SELECT)
+        .eq('id', conversationId)
+        .maybeSingle();
+
+    throwIfQueryError(error, 'Unable to load the requested conversation.');
+    return data;
+}
+
+async function getAdminSessionById(sessionId: string) {
+    const admin = getAdminClient();
+    const { data, error } = await admin
+        .from('client_sessions')
+        .select(SESSION_SELECT)
+        .eq('id', sessionId)
+        .maybeSingle();
+
+    throwIfQueryError(error, 'Unable to load the requested session.');
+    return data;
+}
+
+export async function getAdminDashboardOverview() {
+    const admin = getAdminClient();
+
+    const { data: recentClientRows, error: recentClientError } = await admin
+        .from('clients')
+        .select(CLIENT_SELECT)
+        .order('last_seen_at', { ascending: false })
+        .limit(24);
+
+    const { data: recentConversationRows, error: recentConversationError } = await admin
+        .from('conversations')
+        .select(CONVERSATION_SELECT)
+        .order('updated_at', { ascending: false })
+        .limit(24);
+
+    throwIfQueryError(recentClientError, 'Unable to load recent visitors.');
+    throwIfQueryError(recentConversationError, 'Unable to load recent conversations.');
+
+    const recentClients = Array.isArray(recentClientRows) ? recentClientRows : [];
+    const recentConversations = Array.isArray(recentConversationRows) ? recentConversationRows : [];
+    const relatedClientIds = Array.from(new Set([
+        ...recentClients.map((row) => Number(row.id)),
+        ...recentConversations.map((row) => Number(row.client_id))
+    ])).filter((value) => Number.isFinite(value) && value > 0);
+    const relatedConversationIds = recentConversations.map((row) => String(row.id)).filter(Boolean);
+
+    let relatedClientRows: Record<string, unknown>[] = [];
+    if (relatedClientIds.length > 0) {
+        const { data, error } = await admin
+            .from('clients')
+            .select(CLIENT_SELECT)
+            .in('id', relatedClientIds);
+
+        throwIfQueryError(error, 'Unable to load related visitor context.');
+        relatedClientRows = Array.isArray(data) ? data : [];
+    }
+
+    let conversationMessageRows: Record<string, unknown>[] = [];
+    if (relatedConversationIds.length > 0) {
+        const { data, error } = await admin
+            .from('messages')
+            .select(MESSAGE_SELECT)
+            .in('conversation_id', relatedConversationIds)
+            .order('created_at', { ascending: false })
+            .order('id', { ascending: false });
+
+        throwIfQueryError(error, 'Unable to load conversation previews.');
+        conversationMessageRows = Array.isArray(data) ? data : [];
+    }
+
+    const clientMap = new Map(relatedClientRows.map((row) => [Number(row.id), row]));
+    const latestMessageByConversationId = new Map<string, Record<string, unknown>>();
+    const messageCountByConversationId = new Map<string, number>();
+    const conversationCountByClientId = new Map<number, number>();
+
+    for (const row of conversationMessageRows) {
+        const relatedConversationId = String(row.conversation_id || '');
+        if (!relatedConversationId) {
+            continue;
+        }
+
+        if (!latestMessageByConversationId.has(relatedConversationId)) {
+            latestMessageByConversationId.set(relatedConversationId, row);
+        }
+
+        messageCountByConversationId.set(
+            relatedConversationId,
+            Number(messageCountByConversationId.get(relatedConversationId) || 0) + 1
+        );
+    }
+
+    for (const row of recentConversations) {
+        const relatedClientId = Number(row.client_id);
+        conversationCountByClientId.set(
+            relatedClientId,
+            Number(conversationCountByClientId.get(relatedClientId) || 0) + 1
+        );
+    }
+
+    return {
+        clients: recentClients.map((row) => ({
+            ...serializeAdminClient(row),
+            conversationCount: Number(conversationCountByClientId.get(Number(row.id)) || 0)
+        })),
+        conversations: recentConversations.map((row) => {
+            const relatedConversationId = String(row.id || '');
+            const clientRow = clientMap.get(Number(row.client_id));
+            const latestMessageRow = latestMessageByConversationId.get(relatedConversationId);
+            const latestMessage = latestMessageRow ? serializeMessage(latestMessageRow) : null;
+
+            return serializeAdminConversation(row, {
+                client: clientRow ? serializeAdminClient(clientRow) : null,
+                latestMessage,
+                latestMessagePreview: latestMessage ? truncateText(latestMessage.messageText, 160) : '',
+                messageCount: Number(messageCountByConversationId.get(relatedConversationId) || 0)
+            });
+        })
+    };
+}
+
+export async function getAdminClientDetail(clientId: number) {
+    const admin = getAdminClient();
+    const clientRow = await getAdminClientById(clientId);
+
+    if (!clientRow) {
+        throw new HttpError(404, 'ADMIN_CLIENT_NOT_FOUND', 'The requested visitor could not be found.');
+    }
+
+    const [
+        sessionRowsResult,
+        conversationRowsResult,
+        pageEventRowsResult,
+        recentMessageRowsResult
+    ] = await Promise.all([
+        admin
+            .from('client_sessions')
+            .select(SESSION_SELECT)
+            .eq('client_id', clientId)
+            .order('last_activity_at', { ascending: false })
+            .limit(12),
+        admin
+            .from('conversations')
+            .select(CONVERSATION_SELECT)
+            .eq('client_id', clientId)
+            .order('updated_at', { ascending: false })
+            .limit(12),
+        admin
+            .from('page_events')
+            .select(PAGE_EVENT_SELECT)
+            .eq('client_id', clientId)
+            .order('created_at', { ascending: false })
+            .limit(25),
+        admin
+            .from('messages')
+            .select(MESSAGE_SELECT)
+            .eq('client_id', clientId)
+            .order('created_at', { ascending: false })
+            .order('id', { ascending: false })
+            .limit(40)
+    ]);
+
+    throwIfQueryError(sessionRowsResult.error, 'Unable to load visitor sessions.');
+    throwIfQueryError(conversationRowsResult.error, 'Unable to load visitor conversations.');
+    throwIfQueryError(pageEventRowsResult.error, 'Unable to load visitor page events.');
+    throwIfQueryError(recentMessageRowsResult.error, 'Unable to load visitor messages.');
+
+    const conversationRows = Array.isArray(conversationRowsResult.data) ? conversationRowsResult.data : [];
+    const recentMessageRows = Array.isArray(recentMessageRowsResult.data) ? recentMessageRowsResult.data : [];
+    const clientConversationIds = conversationRows.map((row) => String(row.id || '')).filter(Boolean);
+    let clientConversationMessageRows: Record<string, unknown>[] = [];
+
+    if (clientConversationIds.length > 0) {
+        const { data, error } = await admin
+            .from('messages')
+            .select(MESSAGE_SELECT)
+            .in('conversation_id', clientConversationIds)
+            .order('created_at', { ascending: false })
+            .order('id', { ascending: false });
+
+        throwIfQueryError(error, 'Unable to load visitor conversation message history.');
+        clientConversationMessageRows = Array.isArray(data) ? data : [];
+    }
+
+    const latestMessageByConversationId = new Map<string, Record<string, unknown>>();
+    const messageCountByConversationId = new Map<string, number>();
+
+    for (const row of clientConversationMessageRows) {
+        const relatedConversationId = String(row.conversation_id || '');
+        if (!relatedConversationId) {
+            continue;
+        }
+
+        if (!latestMessageByConversationId.has(relatedConversationId)) {
+            latestMessageByConversationId.set(relatedConversationId, row);
+        }
+
+        messageCountByConversationId.set(
+            relatedConversationId,
+            Number(messageCountByConversationId.get(relatedConversationId) || 0) + 1
+        );
+    }
+
+    return {
+        client: serializeAdminClient(clientRow),
+        sessions: (sessionRowsResult.data ?? []).map((row) => serializeAdminSession(row)),
+        conversations: conversationRows.map((row) => {
+            const latestMessageRow = latestMessageByConversationId.get(String(row.id || ''));
+            const latestMessage = latestMessageRow ? serializeMessage(latestMessageRow) : null;
+
+            return serializeAdminConversation(row, {
+                latestMessage,
+                latestMessagePreview: latestMessage ? truncateText(latestMessage.messageText, 160) : '',
+                messageCount: Number(messageCountByConversationId.get(String(row.id || '')) || 0)
+            });
+        }),
+        pageEvents: (pageEventRowsResult.data ?? []).map((row) => serializePageEvent(row)),
+        recentMessages: recentMessageRows.map((row) => serializeMessage(row))
+    };
+}
+
+export async function getAdminConversationDetail(conversationId: string) {
+    const conversationRow = await getAdminConversationById(conversationId);
+
+    if (!conversationRow) {
+        throw new HttpError(404, 'ADMIN_CONVERSATION_NOT_FOUND', 'The requested conversation could not be found.');
+    }
+
+    const clientRow = await getAdminClientById(Number(conversationRow.client_id));
+    const sessionRow = conversationRow.active_session_id
+        ? await getAdminSessionById(String(conversationRow.active_session_id))
+        : null;
+    const messageRows = await getConversationMessages(String(conversationRow.id));
+    const serializedMessages = messageRows.map((row) => serializeMessage(row));
+    const latestMessage = serializedMessages.length > 0 ? serializedMessages[serializedMessages.length - 1] : null;
+
+    return {
+        client: clientRow ? serializeAdminClient(clientRow) : null,
+        session: sessionRow ? serializeAdminSession(sessionRow) : null,
+        conversation: serializeAdminConversation(conversationRow, {
+            latestMessage,
+            latestMessagePreview: latestMessage ? truncateText(latestMessage.messageText, 160) : '',
+            messageCount: serializedMessages.length
+        }),
+        messages: serializedMessages
     };
 }
 
