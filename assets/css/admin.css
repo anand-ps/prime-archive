@@ -364,6 +364,7 @@ body {
     color: var(--muted);
     font-size: 0.82rem;
     font-weight: 600;
+    margin: 0.08rem 0;
 }
 
 #admin-logout-btn {
@@ -794,7 +795,7 @@ body {
 
 .admin-section-top {
     align-items: flex-start;
-    padding-top: 2.75rem;
+    padding-top: 1.75rem;
 }
 
 .admin-header-actions {

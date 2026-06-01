@@ -26,6 +26,7 @@ const alertContainer = document.getElementById('login-alert-container');
 // Dashboard Elements
 const welcomeName = document.getElementById('admin-welcome-name');
 const profileEmail = document.getElementById('admin-profile-email');
+const adminLastLogin = document.getElementById('admin-last-login');
 const initialsAvatar = document.getElementById('admin-avatar-initials');
 const tokenViewer = document.getElementById('admin-token-viewer');
 const logoutBtn = document.getElementById('admin-logout-btn');
@@ -483,6 +484,13 @@ function populateAdminIdentity(session) {
 
     if (initialsAvatar) {
         initialsAvatar.textContent = username.substring(0, 2).toUpperCase();
+    }
+
+    if (adminLastLogin) {
+        const lastSignInAt = user?.last_sign_in_at || session?.user?.last_sign_in_at;
+        adminLastLogin.textContent = lastSignInAt
+            ? `Most recent login: ${formatDateTime(lastSignInAt)}`
+            : 'Most recent login unavailable';
     }
 
     const parsedClaims = parseJwt(session.access_token);
