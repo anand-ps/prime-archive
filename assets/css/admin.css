@@ -44,6 +44,9 @@ body {
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
+    /* GPU acceleration to prevent resize repaint lag */
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 /* Floating Orb glow inside card */
@@ -913,7 +916,7 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .admin-section {
-        padding: 2.5rem 1.75rem; /* Precise space around all outer screen edges */
+        padding: 2.5rem 0rem; /* Remove horizontal padding here so child container controls side margins */
         min-height: calc(100vh - 4.9rem);
         display: flex;
         align-items: center;
@@ -1002,6 +1005,9 @@ body {
     animation: dashboard-fade-in 600ms cubic-bezier(0.16, 1, 0.3, 1);
     box-sizing: border-box;
     padding: 1.5rem;
+    /* GPU acceleration to prevent resize repaint lag */
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
 }
 
 .admin-login-info {
@@ -1213,26 +1219,18 @@ body {
 @media (max-width: 940px) {
     .admin-login-layout {
         grid-template-columns: 1fr;
-        gap: 2.5rem;
-        max-width: 500px;
-    }
-    
-    .admin-login-info {
-        text-align: center;
-        align-items: center;
-    }
-    
-    .admin-login-subtitle {
-        margin: 0 auto;
-    }
-    
-    .status-grid {
-        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
+        max-width: 420px;
+        padding: 1.25rem;
     }
     
     .admin-card {
-        margin: 0 auto;
         width: 100%;
         max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    .admin-login-info {
+        display: none !important;
     }
 }

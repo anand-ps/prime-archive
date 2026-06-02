@@ -87,6 +87,9 @@ body {
     pointer-events: none;
     position: fixed;
     z-index: -2;
+    /* Hardware acceleration to prevent laggy browser resize */
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 .orb {
@@ -94,6 +97,9 @@ body {
     filter: blur(6px);
     opacity: 0.86;
     position: absolute;
+    /* GPU composite layer */
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 .orb-one {
@@ -123,6 +129,9 @@ body::after {
     pointer-events: none;
     position: fixed;
     z-index: -1;
+    /* GPU acceleration for fixed layout overlays */
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 .container {
