@@ -1019,6 +1019,23 @@ body {
         color: var(--accent) !important;
         opacity: 1;
     }
+
+    /* Remove outer card styles from dashboard panels on mobile viewports for flat app look */
+    .admin-dashboard-container .admin-panel,
+    .admin-dashboard-container .admin-dashboard-header {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 1.25rem 0 !important;
+        border-radius: 0 !important;
+    }
+
+    .admin-dashboard-container {
+        padding: 0 1.2rem !important;
+        box-sizing: border-box;
+    }
 }
 
 /* --- Admin Login Two-Column Layout --- */
