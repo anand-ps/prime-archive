@@ -14,12 +14,11 @@ Description: Standalone premium native-app-like design system. Hides website chr
 
 /* Base Body settings for immersive full screen */
 body {
-    overflow-x: hidden;
     min-height: 100vh;
 }
 
 .admin-section {
-    min-height: 100vh;
+    min-height: calc(100vh - 4.9rem);
     width: 100vw;
     display: flex;
     align-items: center;
@@ -30,16 +29,13 @@ body {
     z-index: 1;
 }
 
-/* Glassmorphism App Frame */
 .admin-card {
-    background: color-mix(in srgb, var(--surface) 28%, transparent);
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
     backdrop-filter: blur(24px) saturate(140%);
     -webkit-backdrop-filter: blur(24px) saturate(140%);
-    border: 1px solid color-mix(in srgb, #ffffff 14%, var(--border));
-    border-radius: 24px;
-    box-shadow: 
-        0 24px 50px rgba(0, 0, 0, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
     width: 100%;
     max-width: 400px;
     padding: 2.4rem 2rem;
@@ -48,6 +44,9 @@ body {
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
+    /* GPU acceleration to prevent resize repaint lag */
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
 }
 
 /* Floating Orb glow inside card */
@@ -917,10 +916,10 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .admin-section {
-        padding: 2.5rem 1.75rem; /* Precise space around all outer screen edges */
-        min-height: calc(100vh - 4.9rem);
+        padding: 1rem 0rem; /* Reduced top padding to move content closer to top panel */
+        min-height: auto; /* Shrink viewport fill so footer aligns directly under the card */
         display: flex;
-        align-items: center;
+        align-items: flex-start; /* Align content to the top on mobile viewports */
         justify-content: center;
     }
     
@@ -991,5 +990,319 @@ body {
     
     .admin-input {
         font-size: 1rem; /* Stops auto-zooming on iOS inputs */
+    }
+
+    .footer {
+        margin-top: 1.5rem;
+        padding: 1.2rem 0;
+        text-align: center;
+        border-top: 1px solid color-mix(in srgb, var(--border) 35%, transparent);
+    }
+
+    .footer p {
+        color: var(--muted) !important;
+        font-size: 0.8rem !important;
+    }
+
+    .footer-privacy-notice {
+        margin-top: 0.4rem;
+    }
+
+    .footer-legal-link {
+        color: var(--muted) !important;
+        opacity: 0.85;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .footer-legal-link:hover {
+        color: var(--accent) !important;
+        opacity: 1;
+    }
+
+    /* Remove outer card styles from dashboard panels on mobile viewports for flat app look */
+    .admin-dashboard-container .admin-panel,
+    .admin-dashboard-container .admin-dashboard-header {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 1.25rem 0 !important;
+        border-radius: 0 !important;
+    }
+
+    .admin-dashboard-container {
+        padding: 0 1.2rem !important;
+        box-sizing: border-box;
+    }
+}
+
+/* --- Admin Login Two-Column Layout --- */
+.admin-login-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3.5rem;
+    align-items: center;
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+    animation: dashboard-fade-in 600ms cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    padding: 1.5rem;
+    /* GPU acceleration to prevent resize repaint lag */
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+}
+
+.admin-login-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+    color: var(--text);
+    text-align: left;
+}
+
+.admin-system-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 999px;
+    margin-bottom: 0.8rem;
+}
+
+.admin-login-brand h1 {
+    font-family: "Sora", sans-serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, var(--text) 30%, color-mix(in srgb, var(--text) 70%, var(--accent)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.admin-login-subtitle {
+    font-family: "Manrope", sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--muted);
+    font-weight: 550;
+    max-width: 48ch;
+}
+
+.admin-feature-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.admin-feature-item {
+    display: flex;
+    gap: 1.1rem;
+    padding: 1.25rem;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: border-color 220ms ease, background-color 220ms ease;
+}
+
+.admin-feature-item:hover {
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--surface) 35%, transparent);
+}
+
+.admin-feature-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.admin-feature-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.admin-feature-desc h4 {
+    font-family: "Sora", sans-serif;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.admin-feature-desc p {
+    font-size: 0.86rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* System Status Panel (Mock Terminal style) */
+.admin-system-status-panel {
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.65rem;
+    margin-bottom: 0.8rem;
+}
+
+.status-live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: #81c995;
+}
+
+.status-ping-pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #81c995;
+    animation: status-pulse 1.2s ease-in-out infinite alternate;
+}
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.status-grid-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    background: color-mix(in srgb, var(--surface) 40%, transparent);
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.65rem;
+    border-radius: 10px;
+}
+
+.status-grid-item .status-name {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+}
+
+.status-grid-item .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-grid-item .status-dot.green {
+    background-color: #81c995;
+    box-shadow: 0 0 6px rgba(129, 201, 149, 0.6);
+}
+
+.admin-security-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: #ffffff;
+    transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease;
+}
+
+.admin-security-notice:hover {
+    background: rgba(244, 157, 55, 0.08);
+    border-color: rgba(244, 157, 55, 0.22);
+    color: #f7b155;
+}
+
+.admin-security-notice svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    color: var(--highlight);
+}
+
+/* Custom transitions and view styling overrides for the login view */
+#login-view.admin-login-layout {
+    display: grid;
+}
+
+/* Responsiveness overrides for the new layout */
+@media (max-width: 940px) {
+    body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    main {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+    }
+
+    .admin-section {
+        min-height: auto;
+        padding: 1.5rem 0;
+        width: 100%;
+    }
+
+    .footer {
+        margin-top: auto !important; /* Push footer to the end of the screen */
+        padding: 1.2rem 0;
+        flex-shrink: 0;
+    }
+
+    .admin-login-layout {
+        grid-template-columns: 1fr;
+        gap: 0;
+        max-width: 420px;
+        padding: 1.25rem;
+    }
+    
+    .admin-card {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    
+    .admin-login-info {
+        display: none !important;
     }
 }

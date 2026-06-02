@@ -477,7 +477,7 @@ function transitionToView(target) {
         
         setTimeout(() => {
             dashboardView.style.display = 'none';
-            loginView.style.display = 'block';
+            loginView.style.display = 'grid';
             loginView.style.opacity = '0';
             loginView.style.transform = 'translateY(-12px)';
             
