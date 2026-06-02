@@ -14,7 +14,6 @@ Description: Standalone premium native-app-like design system. Hides website chr
 
 /* Base Body settings for immersive full screen */
 body {
-    overflow-x: hidden;
     min-height: 100vh;
 }
 
