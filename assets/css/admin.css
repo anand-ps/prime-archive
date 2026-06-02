@@ -1245,6 +1245,33 @@ body {
 
 /* Responsiveness overrides for the new layout */
 @media (max-width: 940px) {
+    body {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    main {
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+    }
+
+    .admin-section {
+        min-height: auto;
+        padding: 1.5rem 0;
+        width: 100%;
+    }
+
+    .footer {
+        margin-top: auto !important; /* Push footer to the end of the screen */
+        padding: 1.2rem 0;
+        flex-shrink: 0;
+    }
+
     .admin-login-layout {
         grid-template-columns: 1fr;
         gap: 0;
