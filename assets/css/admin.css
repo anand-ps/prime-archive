@@ -18,7 +18,7 @@ body {
 }
 
 .admin-section {
-    min-height: 100vh;
+    min-height: calc(100vh - 4.9rem);
     width: 100vw;
     display: flex;
     align-items: center;
@@ -916,10 +916,10 @@ body {
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .admin-section {
-        padding: 2.5rem 0rem; /* Remove horizontal padding here so child container controls side margins */
-        min-height: calc(100vh - 4.9rem);
+        padding: 1rem 0rem; /* Reduced top padding to move content closer to top panel */
+        min-height: auto; /* Shrink viewport fill so footer aligns directly under the card */
         display: flex;
-        align-items: center;
+        align-items: flex-start; /* Align content to the top on mobile viewports */
         justify-content: center;
     }
     
@@ -990,6 +990,34 @@ body {
     
     .admin-input {
         font-size: 1rem; /* Stops auto-zooming on iOS inputs */
+    }
+
+    .footer {
+        margin-top: 1.5rem;
+        padding: 1.2rem 0;
+        text-align: center;
+        border-top: 1px solid color-mix(in srgb, var(--border) 35%, transparent);
+    }
+
+    .footer p {
+        color: var(--muted) !important;
+        font-size: 0.8rem !important;
+    }
+
+    .footer-privacy-notice {
+        margin-top: 0.4rem;
+    }
+
+    .footer-legal-link {
+        color: var(--muted) !important;
+        opacity: 0.85;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .footer-legal-link:hover {
+        color: var(--accent) !important;
+        opacity: 1;
     }
 }
 
