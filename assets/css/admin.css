@@ -30,16 +30,13 @@ body {
     z-index: 1;
 }
 
-/* Glassmorphism App Frame */
 .admin-card {
-    background: color-mix(in srgb, var(--surface) 28%, transparent);
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
     backdrop-filter: blur(24px) saturate(140%);
     -webkit-backdrop-filter: blur(24px) saturate(140%);
-    border: 1px solid color-mix(in srgb, #ffffff 14%, var(--border));
-    border-radius: 24px;
-    box-shadow: 
-        0 24px 50px rgba(0, 0, 0, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
     width: 100%;
     max-width: 400px;
     padding: 2.4rem 2rem;
@@ -1061,18 +1058,17 @@ body {
     display: flex;
     gap: 1.1rem;
     padding: 1.25rem;
-    background: color-mix(in srgb, var(--surface) 20%, transparent);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid color-mix(in srgb, #ffffff 6%, var(--border));
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid var(--border);
     border-radius: 16px;
-    transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease;
+    transition: border-color 220ms ease, background-color 220ms ease;
 }
 
 .admin-feature-item:hover {
-    transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--accent) 36%, var(--border));
-    background: color-mix(in srgb, var(--surface) 28%, transparent);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--surface) 35%, transparent);
 }
 
 .admin-feature-icon {
@@ -1109,12 +1105,12 @@ body {
 
 /* System Status Panel (Mock Terminal style) */
 .admin-system-status-panel {
-    background: color-mix(in srgb, #000000 24%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid color-mix(in srgb, #ffffff 4%, var(--border));
-    border-radius: 16px;
-    padding: 1.1rem 1.3rem;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    border-radius: 0;
+    padding: 0;
 }
 
 .status-header {
@@ -1125,7 +1121,7 @@ body {
     font-weight: 800;
     letter-spacing: 0.08em;
     color: var(--muted);
-    border-bottom: 1px solid color-mix(in srgb, #ffffff 6%, var(--border));
+    border-bottom: 1px solid var(--border);
     padding-bottom: 0.65rem;
     margin-bottom: 0.8rem;
 }
@@ -1154,11 +1150,12 @@ body {
 .status-grid-item {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.45rem;
-    background: rgba(0, 0, 0, 0.16);
-    border: 1px solid color-mix(in srgb, #ffffff 4%, var(--border));
+    background: color-mix(in srgb, var(--surface) 40%, transparent);
+    border: 1px solid var(--border);
     padding: 0.5rem 0.65rem;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .status-grid-item .status-name {
@@ -1184,12 +1181,19 @@ body {
     display: flex;
     align-items: flex-start;
     gap: 0.65rem;
-    background: rgba(244, 157, 55, 0.08);
-    border: 1px solid rgba(244, 157, 55, 0.22);
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: 12px;
     padding: 0.85rem 1rem;
     font-size: 0.78rem;
     line-height: 1.5;
+    color: #ffffff;
+    transition: background-color 220ms ease, border-color 220ms ease, color 220ms ease;
+}
+
+.admin-security-notice:hover {
+    background: rgba(244, 157, 55, 0.08);
+    border-color: rgba(244, 157, 55, 0.22);
     color: #f7b155;
 }
 
@@ -1198,6 +1202,7 @@ body {
     height: 16px;
     flex-shrink: 0;
     margin-top: 0.1rem;
+    color: var(--highlight);
 }
 
 /* Custom transitions and view styling overrides for the login view */
