@@ -213,6 +213,20 @@ create table if not exists public.messages (
 );
 
 ------------------------------------------------------------
+-- ADMIN LOGINS AUDIT
+------------------------------------------------------------
+
+create table if not exists public.admin_logins (
+    id bigint generated always as identity primary key,
+    user_id uuid not null,
+    email text not null,
+    session_id uuid not null unique,
+    ip_address text,
+    user_agent text,
+    created_at timestamptz not null default now()
+);
+
+------------------------------------------------------------
 -- INDEXES
 ------------------------------------------------------------
 
@@ -303,6 +317,12 @@ enable row level security;
 alter table public.messages
 force row level security;
 
+alter table public.admin_logins
+enable row level security;
+
+alter table public.admin_logins
+force row level security;
+
 ------------------------------------------------------------
 -- DIRECT PUBLIC TABLE ACCESS LOCKDOWN
 ------------------------------------------------------------
@@ -314,6 +334,7 @@ grant all on table public.client_sessions to service_role;
 grant all on table public.page_events to service_role;
 grant all on table public.conversations to service_role;
 grant all on table public.messages to service_role;
+grant all on table public.admin_logins to service_role;
 
 grant usage, select on sequence public.clients_id_seq to service_role;
 grant usage, select on sequence public.page_events_id_seq to service_role;
@@ -324,6 +345,7 @@ revoke all on public.client_sessions from anon, authenticated;
 revoke all on public.page_events from anon, authenticated;
 revoke all on public.conversations from anon, authenticated;
 revoke all on public.messages from anon, authenticated;
+revoke all on public.admin_logins from anon, authenticated;
 
 revoke all on sequence public.clients_id_seq from anon, authenticated;
 revoke all on sequence public.page_events_id_seq from anon, authenticated;
