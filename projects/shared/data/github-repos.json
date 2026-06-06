@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T19:15:43.013Z",
+  "generatedAt": "2026-06-06T18:47:16.430Z",
   "contributors": {
     "anand-ps": {
       "username": "anand-ps",
@@ -12,7 +12,7 @@
           "description": "A selective record of focused effort and evolving perspective.",
           "language": "HTML",
           "stargazers_count": 24,
-          "pushed_at": "2026-06-04T19:36:41Z"
+          "pushed_at": "2026-06-05T19:15:49Z"
         },
         {
           "id": 1201605870,
@@ -724,9 +724,9 @@
           "full_name": "gopikagopikrishnan/gopikagopikrishnan.github.io",
           "html_url": "https://github.com/gopikagopikrishnan/gopikagopikrishnan.github.io",
           "description": "",
-          "language": "HTML",
+          "language": "SCSS",
           "stargazers_count": 0,
-          "pushed_at": "2026-06-02T10:51:57Z"
+          "pushed_at": "2026-06-06T14:07:37Z"
         },
         {
           "id": 1020124215,
