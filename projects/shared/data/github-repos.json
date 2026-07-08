@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07T19:19:17.855Z",
+  "generatedAt": "2026-07-08T18:53:34.584Z",
   "contributors": {
     "anand-ps": {
       "username": "anand-ps",
@@ -12,7 +12,7 @@
           "description": "A selective record of focused effort and evolving perspective.",
           "language": "HTML",
           "stargazers_count": 24,
-          "pushed_at": "2026-07-06T19:13:36Z"
+          "pushed_at": "2026-07-07T19:19:24Z"
         },
         {
           "id": 1201605870,
@@ -718,6 +718,16 @@
     "gopika-gopikrishnan": {
       "username": "gopikagopikrishnan",
       "repos": [
+        {
+          "id": 1244170945,
+          "name": "US_RoI_Picker_And_Metrics_Evaluation",
+          "full_name": "gopikagopikrishnan/US_RoI_Picker_And_Metrics_Evaluation",
+          "html_url": "https://github.com/gopikagopikrishnan/US_RoI_Picker_And_Metrics_Evaluation",
+          "description": "",
+          "language": "Python",
+          "stargazers_count": 0,
+          "pushed_at": "2026-07-08T03:14:53Z"
+        },
         {
           "id": 1205780046,
           "name": "gopikagopikrishnan.github.io",
