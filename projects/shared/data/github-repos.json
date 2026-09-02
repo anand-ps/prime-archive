@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T20:01:14.725Z",
+  "generatedAt": "2026-09-02T19:58:46.934Z",
   "contributors": {
     "anand-ps": {
       "username": "anand-ps",
@@ -12,7 +12,7 @@
           "description": "A selective record of focused effort and evolving perspective.",
           "language": "HTML",
           "stargazers_count": 24,
-          "pushed_at": "2026-08-31T21:59:08Z"
+          "pushed_at": "2026-09-01T20:01:20Z"
         },
         {
           "id": 1201605870,
@@ -413,6 +413,16 @@
     "sidharth-s": {
       "username": "sidharthism",
       "repos": [
+        {
+          "id": 1353951469,
+          "name": "olap-cube-academy",
+          "full_name": "sidharthism/olap-cube-academy",
+          "html_url": "https://github.com/sidharthism/olap-cube-academy",
+          "description": "The decision room",
+          "language": "TypeScript",
+          "stargazers_count": 0,
+          "pushed_at": "2026-09-02T13:19:20Z"
+        },
         {
           "id": 916629981,
           "name": "dsa",
