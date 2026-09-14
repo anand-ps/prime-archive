@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-13T19:37:12.459Z",
+  "generatedAt": "2026-09-14T21:00:15.801Z",
   "contributors": {
     "anand-ps": {
       "username": "anand-ps",
@@ -12,7 +12,7 @@
           "description": "A selective record of focused effort and evolving perspective.",
           "language": "HTML",
           "stargazers_count": 24,
-          "pushed_at": "2026-09-12T19:33:04Z"
+          "pushed_at": "2026-09-13T19:37:22Z"
         },
         {
           "id": 1201605870,
@@ -734,9 +734,9 @@
           "full_name": "gopikagopikrishnan/Conditioned_Deep_Beamformer",
           "html_url": "https://github.com/gopikagopikrishnan/Conditioned_Deep_Beamformer",
           "description": "Intent-conditioned Deep Beamforming for plane-wave ultrasound imaging. One Network, A continuous resolution-contrast knob.",
-          "language": "Jupyter Notebook",
+          "language": "Python",
           "stargazers_count": 1,
-          "pushed_at": "2026-09-11T02:09:09Z"
+          "pushed_at": "2026-09-14T06:38:53Z"
         },
         {
           "id": 1244170945,
