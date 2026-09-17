@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T20:19:19.138Z",
+  "generatedAt": "2026-09-17T20:28:01.768Z",
   "contributors": {
     "anand-ps": {
       "username": "anand-ps",
@@ -12,7 +12,7 @@
           "description": "A selective record of focused effort and evolving perspective.",
           "language": "HTML",
           "stargazers_count": 24,
-          "pushed_at": "2026-09-15T20:21:13Z"
+          "pushed_at": "2026-09-16T20:19:27Z"
         },
         {
           "id": 1201605870,
@@ -728,16 +728,6 @@
     "gopika-gopikrishnan": {
       "username": "gopikagopikrishnan",
       "repos": [
-        {
-          "id": 1363664467,
-          "name": "Conditioned_Deep_Beamformer",
-          "full_name": "gopikagopikrishnan/Conditioned_Deep_Beamformer",
-          "html_url": "https://github.com/gopikagopikrishnan/Conditioned_Deep_Beamformer",
-          "description": "Intent-conditioned Deep Beamforming for plane-wave ultrasound imaging. One Network, A continuous resolution-contrast knob.",
-          "language": "Python",
-          "stargazers_count": 1,
-          "pushed_at": "2026-09-14T06:38:53Z"
-        },
         {
           "id": 1244170945,
           "name": "US_RoI_Picker_And_Metrics_Evaluation",
