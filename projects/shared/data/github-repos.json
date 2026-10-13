@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-10-12T23:42:46.699Z",
+  "generatedAt": "2026-10-13T21:55:09.398Z",
   "contributors": {
     "anand-ps": {
       "username": "anand-ps",
       "repos": [
         {
-          "id": 1169148935,
-          "name": "prime-archive",
-          "full_name": "anand-ps/prime-archive",
-          "html_url": "https://github.com/anand-ps/prime-archive",
-          "description": "A selective record of focused effort and evolving perspective.",
-          "language": "HTML",
-          "stargazers_count": 24,
-          "pushed_at": "2026-10-11T21:01:53Z"
+          "id": 1417835620,
+          "name": "windows-s0-power-override",
+          "full_name": "anand-ps/windows-s0-power-override",
+          "html_url": "https://github.com/anand-ps/windows-s0-power-override",
+          "description": "A lightweight utility that automatically hibernates Windows Modern Standby (S0) laptops after a configurable period of inactivity.",
+          "language": "C#",
+          "stargazers_count": 0,
+          "pushed_at": "2026-10-13T19:47:40Z"
         },
         {
           "id": 1414049005,
@@ -22,7 +22,17 @@
           "description": "Designed to streamline operations, automate workflows, and improve service delivery - College project",
           "language": "PHP",
           "stargazers_count": 0,
-          "pushed_at": "2026-10-11T10:36:23Z"
+          "pushed_at": "2026-10-13T14:48:57Z"
+        },
+        {
+          "id": 1169148935,
+          "name": "prime-archive",
+          "full_name": "anand-ps/prime-archive",
+          "html_url": "https://github.com/anand-ps/prime-archive",
+          "description": "A selective record of focused effort and evolving perspective.",
+          "language": "HTML",
+          "stargazers_count": 24,
+          "pushed_at": "2026-10-12T23:42:54Z"
         },
         {
           "id": 1201605870,
